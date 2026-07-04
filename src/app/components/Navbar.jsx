@@ -16,10 +16,10 @@ export default function Navbar() {
 
   const links = [
     { label: "Beranda", href: "#hero" },
-    { label: "Tentang", href: "#tentang" },
     { label: "Wisata", href: "#wisata" },
-    { label: "Potensi", href: "#potensi" },
     { label: "Jelajahi", href: "#fitur" },
+    { label: "Tentang", href: "#tentang" },
+    { label: "Keunggulan", href: "#potensi" },
   ];
 
   return (

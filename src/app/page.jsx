@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Navbar from "./components/Navbar";
@@ -11,9 +11,12 @@ import {
   RiStoreLine,
   RiTreeLine,
   RiArrowRightLine,
+  RiArrowLeftLine,
   RiExternalLinkLine,
   RiRecycleLine,
   RiRoadMapLine,
+  RiStarFill,
+  RiTimeLine,
 } from "react-icons/ri";
 
 // === Helper: animasi section saat muncul di layar ===
@@ -39,33 +42,240 @@ const wisataData = [
     id: 1,
     nama: "Desa Wisata Sasak Ende",
     kategori: "Wisata Budaya",
-    deskripsi:
-      "Pengalaman imersif kehidupan tradisional Suku Sasak. Temukan rumah adat berlantai tanah liat, kerajinan tenun ikat, dan keramahan warga lokal.",
-    highlights: [
-      "Rumah adat alang-alang",
-      "Tenun ikat tradisional",
-      "Interaksi budaya",
-    ],
+    rating: "4.7",
+    tipe: "Penginapan",
+    jam: "Buka · Tutup 20.00",
+    deskripsi: "Berlokasi strategis di jalur pariwisata, menjadi titik utama bagi wisatawan untuk mengamati rumah adat tradisional serta melihat langsung keahlian kaum wanita menenun kain tenun ikat.",
     mapsUrl: "https://maps.app.goo.gl/65GNgiUrd9oGfhb38",
     foto: "/images/sasak-ende.jpg",
-    warna: "from-amber-800 to-amber-600",
+    warna: "from-amber-800 to-amber-500",
   },
   {
     id: 2,
+    nama: "Kampung Tradisional Ende",
+    kategori: "Wisata Budaya",
+    rating: "4.6",
+    tipe: "Tujuan Wisata",
+    jam: "Buka 24 Jam",
+    deskripsi: "Terbuka 24 jam, area perkampungan ini memperlihatkan harmoni tata ruang lokal yang asri, berpadu dengan aktivitas keseharian warga yang memegang teguh kearifan lokal.",
+    mapsUrl: "https://maps.app.goo.gl/65GNgiUrd9oGfhb38",
+    foto: "/images/sasak-ende.jpg",
+    warna: "from-yellow-700 to-orange-400",
+  },
+  {
+    id: 3,
+    nama: "Pantai Bloam Gerupuk",
+    kategori: "Wisata Pantai",
+    rating: "5.0",
+    tipe: "Tujuan Wisata",
+    jam: "Buka 24 Jam",
+    deskripsi: "Perairan pesisir eksotis dengan kontur tebing dan perbukitan yang mempesona. Sangat populer bagi peselancar pemula hingga profesional yang ingin menikmati gulungan ombak.",
+    mapsUrl: "#",
+    foto: "/images/gerupuk.jpg",
+    warna: "from-blue-700 to-cyan-400",
+  },
+  {
+    id: 4,
+    nama: "Pantai Tanjung Aan",
+    kategori: "Wisata Pantai",
+    rating: "4.5",
+    tipe: "Pantai",
+    jam: "Buka 24 Jam",
+    deskripsi: "Pantai legendaris dengan garis pantai melengkung, pasir unik seperti butiran merica, dan perairan pirus yang jernih. Cocok untuk berenang santai atau menyewa perahu.",
+    mapsUrl: "#",
+    foto: "/images/tanjung-aan.jpg",
+    warna: "from-cyan-600 to-teal-400",
+  },
+  {
+    id: 5,
+    nama: "Bukit Merese",
+    kategori: "Wisata Alam",
+    rating: "4.7",
+    tipe: "Tujuan Wisata",
+    jam: "Buka 24 Jam",
+    deskripsi: "Spot ikonik yang menghadirkan kontras indah antara padang rumput hijau dan birunya Samudra Hindia. Favorit wisatawan untuk menikmati momen sunset dari ketinggian.",
+    mapsUrl: "#",
+    foto: "/images/bukit-merese.jpg",
+    warna: "from-green-700 to-emerald-400",
+  },
+  {
+    id: 6,
     nama: "Masjid Kuno Gunung Pujut",
     kategori: "Wisata Sejarah & Religi",
-    deskripsi:
-      "Peninggalan Kerajaan Pujut sejak abad ke-16. Berdiri megah di atas bukit 500 mdpl dengan pemandangan bentang alam Lombok Tengah yang memukau.",
-    highlights: [
-      "Cagar budaya abad ke-16",
-      "Ketinggian 500 mdpl",
-      "Panorama Lombok Tengah",
-    ],
+    rating: "4.5",
+    tipe: "Museum",
+    jam: "Buka · Tutup 06.00 (Minggu)",
+    deskripsi: "Situs cagar budaya peninggalan Kerajaan Pujut sejak abad ke-16. Di atas bukit 500 mdpl dengan lanskap hijau Lombok Tengah yang memukau.",
     mapsUrl: "https://maps.app.goo.gl/dms5m7Tyw7kMvJ2Q8",
     foto: "/images/masjid-pujut.jpg",
-    warna: "from-green-900 to-green-700",
+    warna: "from-green-900 to-green-600",
   },
 ];
+
+// === Card tunggal untuk carousel ===
+function WisataCardItem({ item }) {
+  return (
+    <div className="rounded-3xl overflow-hidden shadow-xl bg-white flex flex-col">
+      <div className={`h-44 bg-gradient-to-br ${item.warna} relative flex items-end p-4`}>
+        {/* <Image src={item.foto} alt={item.nama} fill className="object-cover" /> */}
+        <span className="relative z-10 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
+          {item.kategori}
+        </span>
+      </div>
+      <div className="p-5 flex flex-col">
+        <div className="flex items-center gap-2 mb-1">
+          <RiStarFill className="text-yellow-400 text-sm" />
+          <span className="text-sm font-bold text-gray-800">{item.rating}</span>
+          <span className="text-gray-300 text-xs">·</span>
+          <span className="text-xs text-gray-500">{item.tipe}</span>
+        </div>
+        <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight">{item.nama}</h3>
+        <div className="flex items-center gap-1 mb-2">
+          <RiTimeLine className="text-green-500 text-xs" />
+          <span className="text-xs text-green-600 font-medium">{item.jam}</span>
+        </div>
+        <p className="text-gray-500 text-sm leading-relaxed mb-4">{item.deskripsi}</p>
+        <a
+          href={item.mapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors text-sm"
+        >
+          <RiMapPin2Line />
+          Buka di Google Maps
+          <RiExternalLinkLine />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// === Komponen Carousel 3D ===
+function WisataCarousel({ data }) {
+  const [current, setCurrent] = useState(0);
+  const [isMobile, setIsMobile] = useState(true);
+  const n = data.length;
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const step = isMobile ? 1 : 2;
+  const prev = () => setCurrent(c => (c - step + n) % n);
+  const next = () => setCurrent(c => (c + step) % n);
+
+  // Hitung posisi tiap card relatif ke current
+  const getDiff = (index) => {
+    let d = index - current;
+    if (d > n / 2) d -= n;
+    if (d < -n / 2) d += n;
+    return d;
+  };
+
+  const getAnimate = (index) => {
+    const diff = getDiff(index);
+    const abs = Math.abs(diff);
+
+    if (isMobile) {
+      // Mobile: 1 card fokus
+      if (diff === 0)  return { x: 0,    scale: 1,    opacity: 1,   filter: "blur(0px)",  zIndex: 20 };
+      if (abs === 1)   return { x: diff * 260, scale: 0.82, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
+      return               { x: diff * 500, scale: 0.65, opacity: 0,   filter: "blur(8px)",  zIndex: 0  };
+    } else {
+      // Desktop: 2 card fokus (current dan current+1)
+      const CARD = 420;
+      const GAP = 24;
+      if (diff === 0)  return { x: -(CARD / 2 + GAP / 2), scale: 1,    opacity: 1,   filter: "blur(0px)",  zIndex: 20 };
+      if (diff === 1)  return { x:  (CARD / 2 + GAP / 2), scale: 1,    opacity: 1,   filter: "blur(0px)",  zIndex: 20 };
+      if (diff === -1) return { x: -(CARD + CARD / 2 + GAP * 2), scale: 0.85, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
+      if (diff === 2)  return { x:  (CARD + CARD / 2 + GAP * 2), scale: 0.85, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
+      return               { x: diff * CARD * 2, scale: 0.6,  opacity: 0,   filter: "blur(8px)",  zIndex: 0  };
+    }
+  };
+
+  const cardWidth = isMobile ? "min(280px, 78vw)" : "420px";
+  const containerH = isMobile ? 460 : 490;
+
+  // Dot indicators
+  const totalPages = isMobile ? n : Math.ceil(n / 2);
+  const currentPage = isMobile ? current : Math.floor(current / 2);
+
+  return (
+    <div className="relative select-none">
+      {/* Container cards */}
+      <div
+        className="relative flex items-start justify-center overflow-hidden"
+        style={{ height: containerH }}
+      >
+        {data.map((item, i) => {
+          const anim = getAnimate(i);
+          return (
+            <motion.div
+              key={item.id}
+              className="absolute top-4"
+              style={{ width: cardWidth, zIndex: anim.zIndex }}
+              animate={{
+                x: anim.x,
+                scale: anim.scale,
+                opacity: anim.opacity,
+                filter: anim.filter,
+              }}
+              transition={{ type: "spring", stiffness: 280, damping: 28 }}
+            >
+              <WisataCardItem item={item} />
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Tombol Prev — Apple glass style */}
+      <button
+        onClick={prev}
+        className="absolute left-3 top-[130px] z-30 w-11 h-11 rounded-full flex items-center justify-center transition-all"
+        style={{
+          background: "rgba(255,255,255,0.25)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.4)",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+        }}
+      >
+        <RiArrowLeftLine className="text-gray-700 text-lg" />
+      </button>
+
+      {/* Tombol Next — Apple glass style */}
+      <button
+        onClick={next}
+        className="absolute right-3 top-[130px] z-30 w-11 h-11 rounded-full flex items-center justify-center transition-all"
+        style={{
+          background: "rgba(255,255,255,0.25)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.4)",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+        }}
+      >
+        <RiArrowRightLine className="text-gray-700 text-lg" />
+      </button>
+
+      {/* Dot indicators */}
+      <div className="flex justify-center gap-2 pt-2 relative z-20">
+        {Array.from({ length: totalPages }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(isMobile ? i : i * 2)}
+            className={`h-2 rounded-full transition-all duration-300 ${
+              i === currentPage ? "w-6 bg-green-600" : "w-2 bg-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // === Data Potensi Desa ===
 const potensiData = [
@@ -142,10 +352,27 @@ export default function Home() {
         {/* Background foto — ganti src kalau sudah ada foto */}
         <div className="absolute inset-0 bg-green-900">
           {/* Uncomment baris di bawah setelah foto tersedia: */}
-          {/* <Image src="/images/hero-desa.jpg" alt="Desa Sengkol" fill className="object-cover opacity-50" /> */}
+          {/* Desktop */}
+          <Image
+            src="/images/ProfileSengkol.JPG"
+            alt="Desa Sengkol"
+            fill
+            className="object-cover opacity-60 hidden md:block"
+            style={{ objectPosition: "50% 40%" }}
+            priority
+          />
+          {/* Mobile */}
+          <Image
+            src="/images/ProfileSengkol.JPG"
+            alt="Desa Sengkol"
+            fill
+            className="object-cover opacity-60 block md:hidden"
+            style={{ objectPosition: "90% 50%" }}
+            priority
+          />
 
           {/* Placeholder gradient (hapus ini kalau sudah ada foto) */}
-          <div className="absolute inset-0 bg-gradient-to-br from-green-950 via-green-800 to-emerald-700" />
+          
         </div>
 
         {/* Overlay gelap */}
@@ -217,11 +444,88 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ===== 2. TENTANG DESA ===== */}
-      <section id="tentang" className="py-24 px-6 bg-stone-50">
+      {/* ===== 2. WISATA — Carousel ===== */}
+      <section id="wisata" className="py-24 bg-white overflow-hidden">
+        <div className="max-w-6xl mx-auto px-6">
+          <FadeIn className="text-center mb-12">
+            <p className="text-green-600 font-semibold uppercase tracking-widest text-sm mb-3">
+              Destinasi Unggulan
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+              Wisata Desa Sengkol
+            </h2>
+            <p className="text-gray-500 mt-3 text-sm">Geser untuk melihat semua destinasi</p>
+          </FadeIn>
+        </div>
+
+        <div className="max-w-6xl mx-auto">
+          <WisataCarousel data={wisataData} />
+        </div>
+      </section>
+
+      {/* ===== 3. FITUR WEB ===== */}
+      <section id="fitur" className="py-24 px-6 bg-stone-50 overflow-hidden">
+        <div className="max-w-6xl mx-auto">
+          <FadeIn className="mb-20">
+            <p className="text-green-600 font-semibold uppercase tracking-widest text-xs mb-4">
+              Layanan Digital
+            </p>
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-none">
+              Explore
+              <br />
+              <span className="text-gray-300">Sengkol.</span>
+            </h2>
+          </FadeIn>
+
+          <div className="divide-y divide-gray-200">
+            {fiturData.map((item, i) => (
+              <FadeIn key={i} delay={i * 0.1}>
+                <motion.a
+                  href={item.href}
+                  className="group flex items-center justify-between py-8 md:py-10 cursor-pointer"
+                  whileHover="hover"
+                >
+                  <div className="flex items-center gap-6 md:gap-10">
+                    <span className="text-xs font-mono text-gray-300 group-hover:text-gray-400 transition-colors w-6 shrink-0">
+                      0{i + 1}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className={`text-xl ${item.ikonWarna}`}>
+                          {item.icon}
+                        </span>
+                        <h3 className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">
+                          {item.judul}
+                        </h3>
+                      </div>
+                      <p className="text-gray-500 text-sm md:text-base max-w-md hidden md:block">
+                        {item.deskripsi}
+                      </p>
+                    </div>
+                  </div>
+
+                  <motion.div
+                    variants={{ hover: { x: 6 } }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                    className={`shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${item.ikonWarna} border-current opacity-50 group-hover:opacity-100 transition-opacity`}
+                  >
+                    <RiArrowRightLine className="text-lg" />
+                  </motion.div>
+                </motion.a>
+
+                <p className="text-gray-500 text-sm pb-6 pl-12 md:hidden">
+                  {item.deskripsi}
+                </p>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== 4. TENTANG DESA ===== */}
+      <section id="tentang" className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Teks */}
             <FadeIn>
               <p className="text-green-600 font-semibold uppercase tracking-widest text-sm mb-4">
                 Tentang Desa
@@ -244,42 +548,21 @@ export default function Home() {
               </p>
             </FadeIn>
 
-            {/* Stats / Fakta Desa */}
             <FadeIn delay={0.2}>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  {
-                    angka: "KEK",
-                    label: "Penyangga Mandalika",
-                    icon: <RiRoadMapLine />,
-                  },
-                  {
-                    angka: "500m",
-                    label: "Ketinggian Gunung Pujut",
-                    icon: <RiLeafLine />,
-                  },
-                  {
-                    angka: "Abad 16",
-                    label: "Sejarah Masjid Kuno",
-                    icon: <RiMapPin2Line />,
-                  },
-                  {
-                    angka: "100%",
-                    label: "Warga Ramah & Berdaya",
-                    icon: <RiGroupLine />,
-                  },
+                  { angka: "KEK", label: "Penyangga Mandalika", icon: <RiRoadMapLine /> },
+                  { angka: "500m", label: "Ketinggian Gunung Pujut", icon: <RiLeafLine /> },
+                  { angka: "Abad 16", label: "Sejarah Masjid Kuno", icon: <RiMapPin2Line /> },
+                  { angka: "100%", label: "Warga Ramah & Berdaya", icon: <RiGroupLine /> },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
                     whileHover={{ y: -4 }}
-                    className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+                    className="bg-stone-50 rounded-2xl p-6 shadow-sm border border-gray-100"
                   >
-                    <div className="text-green-600 text-2xl mb-3">
-                      {item.icon}
-                    </div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">
-                      {item.angka}
-                    </div>
+                    <div className="text-green-600 text-2xl mb-3">{item.icon}</div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">{item.angka}</div>
                     <div className="text-sm text-gray-500">{item.label}</div>
                   </motion.div>
                 ))}
@@ -289,76 +572,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== 3. WISATA — dengan tombol Google Maps ===== */}
-      <section id="wisata" className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn className="text-center mb-16">
-            <p className="text-green-600 font-semibold uppercase tracking-widest text-sm mb-3">
-              Destinasi Unggulan
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
-              Wisata Desa Sengkol
-            </h2>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {wisataData.map((item, i) => (
-              <FadeIn key={item.id} delay={i * 0.15}>
-                <motion.div
-                  whileHover={{ y: -6 }}
-                  className="rounded-3xl overflow-hidden shadow-lg border border-gray-100 bg-white flex flex-col"
-                >
-                  {/* Foto placeholder — ganti dengan Image setelah foto ada */}
-                  <div
-                    className={`h-52 bg-gradient-to-br ${item.warna} relative flex items-end p-6`}
-                  >
-                    {/* Uncomment setelah foto ada: */}
-                    {/* <Image src={item.foto} alt={item.nama} fill className="object-cover" /> */}
-                    <span className="relative z-10 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
-                      {item.kategori}
-                    </span>
-                  </div>
-
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">
-                      {item.nama}
-                    </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-1">
-                      {item.deskripsi}
-                    </p>
-
-                    {/* Highlights */}
-                    <div className="flex flex-wrap gap-2 mb-5">
-                      {item.highlights.map((h) => (
-                        <span
-                          key={h}
-                          className="text-xs bg-green-50 text-green-700 border border-green-100 px-3 py-1 rounded-full"
-                        >
-                          {h}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Tombol Google Maps */}
-                    <a
-                      href={item.mapsUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors text-sm"
-                    >
-                      <RiMapPin2Line className="text-lg" />
-                      Buka di Google Maps
-                      <RiExternalLinkLine />
-                    </a>
-                  </div>
-                </motion.div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 4. POTENSI DESA ===== */}
+      {/* ===== 5. KEUNGGULAN / POTENSI DESA ===== */}
       <section id="potensi" className="py-24 px-6 bg-green-950 text-white">
         <div className="max-w-6xl mx-auto">
           <FadeIn className="text-center mb-16">
@@ -374,10 +588,7 @@ export default function Home() {
             {potensiData.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <motion.div
-                  whileHover={{
-                    y: -6,
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                  }}
+                  whileHover={{ y: -6, backgroundColor: "rgba(255,255,255,0.1)" }}
                   className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center transition-colors cursor-default"
                 >
                   <div className="text-4xl text-green-400 mb-4 flex justify-center">
@@ -388,70 +599,6 @@ export default function Home() {
                     {item.deskripsi}
                   </p>
                 </motion.div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ===== 5. FITUR WEB ===== */}
-      <section id="fitur" className="py-24 px-6 bg-stone-50 overflow-hidden">
-        <div className="max-w-6xl mx-auto">
-          {/* Header kiri-rata, bold, editorial */}
-          <FadeIn className="mb-20">
-            <p className="text-green-600 font-semibold uppercase tracking-widest text-xs mb-4">
-              Layanan Digital
-            </p>
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 leading-none">
-              Explore
-              <br />
-              <span className="text-gray-300">Sengkol.</span>
-            </h2>
-          </FadeIn>
-
-          {/* List style — inspired by basestructures.com */}
-          <div className="divide-y divide-gray-200">
-            {fiturData.map((item, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <motion.a
-                  href={item.href}
-                  className="group flex items-center justify-between py-8 md:py-10 cursor-pointer"
-                  whileHover="hover"
-                >
-                  {/* Kiri: nomor + ikon + judul + deskripsi */}
-                  <div className="flex items-center gap-6 md:gap-10">
-                    <span className="text-xs font-mono text-gray-300 group-hover:text-gray-400 transition-colors w-6 shrink-0">
-                      0{i + 1}
-                    </span>
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className={`text-xl ${item.ikonWarna}`}>
-                          {item.icon}
-                        </span>
-                        <h3 className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">
-                          {item.judul}
-                        </h3>
-                      </div>
-                      <p className="text-gray-500 text-sm md:text-base max-w-md hidden md:block">
-                        {item.deskripsi}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Kanan: lingkaran arrow */}
-                  <motion.div
-                    variants={{ hover: { x: 6 } }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                    className={`shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center ${item.ikonWarna} border-current opacity-50 group-hover:opacity-100 transition-opacity`}
-                  >
-                    <RiArrowRightLine className="text-lg" />
-                  </motion.div>
-                </motion.a>
-
-                {/* Deskripsi mobile */}
-                <p className="text-gray-500 text-sm pb-6 pl-12 md:hidden">
-                  {item.deskripsi}
-                </p>
               </FadeIn>
             ))}
           </div>
