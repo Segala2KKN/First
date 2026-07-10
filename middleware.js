@@ -1,19 +1,24 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
+// import jwt from "jsonwebtoken";
+
+// Middleware auth dinonaktifkan sementara.
+// Untuk mengaktifkan kembali: uncomment kode di bawah dan hapus baris `return NextResponse.next()`.
 
 export function middleware(request) {
-    const token = request.cookies.get("token")?.value;
+    return NextResponse.next();
 
-    if(!token){
-        return NextResponse.redirect(new URL("/", request.url));
-    }
+    // const token = request.cookies.get("token")?.value;
 
-    try {
-        jwt.verify(token, process.env.JWT_SECRET);
-        return NextResponse.nect();
-    } catch (err){
-        return NextResponse.redirect(new URL("/", request.url));
-    }
+    // if(!token){
+    //     return NextResponse.redirect(new URL("/", request.url));
+    // }
+
+    // try {
+    //     jwt.verify(token, process.env.JWT_SECRET);
+    //     return NextResponse.next();
+    // } catch (err){
+    //     return NextResponse.redirect(new URL("/", request.url));
+    // }
 }
 
 export const config = {
