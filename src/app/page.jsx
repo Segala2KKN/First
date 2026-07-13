@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Navbar from "./components/Navbar";
+import { supabase } from "@/lib/supabase";
 import {
   RiMapPin2Line,
   RiLeafLine,
@@ -19,7 +20,6 @@ import {
   RiTimeLine,
 } from "react-icons/ri";
 
-// === Helper: animasi section saat muncul di layar ===
 function FadeIn({ children, delay = 0, className = "" }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -36,8 +36,7 @@ function FadeIn({ children, delay = 0, className = "" }) {
   );
 }
 
-// === Data Wisata ===
-const wisataData = [
+const wisataFallback = [
   {
     id: 1,
     nama: "Desa Wisata Sasak Ende",
@@ -48,7 +47,6 @@ const wisataData = [
     deskripsi:
       "Berlokasi strategis di jalur pariwisata, menjadi titik utama bagi wisatawan untuk mengamati rumah adat tradisional serta melihat langsung keahlian kaum wanita menenun kain tenun ikat.",
     mapsUrl: "https://maps.app.goo.gl/ytx9YVuJXXBnXks57",
-    foto: "/images/sasak-ende.jpg",
     warna: "from-amber-800 to-amber-500",
   },
   {
@@ -61,7 +59,6 @@ const wisataData = [
     deskripsi:
       "Perairan pesisir eksotis dengan kontur tebing dan perbukitan yang mempesona. Sangat populer bagi peselancar pemula hingga profesional yang ingin menikmati gulungan ombak.",
     mapsUrl: "https://maps.app.goo.gl/SK7mPZDFqL4BKnpo8",
-    foto: "/images/gerupuk.jpg",
     warna: "from-blue-700 to-cyan-400",
   },
   {
@@ -74,7 +71,6 @@ const wisataData = [
     deskripsi:
       "Pantai legendaris dengan garis pantai melengkung, pasir unik seperti butiran merica, dan perairan pirus yang jernih. Cocok untuk berenang santai atau menyewa perahu kayu.",
     mapsUrl: "https://maps.app.goo.gl/aDEqivLHR42KKYEv6",
-    foto: "/images/tanjung-aan.jpg",
     warna: "from-cyan-600 to-teal-400",
   },
   {
@@ -87,7 +83,6 @@ const wisataData = [
     deskripsi:
       "Spot ikonik yang menghadirkan kontras indah antara padang rumput hijau dan birunya Samudra Hindia. Favorit wisatawan untuk menikmati momen sunset dari ketinggian.",
     mapsUrl: "https://maps.app.goo.gl/HnLdxQDQqreXHMzS8",
-    foto: "/images/bukit-merese.jpg",
     warna: "from-green-700 to-emerald-400",
   },
   {
@@ -100,7 +95,6 @@ const wisataData = [
     deskripsi:
       "Situs cagar budaya peninggalan Kerajaan Pujut sejak abad ke-16. Berdiri di perbukitan 500 mdpl dengan panorama lanskap hijau Lombok Tengah yang memukau.",
     mapsUrl: "https://maps.app.goo.gl/fRZkB88kkXmfgBss5",
-    foto: "/images/masjid-pujut.jpg",
     warna: "from-green-900 to-green-600",
   },
   {
@@ -113,12 +107,25 @@ const wisataData = [
     deskripsi:
       "Lorong berbentuk kotak unik di perbukitan Jalan Pantai Mawi. Dari mulut goa terlihat panorama Pantai Batu Payung, Tanjung Aan, dan Bukit Merese. Populer untuk trekking ringan.",
     mapsUrl: "https://maps.app.goo.gl/e3ZknoMukiWaRtzK7",
-    foto: "/images/goa-kotak.jpg",
     warna: "from-stone-700 to-amber-700",
   },
 ];
 
-// === Card tunggal untuk carousel ===
+function mapWisata(row) {
+  return {
+    id: row.id,
+    nama: row.nama,
+    kategori: row.kategori,
+    rating: row.rating,
+    tipe: row.tipe,
+    jam: row.jam,
+    deskripsi: row.deskripsi,
+    mapsUrl: row.maps_url,
+    warna: row.warna,
+    foto_url: row.foto_url,
+  };
+}
+
 function WisataCardItem({ item }) {
   return (
     <div className="rounded-3xl overflow-hidden shadow-xl bg-white flex flex-col">
@@ -161,7 +168,6 @@ function WisataCardItem({ item }) {
   );
 }
 
-// === Komponen Carousel 3D ===
 function WisataCarousel({ data }) {
   const [current, setCurrent] = useState(0);
   const [isMobile, setIsMobile] = useState(true);
@@ -188,25 +194,66 @@ function WisataCarousel({ data }) {
   const getAnimate = (index) => {
     const diff = getDiff(index);
     const abs = Math.abs(diff);
-
     if (isMobile) {
       if (diff === 0)
         return { x: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
       if (abs === 1)
-        return { x: diff * 260, scale: 0.82, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
-      return { x: diff * 500, scale: 0.65, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+        return {
+          x: diff * 260,
+          scale: 0.82,
+          opacity: 0.45,
+          filter: "blur(4px)",
+          zIndex: 10,
+        };
+      return {
+        x: diff * 500,
+        scale: 0.65,
+        opacity: 0,
+        filter: "blur(8px)",
+        zIndex: 0,
+      };
     } else {
-      const CARD = 420;
-      const GAP = 24;
+      const CARD = 420,
+        GAP = 24;
       if (diff === 0)
-        return { x: -(CARD / 2 + GAP / 2), scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+        return {
+          x: -(CARD / 2 + GAP / 2),
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 20,
+        };
       if (diff === 1)
-        return { x: CARD / 2 + GAP / 2, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+        return {
+          x: CARD / 2 + GAP / 2,
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 20,
+        };
       if (diff === -1)
-        return { x: -(CARD + CARD / 2 + GAP * 2), scale: 0.85, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
+        return {
+          x: -(CARD + CARD / 2 + GAP * 2),
+          scale: 0.85,
+          opacity: 0.45,
+          filter: "blur(4px)",
+          zIndex: 10,
+        };
       if (diff === 2)
-        return { x: CARD + CARD / 2 + GAP * 2, scale: 0.85, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
-      return { x: diff * CARD * 2, scale: 0.6, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+        return {
+          x: CARD + CARD / 2 + GAP * 2,
+          scale: 0.85,
+          opacity: 0.45,
+          filter: "blur(4px)",
+          zIndex: 10,
+        };
+      return {
+        x: diff * CARD * 2,
+        scale: 0.6,
+        opacity: 0,
+        filter: "blur(8px)",
+        zIndex: 0,
+      };
     }
   };
 
@@ -220,13 +267,17 @@ function WisataCarousel({ data }) {
     backdropFilter: "blur(24px) saturate(200%)",
     WebkitBackdropFilter: "blur(24px) saturate(200%)",
     border: "1.5px solid rgba(255,255,255,0.6)",
-    boxShadow: "0 8px 32px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.8)",
+    boxShadow:
+      "0 8px 32px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.8)",
   };
 
   return (
     <div className="relative select-none">
       <div style={{ overflowX: "clip" }}>
-        <div className="relative flex items-start justify-center" style={{ height: containerH }}>
+        <div
+          className="relative flex items-start justify-center"
+          style={{ height: containerH }}
+        >
           {data.map((item, i) => {
             const anim = getAnimate(i);
             return (
@@ -234,7 +285,12 @@ function WisataCarousel({ data }) {
                 key={item.id}
                 className="absolute top-4"
                 style={{ width: cardWidth, zIndex: anim.zIndex }}
-                animate={{ x: anim.x, scale: anim.scale, opacity: anim.opacity, filter: anim.filter }}
+                animate={{
+                  x: anim.x,
+                  scale: anim.scale,
+                  opacity: anim.opacity,
+                  filter: anim.filter,
+                }}
                 transition={{ type: "spring", stiffness: 280, damping: 28 }}
               >
                 <WisataCardItem item={item} />
@@ -243,7 +299,6 @@ function WisataCarousel({ data }) {
           })}
         </div>
       </div>
-
       <button
         onClick={prev}
         className="absolute left-3 top-[130px] z-30 w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
@@ -251,7 +306,6 @@ function WisataCarousel({ data }) {
       >
         <RiArrowLeftLine className="text-gray-700 text-lg" />
       </button>
-
       <button
         onClick={next}
         className="absolute right-3 top-[130px] z-30 w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
@@ -259,15 +313,12 @@ function WisataCarousel({ data }) {
       >
         <RiArrowRightLine className="text-gray-700 text-lg" />
       </button>
-
       <div className="flex justify-center gap-2 pt-2 relative z-20">
         {Array.from({ length: totalPages }).map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(isMobile ? i : i * 2)}
-            className={`h-2 rounded-full transition-all duration-300 ${
-              i === currentPage ? "w-6 bg-green-600" : "w-2 bg-gray-300"
-            }`}
+            className={`h-2 rounded-full transition-all duration-300 ${i === currentPage ? "w-6 bg-green-600" : "w-2 bg-gray-300"}`}
           />
         ))}
       </div>
@@ -275,68 +326,84 @@ function WisataCarousel({ data }) {
   );
 }
 
-// === Data Potensi Desa ===
 const potensiData = [
   {
     icon: <RiGroupLine />,
     judul: "Budaya Sasak",
-    deskripsi: "Tradisi dan kearifan lokal Suku Sasak yang masih terjaga kelestariannya hingga kini.",
+    deskripsi:
+      "Tradisi dan kearifan lokal Suku Sasak yang masih terjaga kelestariannya hingga kini.",
   },
   {
     icon: <RiLeafLine />,
     judul: "Pertanian Kuat",
-    deskripsi: "Mayoritas warga hidup dari sektor agraris. Lanskap persawahan yang hijau menjadi daya tarik tersendiri.",
+    deskripsi:
+      "Mayoritas warga hidup dari sektor agraris. Lanskap persawahan yang hijau menjadi daya tarik tersendiri.",
   },
   {
     icon: <RiRecycleLine />,
     judul: "Desa Peduli Lingkungan",
-    deskripsi: "Program pengolahan sampah menjadi pupuk kompos organik (POC & Bokashi) untuk pariwisata berkelanjutan.",
+    deskripsi:
+      "Program pengolahan sampah menjadi pupuk kompos organik (POC & Bokashi) untuk pariwisata berkelanjutan.",
   },
   {
     icon: <RiRoadMapLine />,
     judul: "Akses Strategis",
-    deskripsi: "Di jalur wisata menuju Pantai Kuta Mandalika (KEK Mandalika), sering menjadi titik singgah wisatawan.",
+    deskripsi:
+      "Di jalur wisata menuju Pantai Kuta Mandalika (KEK Mandalika), sering menjadi titik singgah wisatawan.",
   },
 ];
 
-// === Data Fitur Web ===
 const fiturData = [
   {
     icon: <RiHeartPulseLine />,
     judul: "Cek Kesehatan",
-    deskripsi: "Periksa tingkat urgensi kesehatanmu dan dapatkan rekomendasi ke fasilitas kesehatan.",
+    deskripsi:
+      "Periksa tingkat urgensi kesehatanmu dan dapatkan rekomendasi ke fasilitas kesehatan.",
     href: "/cek-kesehatan",
-    warna: "bg-red-50 border-red-200 hover:bg-red-100",
     ikonWarna: "text-red-500",
   },
   {
     icon: <RiTreeLine />,
     judul: "Edukasi Pohon & Hutan",
-    deskripsi: "Kenali jenis-jenis pohon dan ekosistem hutan yang ada di sekitar Desa Sengkol.",
+    deskripsi:
+      "Kenali jenis-jenis pohon dan ekosistem hutan yang ada di sekitar Desa Sengkol.",
     href: "/greenedu",
-    warna: "bg-green-50 border-green-200 hover:bg-green-100",
     ikonWarna: "text-green-600",
   },
   {
     icon: <RiStoreLine />,
     judul: "UMKM Desa",
-    deskripsi: "Temukan produk-produk unggulan UMKM lokal dan dukung perekonomian warga desa.",
+    deskripsi:
+      "Temukan produk-produk unggulan UMKM lokal dan dukung perekonomian warga desa.",
     href: "/umkm",
-    warna: "bg-amber-50 border-amber-200 hover:bg-amber-100",
     ikonWarna: "text-amber-600",
   },
 ];
 
-// ============================================================
-// MAIN PAGE
-// ============================================================
 export default function Home() {
+  const [wisataData, setWisataData] = useState(wisataFallback);
+
+  useEffect(() => {
+    supabase
+      .from("wisata")
+      .select("*")
+      .order("urutan", { ascending: true })
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          setWisataData(data.map(mapWisata));
+        }
+      });
+  }, []);
+
   return (
     <main className="bg-white text-gray-900">
       <Navbar />
 
-      {/* ===== 1. HERO ===== */}
-      <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* HERO */}
+      <section
+        id="hero"
+        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      >
         <div className="absolute inset-0 bg-green-900">
           <Image
             src="/images/ProfileSengkol.JPG"
@@ -355,9 +422,7 @@ export default function Home() {
             priority
           />
         </div>
-
         <div className="absolute inset-0 bg-black/40" />
-
         <div className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -367,7 +432,6 @@ export default function Home() {
           >
             Kecamatan Pujut · Lombok Tengah · NTB
           </motion.p>
-
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -378,16 +442,15 @@ export default function Home() {
             <br />
             <span className="text-green-300">di Sengkol</span>
           </motion.h1>
-
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.8 }}
             className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto mb-10 leading-relaxed"
           >
-            Desa strategis penyangga KEK Mandalika — tempat budaya Sasak, alam asri, dan masyarakat berdaya berpadu dalam harmoni.
+            Desa strategis penyangga KEK Mandalika — tempat budaya Sasak, alam
+            asri, dan masyarakat berdaya berpadu dalam harmoni.
           </motion.p>
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -410,7 +473,6 @@ export default function Home() {
             </a>
           </motion.div>
         </div>
-
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
@@ -421,7 +483,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ===== 2. WISATA — Carousel ===== */}
+      {/* WISATA */}
       <section id="wisata" className="py-24 bg-white overflow-hidden">
         <div className="max-w-6xl mx-auto px-6">
           <FadeIn className="text-center mb-12">
@@ -431,7 +493,9 @@ export default function Home() {
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
               Wisata Desa Sengkol
             </h2>
-            <p className="text-gray-500 mt-3 text-sm">Geser untuk melihat semua destinasi</p>
+            <p className="text-gray-500 mt-3 text-sm">
+              Geser untuk melihat semua destinasi
+            </p>
           </FadeIn>
         </div>
         <div className="max-w-6xl mx-auto">
@@ -439,7 +503,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== 3. FITUR WEB ===== */}
+      {/* FITUR WEB */}
       <section id="fitur" className="py-24 px-6 bg-stone-50 overflow-hidden">
         <div className="max-w-6xl mx-auto">
           <FadeIn className="mb-20">
@@ -452,7 +516,6 @@ export default function Home() {
               <span className="text-gray-300">Sengkol.</span>
             </h2>
           </FadeIn>
-
           <div className="divide-y divide-gray-200">
             {fiturData.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
@@ -467,7 +530,9 @@ export default function Home() {
                     </span>
                     <div>
                       <div className="flex items-center gap-3 mb-1">
-                        <span className={`text-xl ${item.ikonWarna}`}>{item.icon}</span>
+                        <span className={`text-xl ${item.ikonWarna}`}>
+                          {item.icon}
+                        </span>
                         <h3 className="text-2xl md:text-3xl font-bold text-gray-900 group-hover:text-green-700 transition-colors">
                           {item.judul}
                         </h3>
@@ -485,14 +550,16 @@ export default function Home() {
                     <RiArrowRightLine className="text-lg" />
                   </motion.div>
                 </motion.a>
-                <p className="text-gray-500 text-sm pb-6 pl-12 md:hidden">{item.deskripsi}</p>
+                <p className="text-gray-500 text-sm pb-6 pl-12 md:hidden">
+                  {item.deskripsi}
+                </p>
               </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ===== 4. TENTANG DESA ===== */}
+      {/* TENTANG DESA */}
       <section id="tentang" className="py-24 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -506,31 +573,52 @@ export default function Home() {
                 <span className="text-green-700">Strategis & Menawan</span>
               </h2>
               <p className="text-gray-600 leading-relaxed mb-6 text-lg">
-                Desa Sengkol adalah salah satu desa penyangga utama Kawasan Ekonomi Khusus (KEK) Mandalika.
-                Bentang alamnya bervariasi dari perbukitan hingga pesisir selatan, menjadikannya unik di antara
+                Desa Sengkol adalah salah satu desa penyangga utama Kawasan
+                Ekonomi Khusus (KEK) Mandalika. Bentang alamnya bervariasi dari
+                perbukitan hingga pesisir selatan, menjadikannya unik di antara
                 desa-desa di Lombok Tengah.
               </p>
               <p className="text-gray-600 leading-relaxed text-lg">
-                Dengan budaya Sasak yang masih sangat kental dan masyarakat yang ramah, Sengkol menawarkan
-                pengalaman otentik yang tak terlupakan bagi setiap pengunjung.
+                Dengan budaya Sasak yang masih sangat kental dan masyarakat yang
+                ramah, Sengkol menawarkan pengalaman otentik yang tak terlupakan
+                bagi setiap pengunjung.
               </p>
             </FadeIn>
-
             <FadeIn delay={0.2}>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { angka: "KEK", label: "Penyangga Mandalika", icon: <RiRoadMapLine /> },
-                  { angka: "500m", label: "Ketinggian Gunung Pujut", icon: <RiLeafLine /> },
-                  { angka: "Abad 16", label: "Sejarah Masjid Kuno", icon: <RiMapPin2Line /> },
-                  { angka: "100%", label: "Warga Ramah & Berdaya", icon: <RiGroupLine /> },
+                  {
+                    angka: "KEK",
+                    label: "Penyangga Mandalika",
+                    icon: <RiRoadMapLine />,
+                  },
+                  {
+                    angka: "500m",
+                    label: "Ketinggian Gunung Pujut",
+                    icon: <RiLeafLine />,
+                  },
+                  {
+                    angka: "Abad 16",
+                    label: "Sejarah Masjid Kuno",
+                    icon: <RiMapPin2Line />,
+                  },
+                  {
+                    angka: "100%",
+                    label: "Warga Ramah & Berdaya",
+                    icon: <RiGroupLine />,
+                  },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
                     whileHover={{ y: -4 }}
                     className="bg-stone-50 rounded-2xl p-6 shadow-sm border border-gray-100"
                   >
-                    <div className="text-green-600 text-2xl mb-3">{item.icon}</div>
-                    <div className="text-2xl font-bold text-gray-900 mb-1">{item.angka}</div>
+                    <div className="text-green-600 text-2xl mb-3">
+                      {item.icon}
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 mb-1">
+                      {item.angka}
+                    </div>
                     <div className="text-sm text-gray-500">{item.label}</div>
                   </motion.div>
                 ))}
@@ -540,26 +628,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== 5. KEUNGGULAN / POTENSI DESA ===== */}
+      {/* POTENSI */}
       <section id="potensi" className="py-24 px-6 bg-green-950 text-white">
         <div className="max-w-6xl mx-auto">
           <FadeIn className="text-center mb-16">
             <p className="text-green-400 font-semibold uppercase tracking-widest text-sm mb-3">
               Keunggulan
             </p>
-            <h2 className="text-4xl md:text-5xl font-bold">Potensi Desa Sengkol</h2>
+            <h2 className="text-4xl md:text-5xl font-bold">
+              Potensi Desa Sengkol
+            </h2>
           </FadeIn>
-
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {potensiData.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <motion.div
-                  whileHover={{ y: -6, backgroundColor: "rgba(255,255,255,0.1)" }}
+                  whileHover={{
+                    y: -6,
+                    backgroundColor: "rgba(255,255,255,0.1)",
+                  }}
                   className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center transition-colors cursor-default"
                 >
-                  <div className="text-4xl text-green-400 mb-4 flex justify-center">{item.icon}</div>
+                  <div className="text-4xl text-green-400 mb-4 flex justify-center">
+                    {item.icon}
+                  </div>
                   <h3 className="font-bold text-lg mb-2">{item.judul}</h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">{item.deskripsi}</p>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    {item.deskripsi}
+                  </p>
                 </motion.div>
               </FadeIn>
             ))}
@@ -567,12 +663,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== 6. FOOTER ===== */}
+      {/* FOOTER */}
       <footer className="bg-gray-900 text-gray-400 py-12 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 mb-10">
             <div>
-              <h3 className="text-white font-bold text-lg mb-3">Desa Sengkol</h3>
+              <h3 className="text-white font-bold text-lg mb-3">
+                Desa Sengkol
+              </h3>
               <p className="text-sm leading-relaxed">
                 Jl. Raya Sengkol, Kecamatan Pujut,
                 <br />
@@ -584,9 +682,17 @@ export default function Home() {
             <div>
               <h3 className="text-white font-bold mb-3">Navigasi</h3>
               <ul className="space-y-2 text-sm">
-                {["Beranda", "Wisata", "Kesehatan", "Pohon & Hutan", "UMKM"].map((n) => (
+                {[
+                  "Beranda",
+                  "Wisata",
+                  "Kesehatan",
+                  "Pohon & Hutan",
+                  "UMKM",
+                ].map((n) => (
                   <li key={n}>
-                    <a href="#" className="hover:text-white transition-colors">{n}</a>
+                    <a href="#" className="hover:text-white transition-colors">
+                      {n}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -594,13 +700,14 @@ export default function Home() {
             <div>
               <h3 className="text-white font-bold mb-3">KKN</h3>
               <p className="text-sm leading-relaxed">
-                Website ini dibuat sebagai bagian dari program Kuliah Kerja Nyata (KKN) untuk mendukung
-                digitalisasi Desa Sengkol.
+                Website ini dibuat sebagai bagian dari program Kuliah Kerja
+                Nyata (KKN) untuk mendukung digitalisasi Desa Sengkol.
               </p>
             </div>
           </div>
           <div className="border-t border-gray-800 pt-6 text-center text-sm">
-            © 2025 Desa Sengkol · Dibuat dengan oleh Tim KKN PPM UGM Mahitala Mandalika
+            © 2025 Desa Sengkol · Dibuat dengan oleh Tim KKN PPM UGM Mahitala
+            Mandalika
           </div>
         </div>
       </footer>

@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 import {
   RiLeafLine,
   RiTreeLine,
@@ -16,14 +17,8 @@ import {
   RiQuestionLine,
 } from "react-icons/ri";
 
-// ===== DATA POHON =====
-// Cara input foto:
-// 1. Taruh file foto ke folder: public/images/pohon/
-// 2. Isi array fotos[] dengan path: "/images/pohon/nama-file.jpg"
-// 3. Bisa lebih dari 1 foto per pohon — tinggal tambah item di array
-// Contoh: fotos: ["/images/pohon/cemara-kipas-1.jpg", "/images/pohon/cemara-kipas-2.jpg"]
-
-const pohonData = [
+// ===== FALLBACK DATA POHON (dipakai jika Supabase belum dikonfigurasi) =====
+const pohonFallback = [
   {
     id: 1,
     nama: "Cemara Kipas",
@@ -156,6 +151,22 @@ const pohonData = [
   },
 ];
 
+// Helper: map baris DB (snake_case) ke format komponen (camelCase)
+function mapPohon(row) {
+  return {
+    id: row.id,
+    nama: row.nama,
+    namaIlmiah: row.nama_ilmiah,
+    famili: row.famili,
+    warna: row.warna,
+    badge: row.badge,
+    fotos: Array.isArray(row.fotos) ? row.fotos : [],
+    deskripsiSingkat: row.deskripsi_singkat,
+    ciri: Array.isArray(row.ciri) ? row.ciri : [],
+    manfaat: row.manfaat,
+  };
+}
+
 // ===== DATA BAGIAN POHON =====
 const bagianPohon = [
   { num: 1, nama: "Akar", fungsi: "Menyerap air dan makanan dari tanah, serta menahan pohon supaya tidak roboh.", color: "bg-amber-50 border-amber-300 text-amber-900" },
@@ -217,9 +228,113 @@ const quizData = [
 
 const LETTERS = ["A", "B", "C", "D"];
 
+// ===== LIGHTBOX =====
+function Lightbox({ fotos, startIdx, nama, onClose }) {
+  const [idx, setIdx] = useState(startIdx);
+  const touchStartX = useRef(null);
+
+  // Tutup dengan Escape
+  useEffect(() => {
+    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  const prev = (e) => { e?.stopPropagation(); setIdx((i) => (i - 1 + fotos.length) % fotos.length); };
+  const next = (e) => { e?.stopPropagation(); setIdx((i) => (i + 1) % fotos.length); };
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = touchStartX.current - e.changedTouches[0].clientX;
+    if (delta > 50) next();
+    else if (delta < -50) prev();
+    touchStartX.current = null;
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
+      onClick={onClose}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Tombol tutup */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 bg-white/10 hover:bg-white/20 text-white rounded-full p-2.5 transition-colors"
+      >
+        <RiCloseLine className="text-xl" />
+      </button>
+
+      {/* Counter */}
+      {fotos.length > 1 && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/10 text-white text-xs px-3 py-1 rounded-full">
+          {idx + 1} / {fotos.length}
+        </div>
+      )}
+
+      {/* Gambar */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.2 }}
+          className="w-full h-full flex items-center justify-center px-12 py-16"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={fotos[idx]}
+            alt={`${nama} foto ${idx + 1}`}
+            className="max-w-full max-h-full object-contain rounded-xl select-none"
+            draggable={false}
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Navigasi panah */}
+      {fotos.length > 1 && (
+        <>
+          <button
+            onClick={prev}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/25 text-white rounded-full p-3 transition-colors"
+          >
+            <RiArrowLeftLine className="text-lg" />
+          </button>
+          <button
+            onClick={next}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/25 text-white rounded-full p-3 transition-colors"
+          >
+            <RiArrowRightLine className="text-lg" />
+          </button>
+
+          {/* Dot indicator */}
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+            {fotos.map((_, i) => (
+              <button
+                key={i}
+                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </motion.div>
+  );
+}
+
 // ===== KOMPONEN FOTO CAROUSEL (dipakai di modal) =====
 function PhotoCarousel({ fotos, warna, nama }) {
   const [idx, setIdx] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+  const touchStartX = useRef(null);
   const hasFoto = fotos && fotos.length > 0;
 
   if (!hasFoto) {
@@ -233,44 +348,73 @@ function PhotoCarousel({ fotos, warna, nama }) {
   const prev = (e) => { e.stopPropagation(); setIdx((i) => (i - 1 + fotos.length) % fotos.length); };
   const next = (e) => { e.stopPropagation(); setIdx((i) => (i + 1) % fotos.length); };
 
-  return (
-    <div className="relative h-52 bg-gray-900 overflow-hidden">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={idx}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
-          className="absolute inset-0"
-        >
-          <Image src={fotos[idx]} alt={`${nama} foto ${idx + 1}`} fill className="object-cover" />
-        </motion.div>
-      </AnimatePresence>
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = touchStartX.current - e.changedTouches[0].clientX;
+    if (delta > 50) setIdx((i) => (i + 1) % fotos.length);
+    else if (delta < -50) setIdx((i) => (i - 1 + fotos.length) % fotos.length);
+    touchStartX.current = null;
+  };
 
-      {fotos.length > 1 && (
-        <>
-          <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white">
-            <RiArrowLeftLine className="text-sm" />
-          </button>
-          <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white">
-            <RiArrowRightLine className="text-sm" />
-          </button>
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-            {fotos.map((_, i) => (
-              <button
-                key={i}
-                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-5 bg-white" : "w-1.5 bg-white/50"}`}
-              />
-            ))}
-          </div>
-          <div className="absolute top-2 right-2 z-10 bg-black/35 backdrop-blur-sm text-white text-xs px-2 py-0.5 rounded-full">
-            {idx + 1}/{fotos.length}
-          </div>
-        </>
-      )}
-    </div>
+  return (
+    <>
+      <div
+        className="relative h-52 bg-gray-900 overflow-hidden cursor-zoom-in"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0"
+            onClick={() => setLightbox(true)}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={fotos[idx]} alt={`${nama} foto ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Hint ketuk */}
+        <div className="absolute bottom-2 left-2 z-10 bg-black/30 text-white text-[10px] px-2 py-0.5 rounded-full pointer-events-none">
+          Ketuk untuk perbesar
+        </div>
+
+        {fotos.length > 1 && (
+          <>
+            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white">
+              <RiArrowLeftLine className="text-sm" />
+            </button>
+            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white">
+              <RiArrowRightLine className="text-sm" />
+            </button>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+              {fotos.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-5 bg-white" : "w-1.5 bg-white/50"}`}
+                />
+              ))}
+            </div>
+            <div className="absolute top-2 right-2 z-10 bg-black/35 backdrop-blur-sm text-white text-xs px-2 py-0.5 rounded-full">
+              {idx + 1}/{fotos.length}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightbox && (
+          <Lightbox fotos={fotos} startIdx={idx} nama={nama} onClose={() => setLightbox(false)} />
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -287,7 +431,8 @@ function PohonCard({ pohon, onClick }) {
     >
       {hasFoto ? (
         <div className="h-28 relative overflow-hidden">
-          <Image src={pohon.fotos[0]} alt={pohon.nama} fill className="object-cover" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={pohon.fotos[0]} alt={pohon.nama} className="absolute inset-0 w-full h-full object-cover" />
           {pohon.fotos.length > 1 && (
             <div className="absolute bottom-1.5 right-1.5 bg-black/40 backdrop-blur-sm text-white text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1">
               <RiArrowRightLine className="text-xs" /> {pohon.fotos.length} foto
@@ -556,6 +701,21 @@ function QuizSection() {
 // ===== MAIN PAGE =====
 export default function GreenEdu() {
   const [selectedPohon, setSelectedPohon] = useState(null);
+  const [pohonData, setPohonData] = useState(pohonFallback);
+  const [loadingPohon, setLoadingPohon] = useState(true);
+
+  useEffect(() => {
+    supabase
+      .from("pohon")
+      .select("*")
+      .order("urutan", { ascending: true })
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          setPohonData(data.map(mapPohon));
+        }
+        setLoadingPohon(false);
+      });
+  }, []);
 
   return (
     <main className="bg-white min-h-screen">
@@ -673,7 +833,11 @@ export default function GreenEdu() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {pohonData.map((pohon, i) => (
+            {loadingPohon
+              ? Array.from({ length: 8 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-48" />
+                ))
+              : pohonData.map((pohon, i) => (
               <motion.div
                 key={pohon.id}
                 initial={{ opacity: 0, y: 20 }}

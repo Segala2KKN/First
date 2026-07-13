@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   RiHeartPulseLine, RiArrowRightLine, RiArrowLeftLine, RiCheckLine, RiCloseLine,
@@ -1139,8 +1140,10 @@ export default function CekKesehatanPage() {
   const [ageWarning, setAgeWarning] = useState(null);       // null | "over5" | "over10"
   const [ageResult, setAgeResult] = useState(null);         // {days, months}
   const [growthStatus, setGrowthStatus] = useState(null);   // {bbu, tbu, bbtb}
+  const [savedToDb, setSavedToDb] = useState(false);
 
   // ── Form fields ───────────────────────────────────────────────────────
+  const [namaAnak, setNamaAnak] = useState("");
   const [gender, setGender] = useState("");
   const [tglLahir, setTglLahir] = useState("");
   const [bbSekarang, setBbSekarang] = useState("");
@@ -1190,6 +1193,28 @@ export default function CekKesehatanPage() {
     setHasDiare2(null); setC2cAnswers(Array(9).fill(null)); setHasDemam(null);
     setC2dAnswers(Array(7).fill(null)); setHasTelinga(null); setC2eAnswers(Array(3).fill(null));
     setHasGiziMasalah(null); setC2fAnswers(Array(5).fill(null));
+    setNamaAnak(""); setSavedToDb(false);
+  };
+
+  // ── Simpan hasil ke Supabase ─────────────────────────────────────────
+  const simpanHasil = async (gs = growthStatus) => {
+    if (!tglLahir || !gender) return;
+    try {
+      await supabase.from("kesehatan_records").insert({
+        nama: namaAnak || "Anonim",
+        tanggal_lahir: tglLahir,
+        jenis_kelamin: gender,
+        umur_bulan: ageResult ? Math.round(ageResult.months) : null,
+        berat_badan: parseFloat(bbSekarang) || null,
+        tinggi_badan: parseFloat(tbSekarang) || null,
+        status_bb_u: gs?.bbu?.label ?? null,
+        status_tb_u: gs?.tbu?.label ?? null,
+        status_bb_tb: gs?.bbtb?.label ?? null,
+      });
+      setSavedToDb(true);
+    } catch (e) {
+      console.error("Gagal simpan ke DB:", e);
+    }
   };
 
   // ── Age processing on Step 1 submit ──────────────────────────────────
@@ -1349,6 +1374,20 @@ export default function CekKesehatanPage() {
               <div className="flex flex-col gap-4">
                 <SectionHeader icon={RiUserLine} badge="Langkah 1" title="Data Anak" color="green" />
 
+                {/* Nama Anak */}
+                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                  <label className="text-sm font-semibold text-gray-700 mb-2 block">
+                    Nama Anak <span className="text-gray-400 font-normal">(opsional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Contoh: Budi"
+                    value={namaAnak}
+                    onChange={(e) => setNamaAnak(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-green-300"
+                  />
+                </div>
+
                 {/* Gender */}
                 <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
                   <p className="text-sm font-semibold text-gray-700 mb-3">Jenis Kelamin</p>
@@ -1488,7 +1527,7 @@ export default function CekKesehatanPage() {
                       onChange={v => { const a = [...c1dAnswers]; a[i] = v; setC1dAnswers(a); }} index={i} />
                   ))}
                 </div>
-                <NavButtons onBack={() => goTo(4)} onNext={() => goTo(6)} nextDisabled={!c1dOk} />
+                <NavButtons onBack={() => goTo(4)} onNext={() => { simpanHasil(); goTo(6); }} nextDisabled={!c1dOk} />
               </div>
             )}
 
@@ -1496,6 +1535,12 @@ export default function CekKesehatanPage() {
             {step === 6 && (
               <div className="flex flex-col gap-4">
                 <SectionHeader icon={RiShieldCheckLine} badge="Hasil Pemeriksaan" title="SengkolCare — Bayi <2 Bulan" color="green" />
+                {savedToDb && (
+                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-medium rounded-xl px-4 py-2.5">
+                    <RiCheckLine className="text-base shrink-0" />
+                    Hasil tersimpan ke database desa
+                  </div>
+                )}
                 <ResultPage
                   flow="lt2m" ageResult={ageResult} growthStatus={growthStatus}
                   data={{ c1aAnswers, c1bAnswers, c1cAnswers, c1dAnswers, hasDiare, hasKuning,
@@ -1605,7 +1650,7 @@ export default function CekKesehatanPage() {
                   subQuestions={C2F_QUESTIONS} subAnswers={c2fAnswers}
                   onSubChange={(i, v) => { const a = [...c2fAnswers]; a[i] = v; setC2fAnswers(a); }}
                 />
-                <NavButtons onBack={() => goTo(14)} onNext={() => goTo(16)} nextDisabled={!c2fOk} />
+                <NavButtons onBack={() => goTo(14)} onNext={() => { simpanHasil(); goTo(16); }} nextDisabled={!c2fOk} />
               </div>
             )}
 
@@ -1613,6 +1658,12 @@ export default function CekKesehatanPage() {
             {step === 16 && (
               <div className="flex flex-col gap-4">
                 <SectionHeader icon={RiShieldCheckLine} badge="Hasil Pemeriksaan" title="SengkolCare — 2 Bln–5 Thn" color="green" />
+                {savedToDb && (
+                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-medium rounded-xl px-4 py-2.5">
+                    <RiCheckLine className="text-base shrink-0" />
+                    Hasil tersimpan ke database desa
+                  </div>
+                )}
                 <ResultPage
                   flow="2m5y" ageResult={ageResult} growthStatus={growthStatus}
                   data={{ c1aAnswers: [], c1bAnswers: [], c1cAnswers: [], c1dAnswers: [], hasDiare: null, hasKuning: null,
