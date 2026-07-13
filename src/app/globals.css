@@ -7,3 +7,7 @@ html {
 * {
   box-sizing: border-box;
 }
+
+.font-playfair {
+  font-family: var(--font-playfair), Georgia, serif;
+}

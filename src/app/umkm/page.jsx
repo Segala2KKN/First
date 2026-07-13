@@ -102,7 +102,7 @@ function UmkmModal({ umkm, onClose }) {
           {/* Foto / Gradient header */}
           <div className={`relative h-48 bg-gradient-to-br ${gradientKelas(umkm.kategori)} flex items-end p-5`}>
             {umkm.foto_url ? (
-              {/* eslint-disable-next-line @next/next/no-img-element */}
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={umkm.foto_url} alt={umkm.nama_usaha} className="absolute inset-0 w-full h-full object-cover" />
             ) : (
               <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-9xl" />
@@ -165,7 +165,7 @@ function UmkmCard({ umkm, onClick }) {
       {/* Foto / Gradient */}
       <div className={`relative h-40 bg-gradient-to-br ${gradientKelas(umkm.kategori)}`}>
         {umkm.foto_url ? (
-          {/* eslint-disable-next-line @next/next/no-img-element */}
+          // eslint-disable-next-line @next/next/no-img-element
           <img src={umkm.foto_url} alt={umkm.nama_usaha} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         ) : (
           <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-7xl" />

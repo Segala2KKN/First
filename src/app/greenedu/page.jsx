@@ -169,12 +169,12 @@ function mapPohon(row) {
 
 // ===== DATA BAGIAN POHON =====
 const bagianPohon = [
-  { num: 1, nama: "Akar", fungsi: "Menyerap air dan makanan dari tanah, serta menahan pohon supaya tidak roboh.", color: "bg-amber-50 border-amber-300 text-amber-900" },
-  { num: 2, nama: "Batang", fungsi: "Mengalirkan air dan makanan dari akar ke daun, sekaligus menopang pohon.", color: "bg-orange-50 border-orange-300 text-orange-900" },
-  { num: 3, nama: "Daun", fungsi: "Membuat makanan melalui proses fotosintesis dengan bantuan sinar matahari.", color: "bg-green-50 border-green-300 text-green-900" },
-  { num: 4, nama: "Bunga", fungsi: "Tempat terjadinya penyerbukan, awal mula terbentuknya buah.", color: "bg-pink-50 border-pink-300 text-pink-900" },
-  { num: 5, nama: "Buah", fungsi: "Melindungi biji di dalamnya.", color: "bg-red-50 border-red-300 text-red-900" },
-  { num: 6, nama: "Biji", fungsi: "Calon tumbuhan baru.", color: "bg-yellow-50 border-yellow-300 text-yellow-900" },
+  { num: 1, nama: "Akar",   fungsi: "Menyerap air dan makanan dari tanah, serta menahan pohon supaya tidak roboh.", fallback: "from-amber-400 to-yellow-300",  img: "/images/bagian-pohon/akar.jpg" },
+  { num: 2, nama: "Batang", fungsi: "Mengalirkan air dan makanan dari akar ke daun, sekaligus menopang pohon.",     fallback: "from-orange-500 to-amber-400", img: "/images/bagian-pohon/batang.jpg" },
+  { num: 3, nama: "Daun",   fungsi: "Membuat makanan melalui proses fotosintesis dengan bantuan sinar matahari.",   fallback: "from-green-500 to-emerald-400", img: "/images/bagian-pohon/daun.jpg" },
+  { num: 4, nama: "Bunga",  fungsi: "Tempat terjadinya penyerbukan, awal mula terbentuknya buah.",                  fallback: "from-pink-500 to-rose-400",   img: "/images/bagian-pohon/bunga.jpg" },
+  { num: 5, nama: "Buah",   fungsi: "Melindungi biji di dalamnya.",                                                 fallback: "from-red-500 to-orange-400",  img: "/images/bagian-pohon/buah.jpg" },
+  { num: 6, nama: "Biji",   fungsi: "Calon tumbuhan baru.",                                                         fallback: "from-yellow-500 to-lime-400", img: "/images/bagian-pohon/biji.jpg" },
 ];
 
 // ===== DATA KUIS =====
@@ -418,6 +418,120 @@ function PhotoCarousel({ fotos, warna, nama }) {
   );
 }
 
+// ===== CAROUSEL POHON =====
+function PohonCarousel({ data, onSelect }) {
+  const [current, setCurrent] = useState(0);
+  const [isMobile, setIsMobile] = useState(true);
+  const touchStartX = useRef(null);
+  const n = data.length;
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const step = isMobile ? 1 : 2;
+  const prev = () => setCurrent((c) => (c - step + n) % n);
+  const next = () => setCurrent((c) => (c + step) % n);
+
+  const getDiff = (index) => {
+    let d = index - current;
+    if (d > n / 2) d -= n;
+    if (d < -n / 2) d += n;
+    return d;
+  };
+
+  const getAnimate = (index) => {
+    const diff = getDiff(index);
+    const abs = Math.abs(diff);
+    if (isMobile) {
+      if (diff === 0) return { x: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+      if (abs === 1) return { x: diff * 260, scale: 0.82, opacity: 0.4, filter: "blur(3px)", zIndex: 10 };
+      return { x: diff * 500, scale: 0.65, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+    } else {
+      const CARD = 360, GAP = 24;
+      if (diff === 0) return { x: -(CARD / 2 + GAP / 2), scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+      if (diff === 1) return { x: CARD / 2 + GAP / 2, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+      if (diff === -1) return { x: -(CARD + CARD / 2 + GAP * 2), scale: 0.85, opacity: 0.4, filter: "blur(3px)", zIndex: 10 };
+      if (diff === 2) return { x: CARD + CARD / 2 + GAP * 2, scale: 0.85, opacity: 0.4, filter: "blur(3px)", zIndex: 10 };
+      return { x: diff * CARD * 2, scale: 0.6, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+    }
+  };
+
+  const cardWidth = isMobile ? "min(272px, 78vw)" : "360px";
+  const containerH = isMobile ? 360 : 380;
+  const totalPages = isMobile ? n : Math.ceil(n / 2);
+  const currentPage = isMobile ? current : Math.floor(current / 2);
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const delta = touchStartX.current - e.changedTouches[0].clientX;
+    if (delta > 50) next();
+    else if (delta < -50) prev();
+    touchStartX.current = null;
+  };
+
+  return (
+    <div
+      className="relative select-none"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <div style={{ overflowX: "clip" }}>
+        <div
+          className="relative flex items-start justify-center"
+          style={{ height: containerH }}
+        >
+          {data.map((pohon, i) => {
+            const anim = getAnimate(i);
+            return (
+              <motion.div
+                key={pohon.id}
+                className="absolute top-3"
+                style={{ width: cardWidth, zIndex: anim.zIndex }}
+                animate={{ x: anim.x, scale: anim.scale, opacity: anim.opacity, filter: anim.filter }}
+                transition={{ type: "spring", stiffness: 280, damping: 28 }}
+              >
+                <PohonCard pohon={pohon} onClick={onSelect} />
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Tombol Prev / Next */}
+      <button
+        onClick={prev}
+        className="absolute left-2 top-[150px] z-30 w-11 h-11 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-all"
+      >
+        <RiArrowLeftLine className="text-gray-700 text-lg" />
+      </button>
+      <button
+        onClick={next}
+        className="absolute right-2 top-[150px] z-30 w-11 h-11 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center hover:bg-gray-50 active:scale-95 transition-all"
+      >
+        <RiArrowRightLine className="text-gray-700 text-lg" />
+      </button>
+
+      {/* Dot indicator */}
+      <div className="flex justify-center gap-1.5 mt-3">
+        {Array.from({ length: totalPages }).map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(isMobile ? i : i * 2)}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === currentPage ? "w-6 bg-green-600" : "w-1.5 bg-gray-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ===== KOMPONEN KARTU POHON =====
 function PohonCard({ pohon, onClick }) {
   const hasFoto = pohon.fotos && pohon.fotos.length > 0;
@@ -541,158 +655,258 @@ function PohonModal({ pohon, onClose }) {
 }
 
 // ===== KUIS INTERAKTIF =====
+const BADGE_COLORS = [
+  "bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-orange-500",
+  "bg-teal-500", "bg-rose-500", "bg-amber-500",
+];
+
 function QuizSection() {
-  const [currentQ, setCurrentQ] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [answered, setAnswered] = useState(false);
-  const [score, setScore] = useState(0);
-  const [finished, setFinished] = useState(false);
+  const [currentQ, setCurrentQ]     = useState(0);
+  const [wrongSet, setWrongSet]     = useState(new Set()); // indeks yg sudah dicoba & salah
+  const [correct, setCorrect]       = useState(false);     // sudah jawab benar
+  const [score, setScore]           = useState(0);
+  const [finished, setFinished]     = useState(false);
+  const [popup, setPopup]           = useState(null);      // "wrong" | "correct" | null
 
   const q = quizData[currentQ];
+  const badgeColor = BADGE_COLORS[currentQ % BADGE_COLORS.length];
 
   const handleSelect = (idx) => {
-    if (answered) return;
-    setSelected(idx);
-    setAnswered(true);
-    if (idx === q.jawaban) setScore((s) => s + 1);
+    if (correct || wrongSet.has(idx)) return; // skip kalau benar / sudah dicoba
+    if (idx === q.jawaban) {
+      setCorrect(true);
+      setScore((s) => s + 1);
+      setPopup("correct");
+    } else {
+      setWrongSet((prev) => new Set([...prev, idx]));
+      setPopup("wrong");
+      // popup salah auto-hilang setelah 1.8 detik
+      setTimeout(() => setPopup(null), 1800);
+    }
   };
 
   const handleNext = () => {
+    setPopup(null);
     if (currentQ + 1 >= quizData.length) {
       setFinished(true);
     } else {
       setCurrentQ((c) => c + 1);
-      setSelected(null);
-      setAnswered(false);
+      setWrongSet(new Set());
+      setCorrect(false);
     }
   };
 
   const handleRestart = () => {
     setCurrentQ(0);
-    setSelected(null);
-    setAnswered(false);
+    setWrongSet(new Set());
+    setCorrect(false);
     setScore(0);
     setFinished(false);
+    setPopup(null);
   };
 
-  const getResult = () => {
-    if (score === 7) return { pesan: "Sempurna! Kamu Ahli Pohon!", warna: "text-green-600" };
-    if (score >= 5) return { pesan: "Hebat! Terus semangat belajar ya!", warna: "text-blue-600" };
-    if (score >= 3) return { pesan: "Lumayan! Yuk coba lagi!", warna: "text-amber-600" };
-    return { pesan: "Jangan menyerah! Baca lagi dan coba!", warna: "text-red-500" };
-  };
-
+  // ── Hasil Akhir ──
   if (finished) {
-    const result = getResult();
+    const pct = score / quizData.length;
+    const result =
+      pct >= 0.7
+        ? { img: "/images/quiz/Final.png", pesan: "Sempurna! Kamu Ahli Pohon!", alt: "Joy dan Sadness" }
+        : { img: "/images/quiz/sadness.png", pesan: "Jangan menyerah, coba lagi!", alt: "Sedih" };
+
     return (
       <motion.div
         initial={{ scale: 0.85, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="text-center py-6"
+        className="text-center py-4"
       >
-        <RiTrophyLine className="text-yellow-400 text-7xl mx-auto mb-3" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={result.img} alt={result.alt} className="w-36 h-36 object-contain mx-auto mb-3" />
         <h3 className="text-2xl font-black text-gray-900 mb-1">Kuis Selesai!</h3>
-        <div className="text-5xl font-black text-gray-900 mb-1">
+        <div className="text-6xl font-black text-gray-900 mb-1">
           {score}
-          <span className="text-2xl text-gray-400 font-bold">/{quizData.length}</span>
+          <span className="text-3xl text-gray-300 font-bold">/{quizData.length}</span>
         </div>
-        <p className={`font-bold text-base mb-5 ${result.warna}`}>{result.pesan}</p>
+        <p className="font-bold text-base text-gray-600 mb-5">{result.pesan}</p>
 
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-2 mb-7">
           {quizData.map((_, i) => (
             <motion.div
               key={i}
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: i * 0.08 }}
-              className={`w-3 h-3 rounded-full ${i < score ? "bg-green-500" : "bg-gray-200"}`}
+              initial={{ scale: 0, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: i * 0.07, type: "spring" }}
+              className={`w-4 h-4 rounded-full ${i < score ? "bg-green-400 shadow-sm shadow-green-200" : "bg-gray-200"}`}
             />
           ))}
         </div>
 
         <button
           onClick={handleRestart}
-          className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-full transition-colors"
+          className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-black px-8 py-3.5 rounded-2xl transition-colors shadow-lg shadow-green-200"
         >
-          <RiRestartLine /> Coba Lagi
+          <RiRestartLine /> Main Lagi
         </button>
       </motion.div>
     );
   }
 
-  const getButtonStyle = (i) => {
-    if (!answered) return "border-2 border-gray-200 bg-white text-gray-700 hover:border-green-400 hover:bg-green-50 active:scale-95";
-    if (i === q.jawaban) return "border-2 border-green-500 bg-green-50 text-green-800";
-    if (i === selected) return "border-2 border-red-400 bg-red-50 text-red-700";
-    return "border-2 border-gray-100 bg-gray-50 text-gray-400";
+  // ── Gaya tombol jawaban ──
+  const getBtnStyle = (i) => {
+    if (correct && i === q.jawaban)
+      return "border-2 border-green-500 bg-green-50 text-green-800 scale-[1.01]";
+    if (wrongSet.has(i))
+      return "border-2 border-red-300 bg-red-50 text-red-400 opacity-60 cursor-not-allowed";
+    if (correct)
+      return "border-2 border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed";
+    return "border-2 border-gray-200 bg-white text-gray-700 hover:border-green-400 hover:bg-green-50 active:scale-95 cursor-pointer";
+  };
+
+  const getLetterBg = (i) => {
+    if (correct && i === q.jawaban) return "bg-green-500 text-white";
+    if (wrongSet.has(i)) return "bg-red-300 text-white";
+    return "bg-gray-100 text-gray-500";
   };
 
   return (
-    <div>
-      {/* Progress bar */}
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-xs text-gray-400 font-medium">Soal {currentQ + 1}/{quizData.length}</span>
-        <span className="text-xs font-bold text-green-600">Skor: {score}</span>
+    <div className="relative">
+      {/* Progress */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+          <motion.div
+            className="bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full"
+            animate={{ width: `${(currentQ / quizData.length) * 100}%` }}
+            transition={{ duration: 0.5 }}
+          />
+        </div>
+        <span className="text-xs font-black text-gray-400 shrink-0">{currentQ + 1}/{quizData.length}</span>
       </div>
-      <div className="w-full bg-gray-100 rounded-full h-2 mb-5">
-        <motion.div
-          className="bg-green-500 h-2 rounded-full"
-          animate={{ width: `${(currentQ / quizData.length) * 100}%` }}
-          transition={{ duration: 0.4 }}
-        />
+
+      {/* Skor */}
+      <div className="flex items-center justify-between mb-4">
+        <div className={`inline-flex items-center gap-1.5 ${badgeColor} text-white text-xs font-black px-3 py-1.5 rounded-full`}>
+          <RiLeafLine /> Soal {currentQ + 1}
+        </div>
+        <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black px-3 py-1.5 rounded-full">
+          <RiStarFill className="text-amber-400" /> {score} poin
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
         <motion.div
           key={currentQ}
-          initial={{ x: 40, opacity: 0 }}
+          initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          exit={{ x: -40, opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          exit={{ x: -50, opacity: 0 }}
+          transition={{ duration: 0.22 }}
         >
-          <p className="text-gray-900 font-bold text-base leading-snug mb-4">{q.soal}</p>
+          {/* Pertanyaan */}
+          <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-2xl p-4 mb-4 shadow-sm">
+            <p className="text-gray-900 font-black text-base leading-snug">{q.soal}</p>
+          </div>
 
-          <div className="grid grid-cols-1 gap-2.5 mb-4">
+          {/* Pilihan */}
+          <div className="flex flex-col gap-2.5">
             {q.pilihan.map((p, i) => (
-              <button
+              <motion.button
                 key={i}
                 onClick={() => handleSelect(i)}
-                className={`w-full text-left px-4 py-3 rounded-xl font-medium text-sm transition-all flex items-center gap-3 ${getButtonStyle(i)}`}
+                whileTap={!correct && !wrongSet.has(i) ? { scale: 0.97 } : {}}
+                className={`w-full text-left px-4 py-3 rounded-xl font-semibold text-sm transition-all flex items-center gap-3 ${getBtnStyle(i)}`}
               >
-                <span className="shrink-0 w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs font-black text-gray-500">
+                <span className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-colors ${getLetterBg(i)}`}>
                   {LETTERS[i]}
                 </span>
-                <span className="flex-1">{p}</span>
-                {answered && i === q.jawaban && (
-                  <RiCheckLine className="text-green-600 text-lg shrink-0" />
+                <span className="flex-1 leading-snug">{p}</span>
+                {correct && i === q.jawaban && (
+                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
+                    <RiCheckLine className="text-green-600 text-xl shrink-0" />
+                  </motion.span>
                 )}
-              </button>
+              </motion.button>
             ))}
           </div>
 
-          {answered && (
-            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-              <div
-                className={`rounded-xl px-4 py-3 mb-3 text-sm font-semibold ${
-                  selected === q.jawaban
-                    ? "bg-green-50 text-green-700 border border-green-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
-                }`}
+          {/* Tombol Next (muncul kalau sudah benar) */}
+          <AnimatePresence>
+            {correct && (
+              <motion.button
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                onClick={handleNext}
+                className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-black py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-green-200"
               >
-                {selected === q.jawaban
-                  ? "Benar! Jawaban kamu tepat!"
-                  : `Oops! Jawaban yang benar: ${LETTERS[q.jawaban]}. ${q.pilihan[q.jawaban]}`}
+                {currentQ + 1 >= quizData.length ? (
+                  <><RiTrophyLine className="text-lg" /> Lihat Hasil!</>
+                ) : (
+                  <>Soal Berikutnya <RiArrowRightLine className="text-lg" /></>
+                )}
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* ── POPUP SALAH ── */}
+      <AnimatePresence>
+        {popup === "wrong" && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ type: "spring", damping: 18 }}
+            className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+          >
+            <div className="bg-white border-2 border-red-200 rounded-3xl px-6 py-5 shadow-2xl text-center max-w-[220px]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/quiz/sadness.png" alt="Sadness" className="w-24 h-24 object-contain mx-auto mb-2" />
+              <p className="font-black text-red-600 text-base leading-tight">Yah, kurang tepat!</p>
+              <p className="text-gray-400 text-xs mt-1">Silahkan coba lagi~</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── POPUP BENAR ── */}
+      <AnimatePresence>
+        {popup === "correct" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 flex items-center justify-center z-20 bg-white/60 backdrop-blur-sm rounded-2xl"
+          >
+            <motion.div
+              initial={{ scale: 0.6, rotate: -6 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0.6 }}
+              transition={{ type: "spring", damping: 14 }}
+              className="bg-white border-2 border-green-200 rounded-3xl px-6 py-6 shadow-2xl text-center max-w-[240px]"
+            >
+              {/* Confetti dots */}
+              <div className="flex justify-center gap-1.5 mb-2">
+                {["bg-yellow-400","bg-green-400","bg-blue-400","bg-pink-400","bg-purple-400"].map((c,i)=>(
+                  <motion.div
+                    key={i}
+                    initial={{ y: 0, opacity: 0 }}
+                    animate={{ y: -12, opacity: [0,1,0] }}
+                    transition={{ delay: i*0.07, duration: 0.6 }}
+                    className={`w-2 h-2 rounded-full ${c}`}
+                  />
+                ))}
               </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/quiz/joy.png" alt="Joy" className="w-28 h-28 object-contain mx-auto mb-2" />
+              <p className="font-black text-green-600 text-lg leading-tight">Selamat!</p>
+              <p className="text-gray-500 text-xs mt-1 mb-4">Jawaban kamu benar!</p>
               <button
                 onClick={handleNext}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5"
               >
-                {currentQ + 1 >= quizData.length ? "Lihat Hasil" : "Soal Berikutnya"}
-                <RiArrowRightLine />
+                {currentQ + 1 >= quizData.length ? <><RiTrophyLine /> Lihat Hasil!</> : <>Lanjut <RiArrowRightLine /></>}
               </button>
             </motion.div>
-          )}
-        </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
@@ -720,7 +934,18 @@ export default function GreenEdu() {
   return (
     <main className="bg-white min-h-screen">
       {/* ===== HERO ===== */}
-      <section className="relative bg-gradient-to-br from-green-900 via-green-800 to-emerald-700 text-white pt-14 pb-20 px-6 overflow-hidden">
+      <section className="relative bg-green-950 text-white pt-14 pb-20 px-6 overflow-hidden">
+        {/* Background image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/images/greenedu/rinjani.jpg"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+        />
+        {/* Dark gradient overlay supaya teks tetap terbaca */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-950/80 via-green-900/60 to-emerald-900/70 pointer-events-none" />
+
+        {/* Aksen dekoratif */}
         <div className="absolute -top-16 -right-16 w-72 h-72 bg-white/5 rounded-full pointer-events-none" />
         <div className="absolute bottom-0 -left-16 w-56 h-56 bg-white/5 rounded-full pointer-events-none" />
         <div className="absolute top-1/2 right-10 opacity-10 pointer-events-none">
@@ -812,11 +1037,28 @@ export default function GreenEdu() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.07 }}
                 whileHover={{ y: -3 }}
-                className={`rounded-2xl p-5 border-2 ${b.color}`}
+                className="relative rounded-2xl overflow-hidden min-h-[160px] flex flex-col justify-end cursor-default"
               >
-                <div className="text-4xl font-black mb-2 opacity-20">{b.num}</div>
-                <h3 className="font-black text-base mb-1">{b.nama}</h3>
-                <p className="text-xs leading-relaxed opacity-70">{b.fungsi}</p>
+                {/* Background: foto atau gradient fallback */}
+                {b.img ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={b.img}
+                    alt={b.nama}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${b.fallback}`} />
+                )}
+                {/* Overlay gelap supaya teks terbaca */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
+
+                {/* Konten */}
+                <div className="relative z-10 p-4 text-white">
+                  <div className="text-3xl font-black mb-1 opacity-30">{b.num}</div>
+                  <h3 className="font-black text-base mb-1 drop-shadow">{b.nama}</h3>
+                  <p className="text-xs leading-relaxed text-white/80">{b.fungsi}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -832,23 +1074,15 @@ export default function GreenEdu() {
             <p className="text-gray-400 text-sm">Ketuk kartu untuk melihat info lengkapnya!</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {loadingPohon
-              ? Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-48" />
-                ))
-              : pohonData.map((pohon, i) => (
-              <motion.div
-                key={pohon.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.06 }}
-              >
-                <PohonCard pohon={pohon} onClick={setSelectedPohon} />
-              </motion.div>
-            ))}
-          </div>
+          {loadingPohon ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-48" />
+              ))}
+            </div>
+          ) : (
+            <PohonCarousel data={pohonData} onSelect={setSelectedPohon} />
+          )}
         </div>
       </section>
 

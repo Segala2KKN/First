@@ -139,6 +139,20 @@ async function uploadFoto(file, folder) {
   return data.publicUrl;
 }
 
+// Gradien tetap untuk list pohon di dashboard (supaya selalu ter-compile Tailwind)
+const POHON_GRADIENTS = [
+  "from-emerald-600 to-green-500",
+  "from-teal-600 to-cyan-500",
+  "from-green-700 to-emerald-500",
+  "from-amber-600 to-orange-500",
+  "from-teal-700 to-cyan-600",
+  "from-orange-600 to-amber-500",
+  "from-lime-700 to-green-600",
+  "from-violet-600 to-purple-500",
+  "from-rose-600 to-pink-500",
+  "from-blue-600 to-cyan-500",
+];
+
 // ─────────────────────────────────────────────────────────────
 // POHON SECTION
 // ─────────────────────────────────────────────────────────────
@@ -196,9 +210,11 @@ function PohonSection({ toast }) {
   };
 
   const uploadFotos = async (files) => {
-    const urls = await Promise.all(
-      Array.from(files).map((f) => uploadFoto(f, "pohon"))
-    );
+    const urls = [];
+    for (const f of Array.from(files)) {
+      const url = await uploadFoto(f, "pohon");
+      urls.push(url);
+    }
     setEditItem((prev) => ({ ...prev, fotos: [...(prev.fotos || []), ...urls] }));
   };
 
@@ -219,8 +235,8 @@ function PohonSection({ toast }) {
       </div>
 
       <div className="flex flex-col gap-3">
-        {list.map((p) => (
-          <div key={p.id} className={`flex items-center gap-4 bg-gradient-to-r ${p.warna} p-3 rounded-2xl shadow-sm`}>
+        {list.map((p, i) => (
+          <div key={p.id} className={`flex items-center gap-4 bg-gradient-to-r ${POHON_GRADIENTS[i % POHON_GRADIENTS.length]} p-3 rounded-2xl shadow-sm`}>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-white text-sm truncate">{p.nama}</p>
               <p className="text-white/70 text-xs">{p.nama_ilmiah} · {p.famili}</p>
