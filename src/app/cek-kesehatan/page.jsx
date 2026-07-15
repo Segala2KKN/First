@@ -972,65 +972,77 @@ function ResultPage({ flow, ageResult, growthStatus, data, onReset }) {
   const edukasi = [];
 
   if (flow === "lt2m") {
-    isUrgent = c1aAnswers.some(a => a === true);
-    if (isUrgent) {
+    const c1bUrgent = hasDiare && C1B_QUESTIONS.some((q, i) => q.level === "red" && c1bAnswers[i] === true);
+    const c1cUrgent = hasKuning && c1cAnswers.some(a => a === true);
+    const c1dUrgent = hasASIMasalah && C1D_QUESTIONS.some((q, i) => q.level === "red" && c1dAnswers[i] === true);
+    isUrgent = c1aAnswers.some(a => a === true) || c1bUrgent || c1cUrgent || c1dUrgent;
+
+    if (c1aAnswers.some(a => a === true)) {
       const triggered = C1A_QUESTIONS.filter((_, i) => c1aAnswers[i] === true);
       reasons.push({ section: "Tanda Bahaya & Infeksi Bakteri (Bayi <2 Bulan)", items: triggered.map(q => q.text), urgent: true });
     }
     if (hasDiare) {
       const redItems = C1B_QUESTIONS.filter((q, i) => c1bAnswers[i] === true && q.level === "red").map(q => q.text);
       const yItems = C1B_QUESTIONS.filter((q, i) => c1bAnswers[i] === true && q.level === "yellow").map(q => q.text);
-      if (redItems.length) reasons.push({ section: "Diare & Dehidrasi", items: redItems, level: "red" });
+      if (redItems.length) reasons.push({ section: "Diare & Dehidrasi", items: redItems, urgent: c1bUrgent });
       if (yItems.length) reasons.push({ section: "Diare & Dehidrasi", items: yItems, level: "yellow" });
     }
     if (hasKuning) {
       const items = C1C_QUESTIONS.filter((_, i) => c1cAnswers[i] === true).map(q => q.text);
-      if (items.length) reasons.push({ section: "Bayi Kuning (Ikterus)", items, level: "red" });
+      if (items.length) reasons.push({ section: "Bayi Kuning (Ikterus)", items, urgent: c1cUrgent });
     }
-    const c1dRed = C1D_QUESTIONS.filter((q, i) => c1dAnswers[i] === true && q.level === "red").map(q => q.text);
-    const c1dYellow = C1D_QUESTIONS.filter((q, i) => c1dAnswers[i] === true && q.level === "yellow").map(q => q.text);
-    if (c1dRed.length) reasons.push({ section: "Pemberian ASI & Berat Badan", items: c1dRed, level: "red" });
-    if (c1dYellow.length) reasons.push({ section: "Pemberian ASI & Berat Badan", items: c1dYellow, level: "yellow" });
+    if (hasASIMasalah) {
+      const c1dRed = C1D_QUESTIONS.filter((q, i) => c1dAnswers[i] === true && q.level === "red").map(q => q.text);
+      const c1dYellow = C1D_QUESTIONS.filter((q, i) => c1dAnswers[i] === true && q.level === "yellow").map(q => q.text);
+      if (c1dRed.length) reasons.push({ section: "Pemberian ASI & Berat Badan", items: c1dRed, urgent: c1dUrgent });
+      if (c1dYellow.length) reasons.push({ section: "Pemberian ASI & Berat Badan", items: c1dYellow, level: "yellow" });
+    }
 
-    if (isUrgent) edukasi.push(...EDUKASI_LT2M);
+    edukasi.push(...EDUKASI_LT2M);
   } else {
-    isUrgent = c2aAnswers.some(a => a === true);
-    if (isUrgent) {
+    const c2bUrgent = hasBatuk && C2B_QUESTIONS.some((q, i) => q.level === "red" && c2bAnswers[i] === true);
+    const c2cUrgent = hasDiare2 && C2C_QUESTIONS.some((q, i) => q.level === "red" && c2cAnswers[i] === true);
+    const c2dUrgent = hasDemam && C2D_QUESTIONS.some((q, i) => q.level === "red" && c2dAnswers[i] === true);
+    const c2eUrgent = hasTelinga && c2eAnswers.some(a => a === true);
+    const c2fUrgent = hasGiziMasalah && c2fAnswers.some(a => a === true);
+    isUrgent = c2aAnswers.some(a => a === true) || c2bUrgent || c2cUrgent || c2dUrgent || c2eUrgent || c2fUrgent;
+
+    if (c2aAnswers.some(a => a === true)) {
       const triggered = C2A_QUESTIONS.filter((_, i) => c2aAnswers[i] === true);
       reasons.push({ section: "Tanda Bahaya Umum", items: triggered.map(q => q.text), urgent: true });
     }
     if (hasBatuk) {
-      const items = C2B_QUESTIONS.filter((_, i) => c2bAnswers[i] === true).map(q => q.text);
-      if (items.length) reasons.push({ section: "Batuk / Kesulitan Bernapas", items, level: "red" });
+      const redItems = C2B_QUESTIONS.filter((q, i) => c2bAnswers[i] === true && q.level === "red").map(q => q.text);
+      const yItems = C2B_QUESTIONS.filter((q, i) => c2bAnswers[i] === true && q.level === "yellow").map(q => q.text);
+      if (redItems.length) reasons.push({ section: "Batuk / Kesulitan Bernapas", items: redItems, urgent: c2bUrgent });
+      if (yItems.length) reasons.push({ section: "Batuk / Kesulitan Bernapas", items: yItems, level: "yellow" });
     }
     if (hasDiare2) {
       const redItems = C2C_QUESTIONS.filter((q, i) => c2cAnswers[i] === true && q.level === "red").map(q => q.text);
       const yItems = C2C_QUESTIONS.filter((q, i) => c2cAnswers[i] === true && q.level === "yellow").map(q => q.text);
-      if (redItems.length) reasons.push({ section: "Diare", items: redItems, level: "red" });
+      if (redItems.length) reasons.push({ section: "Diare", items: redItems, urgent: c2cUrgent });
       if (yItems.length) reasons.push({ section: "Diare", items: yItems, level: "yellow" });
     }
     if (hasDemam) {
       const redItems = C2D_QUESTIONS.filter((q, i) => c2dAnswers[i] === true && q.level === "red").map(q => q.text);
       const yItems = C2D_QUESTIONS.filter((q, i) => c2dAnswers[i] === true && q.level === "yellow").map(q => q.text);
-      if (redItems.length) reasons.push({ section: "Demam", items: redItems, level: "red" });
+      if (redItems.length) reasons.push({ section: "Demam", items: redItems, urgent: c2dUrgent });
       if (yItems.length) reasons.push({ section: "Demam", items: yItems, level: "yellow" });
     }
     if (hasTelinga) {
       const items = C2E_QUESTIONS.filter((_, i) => c2eAnswers[i] === true).map(q => q.text);
-      if (items.length) reasons.push({ section: "Masalah Telinga", items, level: "red" });
+      if (items.length) reasons.push({ section: "Masalah Telinga", items, urgent: c2eUrgent });
     }
     if (hasGiziMasalah) {
       const items = C2F_QUESTIONS.filter((_, i) => c2fAnswers[i] === true).map(q => q.text);
-      if (items.length) reasons.push({ section: "Gizi & Pertumbuhan", items, level: "red" });
+      if (items.length) reasons.push({ section: "Gizi & Pertumbuhan", items, urgent: c2fUrgent });
     }
-    if (isUrgent) {
-      edukasi.push(...EDUKASI_2M5Y_UMUM);
-      if (hasBatuk) edukasi.push(...EDUKASI_2M5Y_BATUK);
-      if (hasDiare2) edukasi.push(...EDUKASI_2M5Y_DIARE);
-      if (hasDemam) edukasi.push(...EDUKASI_2M5Y_DEMAM);
-      if (hasTelinga) edukasi.push(...EDUKASI_2M5Y_TELINGA);
-      if (hasGiziMasalah || (growthStatus?.bbtb?.level !== 0)) edukasi.push(...EDUKASI_2M5Y_GIZI);
-    }
+    edukasi.push(...EDUKASI_2M5Y_UMUM);
+    if (hasBatuk) edukasi.push(...EDUKASI_2M5Y_BATUK);
+    if (hasDiare2) edukasi.push(...EDUKASI_2M5Y_DIARE);
+    if (hasDemam) edukasi.push(...EDUKASI_2M5Y_DEMAM);
+    if (hasTelinga) edukasi.push(...EDUKASI_2M5Y_TELINGA);
+    if (hasGiziMasalah || (growthStatus?.bbtb?.level !== 0)) edukasi.push(...EDUKASI_2M5Y_GIZI);
   }
 
   // Gizi abnormal adds to reasons
@@ -1217,8 +1229,8 @@ function ResultPage({ flow, ageResult, growthStatus, data, onReset }) {
         )}
       </motion.div>
 
-      {/* ── EDUKASI — hanya jika urgent ───────────────────────────────── */}
-      {isUrgent && edukasi.length > 0 && (
+      {/* ── EDUKASI — selalu tampil ───────────────────────────────────── */}
+      {edukasi.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
           className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
           <div className="flex items-center gap-2 mb-3">
@@ -1367,7 +1379,6 @@ export default function CekKesehatanPage() {
     const jawabanAll = {}; // {qid: bool|null, ...} all answers
 
     if (flow === "lt2m") {
-      isUrgent = c1aAnswers.some(a => a === true);
       C1A_QUESTIONS.forEach((q, i) => {
         jawabanAll[q.id] = c1aAnswers[i];
         if (c1aAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
@@ -1393,8 +1404,11 @@ export default function CekKesehatanPage() {
           if (c1dAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
         });
       }
+      isUrgent = c1aAnswers.some(a => a === true)
+        || (hasDiare && C1B_QUESTIONS.some((q, i) => q.level === "red" && c1bAnswers[i] === true))
+        || (hasKuning && c1cAnswers.some(a => a === true))
+        || (hasASIMasalah && C1D_QUESTIONS.some((q, i) => q.level === "red" && c1dAnswers[i] === true));
     } else {
-      isUrgent = c2aAnswers.some(a => a === true);
       C2A_QUESTIONS.forEach((q, i) => {
         jawabanAll[q.id] = c2aAnswers[i];
         if (c2aAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
@@ -1434,6 +1448,12 @@ export default function CekKesehatanPage() {
           if (c2fAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
         });
       }
+      isUrgent = c2aAnswers.some(a => a === true)
+        || (hasBatuk && C2B_QUESTIONS.some((q, i) => q.level === "red" && c2bAnswers[i] === true))
+        || (hasDiare2 && C2C_QUESTIONS.some((q, i) => q.level === "red" && c2cAnswers[i] === true))
+        || (hasDemam && C2D_QUESTIONS.some((q, i) => q.level === "red" && c2dAnswers[i] === true))
+        || (hasTelinga && c2eAnswers.some(a => a === true))
+        || (hasGiziMasalah && c2fAnswers.some(a => a === true));
     }
 
     const hasGiziAbnormal = gs && (gs.bbtb.level !== 0 || gs.bbu.level < 0 || gs.tbu.level < -1);
@@ -1442,7 +1462,7 @@ export default function CekKesehatanPage() {
     else statusHasil = "baik";
 
     try {
-      await supabase.from("kesehatan_records").insert({
+      const { error: dbError } = await supabase.from("kesehatan_records").insert({
         nama: namaAnak || "Anonim",
         tanggal_lahir: tglLahir,
         jenis_kelamin: gender,
@@ -1458,9 +1478,11 @@ export default function CekKesehatanPage() {
         kondisi_json: kondisiYa,
         jawaban_json: jawabanAll,
       });
+      if (dbError) throw new Error(dbError.message);
       setSavedToDb(true);
     } catch (e) {
-      console.error("Gagal simpan ke DB:", e);
+      console.error("Gagal simpan ke DB:", e.message);
+      setSavedToDb("error:" + e.message);
     }
   };
 
@@ -1511,8 +1533,21 @@ export default function CekKesehatanPage() {
   const steps = detectedFlow === "lt2m" ? STEPS_LT2M : STEPS_2M5Y;
   const totalSteps = steps.length - 1;
 
+  // ── Step 1 validation ────────────────────────────────────────────────
+  const bbVal = parseFloat(bbSekarang);
+  const tbVal = parseFloat(tbSekarang);
+  const bbError = bbSekarang !== ""
+    ? isNaN(bbVal) || bbVal < 0.5 ? "Berat badan minimal 0,5 kg"
+    : bbVal > 60 ? "Berat badan maksimal 60 kg"
+    : null : null;
+  const tbError = tbSekarang !== ""
+    ? isNaN(tbVal) || tbVal < 30 ? "Tinggi/panjang minimal 30 cm"
+    : tbVal > 150 ? "Tinggi/panjang maksimal 150 cm"
+    : null : null;
+  const tglFuture = tglLahir && new Date(tglLahir) > new Date();
+
   // ── Disabled checks ───────────────────────────────────────────────────
-  const step1Ok = gender && tglLahir && bbSekarang && tbSekarang && parseFloat(bbSekarang) > 0 && parseFloat(tbSekarang) > 0;
+  const step1Ok = !!(gender && tglLahir && !tglFuture && bbSekarang && !bbError && tbSekarang && !tbError);
   const c1aOk = c1aAnswers.every(a => a !== null);
   const c1bOk = hasDiare !== null && (hasDiare === false || c1bAnswers.every(a => a !== null));
   const c1cOk = hasKuning !== null && (hasKuning === false || c1cAnswers.every(a => a !== null));
@@ -1649,7 +1684,7 @@ export default function CekKesehatanPage() {
                 </div>
 
                 {/* Tanggal Lahir */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                <div className={`bg-white rounded-2xl border shadow-sm p-4 transition-all ${tglFuture ? "border-red-200" : "border-gray-100"}`}>
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">
                     <RiCalendarLine className="inline w-4 h-4 mr-1.5 text-green-600" />
                     Tanggal Lahir
@@ -1658,23 +1693,33 @@ export default function CekKesehatanPage() {
                     type="date" value={tglLahir}
                     max={new Date().toISOString().split("T")[0]}
                     onChange={e => setTglLahir(e.target.value)}
-                    className="w-full border-2 border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-green-400 transition-all"
+                    className={`w-full border-2 rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-all ${
+                      tglFuture ? "border-red-400 focus:border-red-500 bg-red-50" : "border-gray-200 focus:border-green-400"
+                    }`}
                   />
                   {tglLahir && (() => {
                     const d = Math.floor((new Date() - new Date(tglLahir)) / 86400000);
                     const m = d / 30.4375;
                     const label = m < 1 ? `${d} hari` : m < 24 ? `${Math.floor(m)} bulan ${d % 30} hari` : `${Math.floor(m/12)} tahun ${Math.floor(m%12)} bulan`;
                     const isOver = d > 3652;
+                    if (tglFuture) return (
+                      <p className="text-xs mt-1.5 text-red-500 flex items-center gap-1">
+                        <RiAlertLine className="w-3.5 h-3.5 shrink-0" />Tanggal lahir tidak boleh di masa depan
+                      </p>
+                    );
                     return (
                       <p className={`text-xs mt-1.5 font-medium ${isOver ? "text-red-500" : "text-green-600"}`}>
-                        Usia: {label}{isOver ? " — di luar rentang sistem (maks. 10 tahun)" : ""}
+                        {isOver
+                          ? <span className="flex items-center gap-1"><RiAlertLine className="w-3.5 h-3.5 shrink-0" />Usia: {label} — di luar rentang sistem (maks. 10 tahun)</span>
+                          : <span className="flex items-center gap-1"><RiCheckLine className="w-3.5 h-3.5 shrink-0" />Usia: {label}</span>
+                        }
                       </p>
                     );
                   })()}
                 </div>
 
                 {/* BB */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                <div className={`bg-white rounded-2xl border shadow-sm p-4 transition-all ${bbError ? "border-red-200" : "border-gray-100"}`}>
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">
                     <RiScales3Line className="inline w-4 h-4 mr-1.5 text-green-600" />
                     Berat Badan Sekarang (kg)
@@ -1683,22 +1728,46 @@ export default function CekKesehatanPage() {
                     type="number" min="0.5" max="60" step="0.1" value={bbSekarang}
                     placeholder="Contoh: 8.5"
                     onChange={e => setBbSekarang(e.target.value)}
-                    className="w-full border-2 border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-green-400 transition-all"
+                    className={`w-full border-2 rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-all ${
+                      bbError ? "border-red-400 focus:border-red-500 bg-red-50" : "border-gray-200 focus:border-green-400"
+                    }`}
                   />
+                  {bbError && (
+                    <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                      <RiAlertLine className="w-3.5 h-3.5 shrink-0" />{bbError}
+                    </p>
+                  )}
+                  {bbSekarang && !bbError && (
+                    <p className="text-xs text-green-600 mt-1.5 flex items-center gap-1">
+                      <RiCheckLine className="w-3.5 h-3.5 shrink-0" />{bbVal} kg — valid
+                    </p>
+                  )}
                 </div>
 
                 {/* TB */}
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+                <div className={`bg-white rounded-2xl border shadow-sm p-4 transition-all ${tbError ? "border-red-200" : "border-gray-100"}`}>
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">
                     <RiRulerLine className="inline w-4 h-4 mr-1.5 text-green-600" />
                     Panjang / Tinggi Badan Sekarang (cm)
                   </label>
                   <input
-                    type="number" min="30" max="130" step="0.1" value={tbSekarang}
+                    type="number" min="30" max="150" step="0.1" value={tbSekarang}
                     placeholder="Contoh: 72"
                     onChange={e => setTbSekarang(e.target.value)}
-                    className="w-full border-2 border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-green-400 transition-all"
+                    className={`w-full border-2 rounded-xl px-3 py-2.5 text-sm focus:outline-none transition-all ${
+                      tbError ? "border-red-400 focus:border-red-500 bg-red-50" : "border-gray-200 focus:border-green-400"
+                    }`}
                   />
+                  {tbError && (
+                    <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                      <RiAlertLine className="w-3.5 h-3.5 shrink-0" />{tbError}
+                    </p>
+                  )}
+                  {tbSekarang && !tbError && (
+                    <p className="text-xs text-green-600 mt-1.5 flex items-center gap-1">
+                      <RiCheckLine className="w-3.5 h-3.5 shrink-0" />{tbVal} cm — valid
+                    </p>
+                  )}
                 </div>
 
                 {/* Over-10 rejection */}
@@ -1782,10 +1851,16 @@ export default function CekKesehatanPage() {
             {step === 6 && (
               <div className="flex flex-col gap-4">
                 <SectionHeader icon={RiShieldCheckLine} badge="Hasil Pemeriksaan" title="SengkolCare — Bayi <2 Bulan" color="green" />
-                {savedToDb && (
+                {savedToDb === true && (
                   <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-medium rounded-xl px-4 py-2.5">
                     <RiCheckLine className="text-base shrink-0" />
                     Hasil tersimpan ke database desa
+                  </div>
+                )}
+                {typeof savedToDb === "string" && savedToDb.startsWith("error:") && (
+                  <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-xl px-4 py-2.5">
+                    <RiAlertLine className="text-base shrink-0 mt-0.5" />
+                    <span>Gagal simpan: {savedToDb.replace("error:", "")}</span>
                   </div>
                 )}
                 <ResultPage
@@ -1906,10 +1981,16 @@ export default function CekKesehatanPage() {
             {step === 16 && (
               <div className="flex flex-col gap-4">
                 <SectionHeader icon={RiShieldCheckLine} badge="Hasil Pemeriksaan" title="SengkolCare — 2 Bln–5 Thn" color="green" />
-                {savedToDb && (
+                {savedToDb === true && (
                   <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-medium rounded-xl px-4 py-2.5">
                     <RiCheckLine className="text-base shrink-0" />
                     Hasil tersimpan ke database desa
+                  </div>
+                )}
+                {typeof savedToDb === "string" && savedToDb.startsWith("error:") && (
+                  <div className="flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-xs font-medium rounded-xl px-4 py-2.5">
+                    <RiAlertLine className="text-base shrink-0 mt-0.5" />
+                    <span>Gagal simpan: {savedToDb.replace("error:", "")}</span>
                   </div>
                 )}
                 <ResultPage
