@@ -639,35 +639,35 @@ function calcAllGrowth(gender, ageMonths, weight, height) {
 
 // ─── QUESTION DATA: lt2m ─────────────────────────────────────────────────────
 const C1A_QUESTIONS = [
-  { id: "c1a1", text: "Apakah bayi tidak bisa menyusu atau minum?" },
-  { id: "c1a2", text: "Apakah bayi kejang?" },
-  { id: "c1a3", text: "Apakah bayi bernapas cepat (≥60x/menit)?" },
-  { id: "c1a4", text: "Apakah dada bayi tampak tertarik ke dalam saat bernapas?" },
-  { id: "c1a5", text: "Apakah tali pusat bernanah atau kemerahan sampai kulit perut?" },
-  { id: "c1a6", text: "Apakah terdapat pustul kulit (bintik bernanah di kulit)?" },
-  { id: "c1a7", text: "Apakah mata bayi bernanah?" },
-  { id: "c1a8", text: "Apakah tubuh bayi demam (suhu ≥37.5°C)?" },
-  { id: "c1a9", text: "Apakah tubuh bayi terasa sangat dingin / hipotermia (suhu <35.5°C)?" },
-  { id: "c1a10", text: "Apakah gerakan bayi tidak aktif / terlihat sangat lemah?" },
+  { id: "c1a1", text: "Apakah bibir/area sekitar mulut bayi tampak kebiruan saat menangis atau menyusu?", img: "/images/sengkolcare/Foto_bibir_cyanosis.png" },
+  { id: "c1a2", text: "Apakah napas bayi terlihat sangat cepat, atau justru sangat lambat/megap-megap?" },
+  { id: "c1a3", text: "Apakah terdengar suara merintih setiap kali bayi bernapas?" },
+  { id: "c1a4", text: "Apakah cuping hidung ikut kembang-kempis saat bernapas, atau tampak tarikan kuat di sela iga/dada bagian bawah?", img: "/images/sengkolcare/retraksi_dada.png" },
+  { id: "c1a5", text: "Apakah bayi lemas, tidak kuat bergerak, atau tidak mau/tidak kuat mengisap?" },
+  { id: "c1a6", text: "Apakah bayi kejang (gerakan menyentak yang tidak terkendali)?" },
+  { id: "c1a7", text: "Apakah badan bayi teraba sangat panas atau justru sangat dingin?" },
+  { id: "c1a8", text: "Apakah bayi belum buang air besar dalam 48 jam sejak lahir?" },
+  { id: "c1a9", text: "Apakah bayi muntah berwarna hijau, atau perutnya tampak sangat kembung disertai sulit bernapas?" },
+  { id: "c1a10", text: "Apakah ada bagian tubuh (mata, pusar, kulit) yang bernanah banyak atau kemerahan yang meluas?", img: "/images/sengkolcare/bercak_kulit.png" },
 ];
 const C1B_QUESTIONS = [
-  { id: "c1b1", text: "Apakah mata bayi cekung?", level: "red" },
-  { id: "c1b2", text: "Apakah kulit bayi kembali sangat lambat saat dicubit (>2 detik)?", level: "red" },
-  { id: "c1b3", text: "Apakah bayi tampak gelisah dan rewel terus-menerus?", level: "red" },
-  { id: "c1b4", text: "Apakah mulut bayi terlihat kering?", level: "yellow" },
-  { id: "c1b5", text: "Apakah kulit bayi kembali lambat saat dicubit (1-2 detik)?", level: "yellow" },
+  { id: "c1b1", text: "Apakah bayi tampak tidak sadar atau sangat lemah dibandingkan biasanya?", level: "red" },
+  { id: "c1b2", text: "Apakah mata bayi terlihat cekung?", level: "red", img: "/images/sengkolcare/Foto_mata_cekung.png" },
+  { id: "c1b3", text: "Saat dicoba diberi minum/ASI, apakah bayi menolak sama sekali?", level: "red" },
+  { id: "c1b4", text: "Apakah bayi menjadi terlalu rewel dan sulit ditenangkan?", level: "yellow" },
+  { id: "c1b5", text: "Apakah bayi menjadi terlalu haus dan minum dengan lahap?", level: "yellow" },
 ];
 const C1C_QUESTIONS = [
-  { id: "c1c1", text: "Apakah kuning muncul dalam 24 jam pertama setelah lahir?", level: "red" },
-  { id: "c1c2", text: "Apakah kuning terlihat sampai di tangan dan kaki bayi?", level: "red" },
-  { id: "c1c3", text: "Apakah tinja bayi berwarna pucat / putih?", level: "red" },
+  { id: "c1c1", text: "Kuning muncul di hari pertama (<24 jam setelah lahir)?", level: "red", img: "/images/sengkolcare/Foto_ikterus_bayikuning.png" },
+  { id: "c1c2", text: "Kuning masih ada setelah usia 14 hari?", level: "red" },
+  { id: "c1c3", text: "Warna kuning sudah sampai ke telapak tangan/kaki?", level: "red" },
 ];
 const C1D_QUESTIONS = [
-  { id: "c1d1", text: "Apakah ada luka atau retakan di puting susu ibu?", level: "yellow" },
-  { id: "c1d2", text: "Apakah bayi tampak tidak menempel dengan benar ke payudara?", level: "yellow" },
-  { id: "c1d3", text: "Apakah bayi diberi minum selain ASI (susu formula, air putih, dll)?", level: "yellow" },
-  { id: "c1d4", text: "Apakah berat badan bayi saat ini jauh lebih rendah dari berat lahir?", level: "red" },
-  { id: "c1d5", text: "Apakah bayi terlihat tidak puas setelah menyusu / menangis terus?", level: "yellow" },
+  { id: "c1d1", text: "Apakah bayi disusui kurang dari 8 kali dalam 24 jam (1 hari)?", level: "yellow" },
+  { id: "c1d2", text: "Apakah bayi mendapatkan makanan/minuman lain selain ASI atau diberikan minum lewat botol?", level: "yellow" },
+  { id: "c1d3", text: "Apakah ada bercak putih di mulut atau celah bibir/langit-langit?", level: "yellow" },
+  { id: "c1d4", text: "Apakah berat badan bayi tampak rendah menurut usianya?", level: "red" },
+  { id: "c1d5", text: "Apakah posisi/perlekatan menyusui tampak bermasalah (bayi sering lepas, rewel saat menyusu)?", level: "yellow" },
 ];
 
 // ─── QUESTION DATA: 2m5y ─────────────────────────────────────────────────────
@@ -678,13 +678,13 @@ const C2A_QUESTIONS = [
   { id: "c2a4", text: "Apakah anak tidak sadar, tidak merespons, atau sangat sulit dibangunkan?", level: "red" },
   { id: "c2a5", text: "Apakah anak sangat gelisah/rewel dan tidak bisa ditenangkan sama sekali?", level: "red" },
   { id: "c2a6", text: "Apakah anak tampak sangat sesak, menolak berbaring, atau mencari posisi napas tertentu?", level: "red" },
-  { id: "c2a7", text: "Apakah bibir/kulit anak tampak kebiruan atau sangat pucat?", level: "red" },
-  { id: "c2a8", text: "Apakah kulit anak terlihat seperti pola marmer/bercak-bercak?", level: "red" },
+  { id: "c2a7", text: "Apakah bibir/kulit anak tampak kebiruan atau sangat pucat?", level: "red", img: "/images/sengkolcare/Foto_bibir_cyanosis.png" },
+  { id: "c2a8", text: "Apakah kulit anak terlihat seperti pola marmer/bercak-bercak?", level: "red", img: "/images/sengkolcare/pola_kulit_marmer.png" },
 ];
 const C2B_QUESTIONS = [
   { id: "c2b1", text: "Apakah batuk disertai dengan demam >37,5°C?", level: "red" },
   { id: "c2b2", text: "Apakah napas anak terlihat cepat?", level: "red" },
-  { id: "c2b3", text: "Apakah terlihat tarikan kuat di sela iga/bawah dada saat bernapas?", level: "red" },
+  { id: "c2b3", text: "Apakah terlihat tarikan kuat di sela iga/bawah dada saat bernapas?", level: "red", img: "/images/sengkolcare/retraksi_dada.png" },
   { id: "c2b4", text: "Apakah terdengar bunyi \"ngik-ngik\" (wheezing) saat bernapas?", level: "red" },
   { id: "c2b5", text: "Apakah anak batuk sudah ≥2 minggu?", level: "red" },
 ];
@@ -693,7 +693,7 @@ const C2C_QUESTIONS = [
   { id: "c2c2", text: "Apakah ada darah dalam tinja?", level: "red" },
   { id: "c2c3", text: "Apakah diare disertai dengan demam >37,5°C?", level: "red" },
   { id: "c2c4", text: "Apakah anak tampak tidak sadar atau sangat lemah dibandingkan biasanya?", level: "red" },
-  { id: "c2c5", text: "Apakah mata anak terlihat cekung?", level: "red" },
+  { id: "c2c5", text: "Apakah mata anak terlihat cekung?", level: "red", img: "/images/sengkolcare/Foto_mata_cekung.png" },
   { id: "c2c6", text: "Saat dicoba diberi minum/ASI, apakah anak menolak sama sekali?", level: "red" },
   { id: "c2c7", text: "Apakah disertai dengan nyeri perut hebat?", level: "red" },
   { id: "c2c8", text: "Apakah anak menjadi terlalu rewel dan sulit ditenangkan?", level: "yellow" },
@@ -710,8 +710,8 @@ const C2D_QUESTIONS = [
 ];
 const C2E_QUESTIONS = [
   { id: "c2e1", text: "Apakah ada nyeri telinga atau anak sering menarik-narik telinganya?", level: "red" },
-  { id: "c2e2", text: "Apakah keluar cairan/nanah dari telinga?", level: "red" },
-  { id: "c2e3", text: "Apakah ada bengkak nyeri di belakang telinga?", level: "red" },
+  { id: "c2e2", text: "Apakah keluar cairan/nanah dari telinga?", level: "red", img: "/images/sengkolcare/nanah_telinga.png" },
+  { id: "c2e3", text: "Apakah ada bengkak nyeri di belakang telinga?", level: "red", img: "/images/sengkolcare/bengkak_telinga.png" },
 ];
 const C2F_QUESTIONS = [
   { id: "c2f1", text: "Apakah ada bengkak di kedua kaki/tangan?", level: "red" },
@@ -800,12 +800,16 @@ function YesNoCard({ question, value, onChange, index }) {
       transition={{ delay: index * 0.06, duration: 0.35 }}
       className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col gap-3"
     >
+      {question.img && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={question.img} alt="Referensi kondisi" className="w-full rounded-xl object-cover max-h-44" />
+      )}
       <p className="text-sm text-gray-700 leading-relaxed font-medium">{question.text}</p>
       <div className="flex gap-2">
         <button
           onClick={() => onChange(true)}
           className={`flex-1 py-2 rounded-xl text-sm font-semibold border-2 transition-all duration-200 ${
-            value === true ? "bg-red-500 border-red-500 text-white shadow-md" : "bg-white border-gray-200 text-gray-500 hover:border-red-300"
+            value === true ? "bg-green-600 border-green-600 text-white shadow-md" : "bg-white border-gray-200 text-gray-500 hover:border-green-300"
           }`}
         >Ya</button>
         <button
@@ -918,113 +922,226 @@ function GrowthBadge({ label, value, color }) {
   );
 }
 
+function GrowthDetailRow({ label, status, actual, normalMin, normalMax, unit }) {
+  const colorMap = {
+    red: { bg: "bg-red-50", border: "border-red-200", badge: "bg-red-500 text-white", text: "text-red-700" },
+    orange: { bg: "bg-orange-50", border: "border-orange-200", badge: "bg-orange-500 text-white", text: "text-orange-700" },
+    yellow: { bg: "bg-yellow-50", border: "border-yellow-200", badge: "bg-yellow-500 text-white", text: "text-yellow-700" },
+    green: { bg: "bg-green-50", border: "border-green-200", badge: "bg-green-500 text-white", text: "text-green-700" },
+    blue: { bg: "bg-blue-50", border: "border-blue-200", badge: "bg-blue-500 text-white", text: "text-blue-700" },
+  };
+  const c = colorMap[status.color] || colorMap.green;
+  return (
+    <div className={`rounded-xl border ${c.bg} ${c.border} p-3`}>
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">{label}</p>
+        <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${c.badge}`}>{status.label}</span>
+      </div>
+      <div className="flex gap-4 text-xs">
+        <div>
+          <p className="text-gray-400">Nilai anak</p>
+          <p className={`font-bold ${c.text}`}>{actual} {unit}</p>
+        </div>
+        <div className="border-l border-gray-200 pl-4">
+          <p className="text-gray-400">Rentang normal (WHO)</p>
+          <p className="font-bold text-gray-600">{normalMin?.toFixed(1)} – {normalMax?.toFixed(1)} {unit}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── RESULT PAGE ─────────────────────────────────────────────────────────────
 function ResultPage({ flow, ageResult, growthStatus, data, onReset }) {
   const { c1aAnswers, c1bAnswers, c1cAnswers, c1dAnswers,
           c2aAnswers, c2bAnswers, c2cAnswers, c2dAnswers, c2eAnswers, c2fAnswers,
-          hasDiare, hasKuning, hasBatuk, hasDiare2, hasDemam, hasTelinga, hasGiziMasalah } = data;
+          hasDiare, hasKuning, hasASIMasalah, hasBatuk, hasDiare2, hasDemam, hasTelinga, hasGiziMasalah,
+          bb, tb, gender } = data;
+
+  // ── WHO normal ranges ─────────────────────────────────────────────────
+  const isBoy = gender === "L";
+  const ageM = ageResult ? Math.round(ageResult.months) : 0;
+  const tbNum = parseFloat(tb) || 0;
+  const bbuRow = ageResult ? interpAge(isBoy ? WHO_BBU_BOYS : WHO_BBU_GIRLS, ageM) : null;
+  const tbuRow = ageResult ? interpAge(isBoy ? WHO_TBU_BOYS : WHO_TBU_GIRLS, ageM) : null;
+  const bbtbRow = tbNum > 0 ? interpHeight(isBoy ? WHO_BBTB_BOYS : WHO_BBTB_GIRLS, tbNum) : null;
 
   // ── Determine urgency ─────────────────────────────────────────────────
   let isUrgent = false;
-  const reasons = []; // [{section, items, level}]
+  const reasons = [];
   const edukasi = [];
 
   if (flow === "lt2m") {
-    // C1a: ANY ya → urgent
     isUrgent = c1aAnswers.some(a => a === true);
     if (isUrgent) {
       const triggered = C1A_QUESTIONS.filter((_, i) => c1aAnswers[i] === true);
-      reasons.push({ section: "Tanda Bahaya Umum (Bayi <2 Bulan)", items: triggered.map(q => q.text), urgent: true });
+      reasons.push({ section: "Tanda Bahaya & Infeksi Bakteri (Bayi <2 Bulan)", items: triggered.map(q => q.text), urgent: true });
     }
-    // C1b
     if (hasDiare) {
       const redItems = C1B_QUESTIONS.filter((q, i) => c1bAnswers[i] === true && q.level === "red").map(q => q.text);
       const yItems = C1B_QUESTIONS.filter((q, i) => c1bAnswers[i] === true && q.level === "yellow").map(q => q.text);
-      if (redItems.length) reasons.push({ section: "Diare", items: redItems, level: "red" });
-      if (yItems.length) reasons.push({ section: "Diare", items: yItems, level: "yellow" });
+      if (redItems.length) reasons.push({ section: "Diare & Dehidrasi", items: redItems, level: "red" });
+      if (yItems.length) reasons.push({ section: "Diare & Dehidrasi", items: yItems, level: "yellow" });
     }
-    // C1c
     if (hasKuning) {
       const items = C1C_QUESTIONS.filter((_, i) => c1cAnswers[i] === true).map(q => q.text);
-      if (items.length) reasons.push({ section: "Kuning (Ikterus)", items, level: "red" });
+      if (items.length) reasons.push({ section: "Bayi Kuning (Ikterus)", items, level: "red" });
     }
-    // C1d
     const c1dRed = C1D_QUESTIONS.filter((q, i) => c1dAnswers[i] === true && q.level === "red").map(q => q.text);
     const c1dYellow = C1D_QUESTIONS.filter((q, i) => c1dAnswers[i] === true && q.level === "yellow").map(q => q.text);
     if (c1dRed.length) reasons.push({ section: "Pemberian ASI & Berat Badan", items: c1dRed, level: "red" });
     if (c1dYellow.length) reasons.push({ section: "Pemberian ASI & Berat Badan", items: c1dYellow, level: "yellow" });
 
-    edukasi.push(...EDUKASI_LT2M);
+    if (isUrgent) edukasi.push(...EDUKASI_LT2M);
   } else {
-    // C2a: ANY ya → urgent
     isUrgent = c2aAnswers.some(a => a === true);
     if (isUrgent) {
       const triggered = C2A_QUESTIONS.filter((_, i) => c2aAnswers[i] === true);
       reasons.push({ section: "Tanda Bahaya Umum", items: triggered.map(q => q.text), urgent: true });
     }
-    // C2b
     if (hasBatuk) {
       const items = C2B_QUESTIONS.filter((_, i) => c2bAnswers[i] === true).map(q => q.text);
       if (items.length) reasons.push({ section: "Batuk / Kesulitan Bernapas", items, level: "red" });
     }
-    // C2c
     if (hasDiare2) {
       const redItems = C2C_QUESTIONS.filter((q, i) => c2cAnswers[i] === true && q.level === "red").map(q => q.text);
       const yItems = C2C_QUESTIONS.filter((q, i) => c2cAnswers[i] === true && q.level === "yellow").map(q => q.text);
       if (redItems.length) reasons.push({ section: "Diare", items: redItems, level: "red" });
       if (yItems.length) reasons.push({ section: "Diare", items: yItems, level: "yellow" });
     }
-    // C2d
     if (hasDemam) {
       const redItems = C2D_QUESTIONS.filter((q, i) => c2dAnswers[i] === true && q.level === "red").map(q => q.text);
       const yItems = C2D_QUESTIONS.filter((q, i) => c2dAnswers[i] === true && q.level === "yellow").map(q => q.text);
       if (redItems.length) reasons.push({ section: "Demam", items: redItems, level: "red" });
       if (yItems.length) reasons.push({ section: "Demam", items: yItems, level: "yellow" });
     }
-    // C2e
     if (hasTelinga) {
       const items = C2E_QUESTIONS.filter((_, i) => c2eAnswers[i] === true).map(q => q.text);
       if (items.length) reasons.push({ section: "Masalah Telinga", items, level: "red" });
     }
-    // C2f
     if (hasGiziMasalah) {
       const items = C2F_QUESTIONS.filter((_, i) => c2fAnswers[i] === true).map(q => q.text);
       if (items.length) reasons.push({ section: "Gizi & Pertumbuhan", items, level: "red" });
     }
-
-    edukasi.push(...EDUKASI_2M5Y_UMUM);
-    if (hasBatuk) edukasi.push(...EDUKASI_2M5Y_BATUK);
-    if (hasDiare2) edukasi.push(...EDUKASI_2M5Y_DIARE);
-    if (hasDemam) edukasi.push(...EDUKASI_2M5Y_DEMAM);
-    if (hasTelinga) edukasi.push(...EDUKASI_2M5Y_TELINGA);
-    if (hasGiziMasalah || (growthStatus?.bbtb?.level !== 0)) edukasi.push(...EDUKASI_2M5Y_GIZI);
+    if (isUrgent) {
+      edukasi.push(...EDUKASI_2M5Y_UMUM);
+      if (hasBatuk) edukasi.push(...EDUKASI_2M5Y_BATUK);
+      if (hasDiare2) edukasi.push(...EDUKASI_2M5Y_DIARE);
+      if (hasDemam) edukasi.push(...EDUKASI_2M5Y_DEMAM);
+      if (hasTelinga) edukasi.push(...EDUKASI_2M5Y_TELINGA);
+      if (hasGiziMasalah || (growthStatus?.bbtb?.level !== 0)) edukasi.push(...EDUKASI_2M5Y_GIZI);
+    }
   }
 
   // Gizi abnormal adds to reasons
   if (growthStatus) {
     const { bbu, tbu, bbtb } = growthStatus;
     const giziItems = [];
-    if (bbtb.level !== 0) giziItems.push(`Status Berat/Tinggi: ${bbtb.label}`);
-    if (bbu.level !== 0) giziItems.push(`Status Berat/Umur: ${bbu.label}`);
-    if (tbu.level < 0) giziItems.push(`Status Tinggi/Umur: ${tbu.label}`);
+    if (bbtb.level !== 0) giziItems.push(`Status Gizi (BB/TB): ${bbtb.label}`);
+    if (bbu.level !== 0) giziItems.push(`Status Berat/Umur (BB/U): ${bbu.label}`);
+    if (tbu.level < 0) giziItems.push(`Status Tinggi/Umur (TB/U): ${tbu.label}`);
     if (giziItems.length) reasons.push({ section: "Status Pertumbuhan", items: giziItems, level: bbtb.level < -1 || bbu.level < -1 ? "red" : "yellow" });
   }
 
-  const hasProblems = reasons.length > 0;
-  const nonUrgentReasons = reasons.filter(r => !r.urgent);
+  // ── Build tanda bahaya sections (only for !isUrgent) ─────────────────
+  const tandaBahayaSections = [];
+  if (flow === "lt2m") {
+    if (hasKuning) tandaBahayaSections.push({
+      label: "E1", title: "Bayi Kuning (Ikterus)",
+      items: [
+        "Kuning muncul pada hari pertama kehidupan (< 24 jam setelah lahir)",
+        "Kuning masih ada/muncul setelah bayi berusia > 14 hari",
+        "Warna kuning sudah sampai ke telapak tangan atau telapak kaki",
+      ],
+    });
+    if (hasASIMasalah) tandaBahayaSections.push({
+      label: "E2", title: "Pemberian ASI & Berat Badan",
+      items: [
+        "Berat badan menurut umur tergolong rendah (baca di buku KIA)",
+        "Menyusu kurang dari 8 kali dalam sehari",
+        "Diberi minum dengan botol/dot, atau mendapat makanan/minuman lain selain ASI",
+        "Posisi/pelekatan menyusui tidak benar, atau bayi tidak mengisap efektif",
+        "Ada bercak putih di mulut atau celah bibir/langit-langit",
+      ],
+    });
+    if (hasDiare) tandaBahayaSections.push({
+      label: "E3", title: "Diare",
+      items: [
+        "Bayi lemas, hanya bergerak bila dirangsang, atau tidak bergerak sama sekali",
+        "Mata terlihat cekung",
+        "Gelisah/rewel terus-menerus",
+      ],
+    });
+  } else {
+    if (hasBatuk) tandaBahayaSections.push({
+      label: "E4", title: "Batuk / Kesulitan Bernapas",
+      items: [
+        "Ada tarikan dinding dada ke dalam",
+        "Napas cepat",
+        "Penurunan kesadaran",
+        "Suara ngik-ngik saat bernapas",
+        "Terbangun dari tidur akibat terlalu sesak",
+      ],
+    });
+    if (hasDiare2) tandaBahayaSections.push({
+      label: "E5", title: "Diare",
+      items: [
+        "Penurunan kesadaran",
+        "Mata cekung",
+        "Tidak mau minum",
+        "Sangat rewel hingga tidak bisa ditenangkan seperti biasanya",
+        "Ada darah dalam tinja",
+        "Diare berlangsung lebih dari 14 hari",
+      ],
+    });
+    if (hasDemam) tandaBahayaSections.push({
+      label: "E6", title: "Demam",
+      items: [
+        "Leher kaku",
+        "Disertai penurunan kesadaran",
+        "Demam turun, tetapi disertai tubuh lemas",
+        "Demam berlangsung lebih dari 7 hari",
+      ],
+    });
+    if (hasTelinga) tandaBahayaSections.push({
+      label: "E7", title: "Masalah Telinga",
+      items: [
+        "Pembengkakan yang nyeri di belakang telinga",
+        "Nyeri telinga yang sangat mengganggu",
+        "Rasa penuh di telinga yang tidak wajar",
+        "Cairan/nanah keluar dari telinga",
+      ],
+    });
+    if (hasGiziMasalah) tandaBahayaSections.push({
+      label: "E8", title: "Gizi & Pertumbuhan",
+      items: [
+        "Bengkak pada seluruh tubuh",
+        "Tidak mau makan",
+        "Dehidrasi berat",
+        "Penurunan kesadaran",
+        "Demam tinggi",
+      ],
+    });
+  }
 
-  // Status color
+  const hasProblems = reasons.length > 0;
   const status = isUrgent ? "urgent" : hasProblems ? "watch" : "good";
   const statusConfig = {
-    urgent: { bg: "bg-red-50", border: "border-red-200", icon: RiAlertLine, iconColor: "text-red-600", title: "Segera Bawa ke Fasilitas Kesehatan", sub: "Ditemukan tanda bahaya yang memerlukan penanganan segera", badge: "bg-red-600 text-white" },
-    watch: { bg: "bg-yellow-50", border: "border-yellow-200", icon: RiErrorWarningLine, iconColor: "text-yellow-600", title: "Perlu Pantau & Konsultasi", sub: "Ada beberapa gejala yang perlu perhatian lebih lanjut", badge: "bg-yellow-500 text-white" },
-    good: { bg: "bg-green-50", border: "border-green-200", icon: RiShieldCheckLine, iconColor: "text-green-600", title: "Kondisi Baik", sub: "Tidak ditemukan tanda bahaya yang mengkhawatirkan", badge: "bg-green-600 text-white" },
+    urgent: { bg: "bg-red-50", border: "border-red-200", icon: RiAlertLine, title: "Segera Bawa ke Fasilitas Kesehatan", sub: "Ditemukan tanda bahaya yang memerlukan penanganan segera", badge: "bg-red-600 text-white" },
+    watch:  { bg: "bg-yellow-50", border: "border-yellow-200", icon: RiErrorWarningLine, title: "Perlu Pantau & Konsultasi", sub: "Ada beberapa gejala yang perlu perhatian lebih lanjut", badge: "bg-yellow-500 text-white" },
+    good:   { bg: "bg-green-50", border: "border-green-200", icon: RiShieldCheckLine, title: "Kondisi Baik", sub: "Tidak ditemukan tanda bahaya yang mengkhawatirkan", badge: "bg-green-600 text-white" },
   };
   const cfg = statusConfig[status];
 
+  const ageLabel = ageResult
+    ? ageResult.months < 1 ? `${ageResult.days} hari`
+      : ageResult.months < 24 ? `${Math.floor(ageResult.months)} bulan`
+      : `${Math.floor(ageResult.months / 12)} thn ${Math.floor(ageResult.months % 12)} bln`
+    : null;
+
   return (
     <div className="flex flex-col gap-4">
-      {/* Status banner */}
+      {/* ── Status banner ─────────────────────────────────────────────── */}
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.4 }}
         className={`rounded-3xl border-2 ${cfg.bg} ${cfg.border} p-5 flex flex-col items-center gap-3 text-center`}>
         <div className={`w-14 h-14 rounded-full ${cfg.badge} flex items-center justify-center`}>
@@ -1036,7 +1153,7 @@ function ResultPage({ flow, ageResult, growthStatus, data, onReset }) {
         </div>
       </motion.div>
 
-      {/* Growth status */}
+      {/* ── Status Pertumbuhan (expanded) ─────────────────────────────── */}
       {growthStatus && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
           className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
@@ -1044,84 +1161,125 @@ function ResultPage({ flow, ageResult, growthStatus, data, onReset }) {
             <RiBodyScanLine className="w-4 h-4 text-green-600" />
             <p className="text-sm font-bold text-gray-700">Status Pertumbuhan</p>
           </div>
-          <div className="grid grid-cols-3 gap-2">
-            <GrowthBadge label="BB/TB (Gizi)" value={growthStatus.bbtb.label} color={growthStatus.bbtb.color} />
-            <GrowthBadge label="BB/U (Berat)" value={growthStatus.bbu.label} color={growthStatus.bbu.color} />
-            <GrowthBadge label="TB/U (Tinggi)" value={growthStatus.tbu.label} color={growthStatus.tbu.color} />
+          {/* Data aktual anak */}
+          <div className="bg-gray-50 rounded-xl px-4 py-3 mb-3 flex flex-wrap gap-x-6 gap-y-2">
+            <div><p className="text-xs text-gray-400">Berat Badan</p><p className="text-sm font-bold text-gray-800">{bb} kg</p></div>
+            <div><p className="text-xs text-gray-400">Tinggi / Panjang</p><p className="text-sm font-bold text-gray-800">{tb} cm</p></div>
+            <div><p className="text-xs text-gray-400">Usia</p><p className="text-sm font-bold text-gray-800">{ageLabel}</p></div>
+            <div><p className="text-xs text-gray-400">Jenis Kelamin</p><p className="text-sm font-bold text-gray-800">{gender === "L" ? "Laki-laki" : "Perempuan"}</p></div>
+          </div>
+          {/* Indikator detail */}
+          <div className="flex flex-col gap-2">
+            {bbtbRow && (
+              <GrowthDetailRow label="Gizi (BB/TB)" status={growthStatus.bbtb}
+                actual={bb} normalMin={bbtbRow[2]} normalMax={bbtbRow[3]} unit="kg" />
+            )}
+            {bbuRow && (
+              <GrowthDetailRow label="Berat/Umur (BB/U)" status={growthStatus.bbu}
+                actual={bb} normalMin={bbuRow[2]} normalMax={bbuRow[3]} unit="kg" />
+            )}
+            {tbuRow && (
+              <GrowthDetailRow label="Tinggi/Umur (TB/U)" status={growthStatus.tbu}
+                actual={tb} normalMin={tbuRow[2]} normalMax={tbuRow[3]} unit="cm" />
+            )}
           </div>
         </motion.div>
       )}
 
-      {/* TANDA BAHAYA — hanya jika urgent */}
-      {isUrgent && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="bg-red-50 rounded-2xl border border-red-200 p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <RiAlertLine className="w-4 h-4 text-red-600" />
-            <p className="text-sm font-bold text-red-700">Tanda Bahaya yang Ditemukan</p>
-          </div>
-          {reasons.filter(r => r.urgent).map((r, i) => (
-            <div key={i} className="mb-2">
-              <ul className="space-y-1.5">
-                {r.items.map((item, j) => (
-                  <li key={j} className="flex items-start gap-2 text-sm text-red-700">
-                    <RiCloseLine className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </motion.div>
-      )}
-
-      {/* RINGKASAN ALASAN — hanya jika tidak urgent tapi ada masalah */}
-      {!isUrgent && nonUrgentReasons.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <RiInformationLine className="w-4 h-4 text-yellow-600" />
-            <p className="text-sm font-bold text-gray-700">Ringkasan Temuan</p>
-          </div>
-          {nonUrgentReasons.map((r, i) => (
-            <div key={i} className="mb-3 last:mb-0">
-              <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">{r.section}</p>
-              <ul className="space-y-1.5">
-                {r.items.map((item, j) => (
-                  <li key={j} className={`flex items-start gap-2 text-sm ${r.level === "red" ? "text-red-700" : "text-yellow-700"}`}>
-                    <RiAlertLine className={`w-4 h-4 mt-0.5 flex-shrink-0 ${r.level === "red" ? "text-red-400" : "text-yellow-400"}`} />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </motion.div>
-      )}
-
-      {/* EDUKASI — selalu tampil */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+      {/* ── Ringkasan Alasan — SELALU tampil ─────────────────────────── */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
         className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
         <div className="flex items-center gap-2 mb-3">
-          <RiInformationLine className="w-4 h-4 text-green-600" />
-          <p className="text-sm font-bold text-gray-700">Panduan & Edukasi</p>
+          <RiInformationLine className="w-4 h-4 text-blue-500" />
+          <p className="text-sm font-bold text-gray-700">Ringkasan Alasan</p>
         </div>
-        <ul className="space-y-2">
-          {[...new Set(edukasi)].map((e, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-              <RiCheckLine className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
-              <span>{e}</span>
-            </li>
-          ))}
-        </ul>
+        {reasons.length === 0 ? (
+          <div className="flex items-center gap-2 text-sm text-green-700">
+            <RiCheckLine className="w-4 h-4 text-green-500 flex-shrink-0" />
+            <span>Tidak ditemukan masalah dari jawaban yang diisi.</span>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {reasons.map((r, i) => (
+              <div key={i}>
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">{r.section}</p>
+                <ul className="space-y-1.5">
+                  {r.items.map((item, j) => (
+                    <li key={j} className={`flex items-start gap-2 text-sm ${r.urgent ? "text-red-700" : r.level === "red" ? "text-orange-700" : "text-yellow-700"}`}>
+                      <RiAlertLine className={`w-4 h-4 mt-0.5 flex-shrink-0 ${r.urgent ? "text-red-500" : r.level === "red" ? "text-orange-400" : "text-yellow-400"}`} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
       </motion.div>
 
-      {/* Disclaimer */}
+      {/* ── EDUKASI — hanya jika urgent ───────────────────────────────── */}
+      {isUrgent && edukasi.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <RiInformationLine className="w-4 h-4 text-green-600" />
+            <p className="text-sm font-bold text-gray-700">Panduan & Edukasi</p>
+          </div>
+          <ul className="space-y-2">
+            {[...new Set(edukasi)].map((e, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
+                <RiCheckLine className="w-4 h-4 mt-0.5 flex-shrink-0 text-green-500" />
+                <span>{e}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
+
+      {/* ── TANDA BAHAYA — hanya jika TIDAK urgent ───────────────────── */}
+      {!isUrgent && (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="bg-amber-50 rounded-2xl border border-amber-200 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <RiAlertLine className="w-4 h-4 text-amber-600" />
+            <p className="text-sm font-bold text-amber-700">Tanda Bahaya yang Perlu Diwaspadai</p>
+          </div>
+          <p className="text-xs text-amber-600 mb-4">
+            Segera bawa ke Puskesmas atau fasilitas kesehatan terdekat jika muncul salah satu tanda berikut.
+          </p>
+          {tandaBahayaSections.length > 0 ? (
+            <div className="flex flex-col gap-3">
+              {tandaBahayaSections.map(section => (
+                <div key={section.label} className="bg-white rounded-xl border border-amber-100 p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-bold bg-amber-500 text-white px-2 py-0.5 rounded-full">{section.label}</span>
+                    <p className="text-xs font-bold text-amber-800">{section.title}</p>
+                  </div>
+                  <ul className="flex flex-col gap-1.5">
+                    {section.items.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-xs text-amber-700">
+                        <RiAlertLine className="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-amber-600">
+              Tidak ada kondisi khusus yang perlu diwaspadai saat ini. Tetap pantau perkembangan anak dan segera konsultasikan ke Puskesmas jika ada perubahan yang mengkhawatirkan.
+            </p>
+          )}
+        </motion.div>
+      )}
+
+      {/* ── Disclaimer ────────────────────────────────────────────────── */}
       <div className="bg-gray-50 rounded-2xl border border-gray-100 p-4 text-xs text-gray-500 leading-relaxed">
         <strong className="text-gray-600">Catatan:</strong> Hasil dari SengkolCare bersifat informatif berdasarkan panduan MTBS Kemenkes RI dan standar WHO. Bukan pengganti diagnosis tenaga medis. Konsultasikan kondisi anak ke Puskesmas atau tenaga kesehatan terdekat.
       </div>
 
-      {/* Reset */}
+      {/* ── Reset ─────────────────────────────────────────────────────── */}
       <button onClick={onReset}
         className="w-full py-3.5 rounded-2xl border-2 border-green-200 text-green-700 font-bold text-sm flex items-center justify-center gap-2 hover:bg-green-50 transition-all">
         <RiRefreshLine className="w-4 h-4" /> Periksa Anak Lagi
@@ -1155,6 +1313,7 @@ export default function CekKesehatanPage() {
   const [c1bAnswers, setC1bAnswers] = useState(Array(5).fill(null));
   const [hasKuning, setHasKuning] = useState(null);
   const [c1cAnswers, setC1cAnswers] = useState(Array(3).fill(null));
+  const [hasASIMasalah, setHasASIMasalah] = useState(null);
   const [c1dAnswers, setC1dAnswers] = useState(Array(5).fill(null));
 
   // ── 2m5y states ───────────────────────────────────────────────────────
@@ -1188,7 +1347,7 @@ export default function CekKesehatanPage() {
     setStep(0); setDetectedFlow(null); setAgeWarning(null); setAgeResult(null); setGrowthStatus(null);
     setGender(""); setTglLahir(""); setBbSekarang(""); setTbSekarang("");
     setC1aAnswers(Array(10).fill(null)); setHasDiare(null); setC1bAnswers(Array(5).fill(null));
-    setHasKuning(null); setC1cAnswers(Array(3).fill(null)); setC1dAnswers(Array(5).fill(null));
+    setHasKuning(null); setC1cAnswers(Array(3).fill(null)); setHasASIMasalah(null); setC1dAnswers(Array(5).fill(null));
     setC2aAnswers(Array(8).fill(null)); setHasBatuk(null); setC2bAnswers(Array(5).fill(null));
     setHasDiare2(null); setC2cAnswers(Array(9).fill(null)); setHasDemam(null);
     setC2dAnswers(Array(7).fill(null)); setHasTelinga(null); setC2eAnswers(Array(3).fill(null));
@@ -1197,8 +1356,91 @@ export default function CekKesehatanPage() {
   };
 
   // ── Simpan hasil ke Supabase ─────────────────────────────────────────
-  const simpanHasil = async (gs = growthStatus) => {
+  const simpanHasil = async (flow) => {
     if (!tglLahir || !gender) return;
+    const gs = growthStatus;
+
+    // Collect answers and determine urgency
+    let isUrgent = false;
+    let statusHasil = "baik";
+    const kondisiYa = []; // [{id, text}] for all Yes answers
+    const jawabanAll = {}; // {qid: bool|null, ...} all answers
+
+    if (flow === "lt2m") {
+      isUrgent = c1aAnswers.some(a => a === true);
+      C1A_QUESTIONS.forEach((q, i) => {
+        jawabanAll[q.id] = c1aAnswers[i];
+        if (c1aAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+      });
+      jawabanAll._diare = hasDiare;
+      if (hasDiare) {
+        C1B_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c1bAnswers[i];
+          if (c1bAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+      jawabanAll._kuning = hasKuning;
+      if (hasKuning) {
+        C1C_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c1cAnswers[i];
+          if (c1cAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+      jawabanAll._asi_masalah = hasASIMasalah;
+      if (hasASIMasalah) {
+        C1D_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c1dAnswers[i];
+          if (c1dAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+    } else {
+      isUrgent = c2aAnswers.some(a => a === true);
+      C2A_QUESTIONS.forEach((q, i) => {
+        jawabanAll[q.id] = c2aAnswers[i];
+        if (c2aAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+      });
+      jawabanAll._batuk = hasBatuk;
+      if (hasBatuk) {
+        C2B_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c2bAnswers[i];
+          if (c2bAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+      jawabanAll._diare2 = hasDiare2;
+      if (hasDiare2) {
+        C2C_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c2cAnswers[i];
+          if (c2cAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+      jawabanAll._demam = hasDemam;
+      if (hasDemam) {
+        C2D_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c2dAnswers[i];
+          if (c2dAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+      jawabanAll._telinga = hasTelinga;
+      if (hasTelinga) {
+        C2E_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c2eAnswers[i];
+          if (c2eAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+      jawabanAll._gizi = hasGiziMasalah;
+      if (hasGiziMasalah) {
+        C2F_QUESTIONS.forEach((q, i) => {
+          jawabanAll[q.id] = c2fAnswers[i];
+          if (c2fAnswers[i] === true) kondisiYa.push({ id: q.id, text: q.text });
+        });
+      }
+    }
+
+    const hasGiziAbnormal = gs && (gs.bbtb.level !== 0 || gs.bbu.level < 0 || gs.tbu.level < -1);
+    if (isUrgent) statusHasil = "urgent";
+    else if (kondisiYa.length > 0 || hasGiziAbnormal) statusHasil = "perlu_pantau";
+    else statusHasil = "baik";
+
     try {
       await supabase.from("kesehatan_records").insert({
         nama: namaAnak || "Anonim",
@@ -1210,6 +1452,11 @@ export default function CekKesehatanPage() {
         status_bb_u: gs?.bbu?.label ?? null,
         status_tb_u: gs?.tbu?.label ?? null,
         status_bb_tb: gs?.bbtb?.label ?? null,
+        flow_type: flow,
+        status_hasil: statusHasil,
+        is_urgent: isUrgent,
+        kondisi_json: kondisiYa,
+        jawaban_json: jawabanAll,
       });
       setSavedToDb(true);
     } catch (e) {
@@ -1269,7 +1516,7 @@ export default function CekKesehatanPage() {
   const c1aOk = c1aAnswers.every(a => a !== null);
   const c1bOk = hasDiare !== null && (hasDiare === false || c1bAnswers.every(a => a !== null));
   const c1cOk = hasKuning !== null && (hasKuning === false || c1cAnswers.every(a => a !== null));
-  const c1dOk = c1dAnswers.every(a => a !== null);
+  const c1dOk = hasASIMasalah !== null && (hasASIMasalah === false || c1dAnswers.every(a => a !== null));
   const c2aOk = c2aAnswers.every(a => a !== null);
   const c2bOk = hasBatuk !== null && (hasBatuk === false || c2bAnswers.every(a => a !== null));
   const c2cOk = hasDiare2 !== null && (hasDiare2 === false || c2cAnswers.every(a => a !== null));
@@ -1477,7 +1724,7 @@ export default function CekKesehatanPage() {
             {/* STEP 2: C1a */}
             {step === 2 && (
               <div className="flex flex-col gap-4">
-                <SectionHeader icon={RiAlertLine} badge="C1a · Bayi <2 Bulan" title="Tanda Bahaya Umum" color="red" />
+                <SectionHeader icon={RiAlertLine} badge="C1a · Bayi <2 Bulan" title="Tanda Bahaya & Infeksi Bakteri" color="red" />
                 <p className="text-xs text-gray-500 px-1 -mt-2">Jawab setiap pertanyaan berdasarkan kondisi bayi saat ini.</p>
                 <div className="flex flex-col gap-3">
                   {C1A_QUESTIONS.map((q, i) => (
@@ -1521,13 +1768,13 @@ export default function CekKesehatanPage() {
             {step === 5 && (
               <div className="flex flex-col gap-4">
                 <SectionHeader icon={RiParentLine} badge="C1d · Bayi <2 Bulan" title="Pemberian ASI & Berat Badan" color="purple" />
-                <div className="flex flex-col gap-3">
-                  {C1D_QUESTIONS.map((q, i) => (
-                    <YesNoCard key={q.id} question={q} value={c1dAnswers[i]}
-                      onChange={v => { const a = [...c1dAnswers]; a[i] = v; setC1dAnswers(a); }} index={i} />
-                  ))}
-                </div>
-                <NavButtons onBack={() => goTo(4)} onNext={() => { simpanHasil(); goTo(6); }} nextDisabled={!c1dOk} />
+                <ConditionalModule
+                  mainQuestion="Apakah Anda memiliki permasalahan pemberian ASI atau khawatir dengan berat badan bayi?"
+                  mainValue={hasASIMasalah} onMainChange={v => { setHasASIMasalah(v); if (!v) setC1dAnswers(Array(5).fill(null)); }}
+                  subQuestions={C1D_QUESTIONS} subAnswers={c1dAnswers}
+                  onSubChange={(i, v) => { const a = [...c1dAnswers]; a[i] = v; setC1dAnswers(a); }}
+                />
+                <NavButtons onBack={() => goTo(4)} onNext={() => { simpanHasil("lt2m"); goTo(6); }} nextDisabled={!c1dOk} />
               </div>
             )}
 
@@ -1543,9 +1790,10 @@ export default function CekKesehatanPage() {
                 )}
                 <ResultPage
                   flow="lt2m" ageResult={ageResult} growthStatus={growthStatus}
-                  data={{ c1aAnswers, c1bAnswers, c1cAnswers, c1dAnswers, hasDiare, hasKuning,
+                  data={{ c1aAnswers, c1bAnswers, c1cAnswers, c1dAnswers, hasDiare, hasKuning, hasASIMasalah,
                           c2aAnswers: [], c2bAnswers: [], c2cAnswers: [], c2dAnswers: [], c2eAnswers: [], c2fAnswers: [],
-                          hasBatuk: null, hasDiare2: null, hasDemam: null, hasTelinga: null, hasGiziMasalah: null }}
+                          hasBatuk: null, hasDiare2: null, hasDemam: null, hasTelinga: null, hasGiziMasalah: null,
+                          bb: bbSekarang, tb: tbSekarang, gender }}
                   onReset={reset}
                 />
               </div>
@@ -1650,7 +1898,7 @@ export default function CekKesehatanPage() {
                   subQuestions={C2F_QUESTIONS} subAnswers={c2fAnswers}
                   onSubChange={(i, v) => { const a = [...c2fAnswers]; a[i] = v; setC2fAnswers(a); }}
                 />
-                <NavButtons onBack={() => goTo(14)} onNext={() => { simpanHasil(); goTo(16); }} nextDisabled={!c2fOk} />
+                <NavButtons onBack={() => goTo(14)} onNext={() => { simpanHasil("2m5y"); goTo(16); }} nextDisabled={!c2fOk} />
               </div>
             )}
 
@@ -1668,7 +1916,8 @@ export default function CekKesehatanPage() {
                   flow="2m5y" ageResult={ageResult} growthStatus={growthStatus}
                   data={{ c1aAnswers: [], c1bAnswers: [], c1cAnswers: [], c1dAnswers: [], hasDiare: null, hasKuning: null,
                           c2aAnswers, c2bAnswers, c2cAnswers, c2dAnswers, c2eAnswers, c2fAnswers,
-                          hasBatuk, hasDiare2, hasDemam, hasTelinga, hasGiziMasalah }}
+                          hasBatuk, hasDiare2, hasDemam, hasTelinga, hasGiziMasalah,
+                          bb: bbSekarang, tb: tbSekarang, gender }}
                   onReset={reset}
                 />
               </div>
