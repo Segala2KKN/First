@@ -487,6 +487,8 @@ function WisataSection({ toast }) {
   const [loading, setLoading] = useState(true);
   const [editItem, setEditItem] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef();
 
   const load = async () => {
     const { data } = await supabase.from("wisata").select("*").order("urutan");
@@ -495,16 +497,21 @@ function WisataSection({ toast }) {
   };
   useEffect(() => { load(); }, []);
 
-  const blank = () => ({ nama: "", deskripsi: "", kategori: "Alam", rating: "4.5", tipe: "", jam: "", maps_url: "", warna: "from-green-700 to-emerald-400", urutan: list.length + 1 });
+  const blank = () => ({
+    nama: "", deskripsi: "", kategori: "Alam", rating: "4.5", tipe: "",
+    jam: "", maps_url: "", warna: "from-green-700 to-emerald-400",
+    fotos: [], urutan: list.length + 1,
+  });
 
   const save = async () => {
     setSaving(true);
     try {
-      if (editItem.id) {
-        const { id, created_at, ...rest } = editItem;
+      const payload = { ...editItem, fotos: editItem.fotos || [] };
+      if (payload.id) {
+        const { id, created_at, ...rest } = payload;
         await supabase.from("wisata").update(rest).eq("id", id);
       } else {
-        await supabase.from("wisata").insert(editItem);
+        await supabase.from("wisata").insert(payload);
       }
       toast("Wisata disimpan!");
       setEditItem(null);
@@ -518,6 +525,23 @@ function WisataSection({ toast }) {
     await supabase.from("wisata").delete().eq("id", id);
     toast("Dihapus.");
     load();
+  };
+
+  const uploadFotos = async (files) => {
+    setUploading(true);
+    try {
+      const urls = [];
+      for (const f of Array.from(files)) {
+        const url = await uploadFoto(f, "wisata");
+        urls.push(url);
+      }
+      setEditItem((prev) => ({ ...prev, fotos: [...(prev.fotos || []), ...urls] }));
+    } catch (e) { toast(e.message, "error"); }
+    setUploading(false);
+  };
+
+  const removeFoto = (url) => {
+    setEditItem((prev) => ({ ...prev, fotos: prev.fotos.filter((f) => f !== url) }));
   };
 
   if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Memuat...</div>;
@@ -535,12 +559,21 @@ function WisataSection({ toast }) {
       <div className="flex flex-col gap-3">
         {list.map((w) => (
           <div key={w.id} className={`flex items-center gap-3 bg-gradient-to-r ${w.warna} rounded-2xl p-4 shadow-sm`}>
+            {(w.fotos?.length > 0 || w.foto_url) && (
+              <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={w.fotos?.[0] || w.foto_url} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <p className="font-bold text-white text-sm truncate">{w.nama}</p>
-              <p className="text-white/70 text-xs">{w.kategori} · ★ {w.rating}</p>
+              <p className="text-white/70 text-xs">
+                {w.kategori} · ★ {w.rating}
+                {w.fotos?.length > 0 && ` · 📸 ${w.fotos.length} foto`}
+              </p>
             </div>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => setEditItem(w)} className="bg-white/20 hover:bg-white/30 text-white rounded-xl p-2 transition-colors"><RiEditLine /></button>
+              <button onClick={() => setEditItem({ ...w, fotos: w.fotos || [] })} className="bg-white/20 hover:bg-white/30 text-white rounded-xl p-2 transition-colors"><RiEditLine /></button>
               <button onClick={() => del(w.id)} className="bg-white/20 hover:bg-red-500 text-white rounded-xl p-2 transition-colors"><RiDeleteBinLine /></button>
             </div>
           </div>
@@ -577,7 +610,32 @@ function WisataSection({ toast }) {
                 </div>
               ))}
 
-              <button onClick={save} disabled={saving}
+              {/* Upload Foto */}
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                  Foto Wisata <span className="font-normal normal-case text-gray-400">(bisa lebih dari 1)</span>
+                </label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {(editItem.fotos || []).map((url, i) => (
+                    <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                      <button onClick={() => removeFoto(url)}
+                        className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs">
+                        <RiCloseLine />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={() => fileRef.current?.click()} disabled={uploading}
+                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-blue-400 text-gray-500 hover:text-blue-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors disabled:opacity-60">
+                  <RiUploadCloud2Line /> {uploading ? "Mengupload..." : "Upload Foto"}
+                </button>
+                <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
+                  onChange={(e) => uploadFotos(e.target.files)} />
+              </div>
+
+              <button onClick={save} disabled={saving || uploading}
                 className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold text-sm hover:bg-blue-700 transition-colors disabled:opacity-60">
                 {saving ? "Menyimpan..." : "Simpan"}
               </button>

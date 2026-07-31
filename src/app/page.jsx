@@ -11,6 +11,9 @@ import {
   RiTimeLine,
   RiMapPin2Line,
   RiCheckLine,
+  RiHeartPulseLine,
+  RiTreeLine,
+  RiStoreLine,
 } from "react-icons/ri";
 
 // ─── Fade-in helper ───────────────────────────────────────────
@@ -41,27 +44,169 @@ function Label({ children }) {
 
 // ─── Data wisata ──────────────────────────────────────────────
 const wisataFallback = [
-  { id: 1, nama: "Desa Wisata Sasak Ende", kategori: "Wisata Budaya", rating: "4.7", tipe: "Penginapan", jam: "Buka · Tutup 20.00", deskripsi: "Berlokasi strategis di jalur pariwisata, menjadi titik utama bagi wisatawan untuk mengamati rumah adat tradisional serta melihat langsung keahlian kaum wanita menenun kain tenun ikat.", mapsUrl: "https://maps.app.goo.gl/ytx9YVuJXXBnXks57", warna: "from-amber-800 to-amber-500" },
-  { id: 2, nama: "Pantai Bloam Gerupuk", kategori: "Wisata Pantai", rating: "5.0", tipe: "Tujuan Wisata", jam: "Buka 24 Jam", deskripsi: "Perairan pesisir eksotis dengan kontur tebing dan perbukitan yang mempesona. Sangat populer bagi peselancar pemula hingga profesional yang ingin menikmati gulungan ombak.", mapsUrl: "https://maps.app.goo.gl/SK7mPZDFqL4BKnpo8", warna: "from-blue-700 to-cyan-400" },
-  { id: 3, nama: "Pantai Tanjung Aan", kategori: "Wisata Pantai", rating: "4.5", tipe: "Pantai", jam: "Buka 24 Jam", deskripsi: "Pantai legendaris dengan garis pantai melengkung, pasir unik seperti butiran merica, dan perairan pirus yang jernih. Cocok untuk berenang santai atau menyewa perahu kayu.", mapsUrl: "https://maps.app.goo.gl/aDEqivLHR42KKYEv6", warna: "from-cyan-600 to-teal-400" },
-  { id: 4, nama: "Bukit Merese", kategori: "Wisata Alam", rating: "4.7", tipe: "Tujuan Wisata", jam: "Buka 24 Jam", deskripsi: "Spot ikonik yang menghadirkan kontras indah antara padang rumput hijau dan birunya Samudra Hindia. Favorit wisatawan untuk menikmati momen sunset dari ketinggian.", mapsUrl: "https://maps.app.goo.gl/HnLdxQDQqreXHMzS8", warna: "from-green-700 to-emerald-400" },
-  { id: 5, nama: "Masjid Kuno Gunung Pujut", kategori: "Wisata Sejarah & Religi", rating: "4.5", tipe: "Museum", jam: "Buka · Tutup 06.00 (Minggu)", deskripsi: "Situs cagar budaya peninggalan Kerajaan Pujut sejak abad ke-16. Berdiri di perbukitan 500 mdpl dengan panorama lanskap hijau Lombok Tengah yang memukau.", mapsUrl: "https://maps.app.goo.gl/fRZkB88kkXmfgBss5", warna: "from-green-900 to-green-600" },
-  { id: 6, nama: "Goa Kotak Lombok", kategori: "Wisata Petualangan", rating: "4.6", tipe: "Tujuan Wisata", jam: "Buka 07.00 – 18.00 WITA", deskripsi: "Lorong berbentuk kotak unik di perbukitan Jalan Pantai Mawi. Dari mulut goa terlihat panorama Pantai Batu Payung, Tanjung Aan, dan Bukit Merese. Populer untuk trekking ringan.", mapsUrl: "https://maps.app.goo.gl/e3ZknoMukiWaRtzK7", warna: "from-stone-700 to-amber-700" },
+  {
+    id: 1,
+    nama: "Desa Wisata Sasak Ende",
+    kategori: "Wisata Budaya",
+    rating: "4.7",
+    tipe: "Penginapan",
+    jam: "Buka · Tutup 20.00",
+    deskripsi:
+      "Berlokasi strategis di jalur pariwisata, menjadi titik utama bagi wisatawan untuk mengamati rumah adat tradisional serta melihat langsung keahlian kaum wanita menenun kain tenun ikat.",
+    mapsUrl: "https://maps.app.goo.gl/ytx9YVuJXXBnXks57",
+    warna: "from-amber-800 to-amber-500",
+    fotos: [
+      "/images/pariwisata/Ende_1.jpg",
+      "/images/pariwisata/Ende_2.jpg",
+      "/images/pariwisata/Ende_3.jpg",
+      "/images/pariwisata/Ende_4.jpg",
+    ],
+  },
+  {
+    id: 2,
+    nama: "Pantai Bloam Gerupuk",
+    kategori: "Wisata Pantai",
+    rating: "5.0",
+    tipe: "Tujuan Wisata",
+    jam: "Buka 24 Jam",
+    deskripsi:
+      "Perairan pesisir eksotis dengan kontur tebing dan perbukitan yang mempesona. Sangat populer bagi peselancar pemula hingga profesional yang ingin menikmati gulungan ombak.",
+    mapsUrl: "https://maps.app.goo.gl/SK7mPZDFqL4BKnpo8",
+    warna: "from-blue-700 to-cyan-400",
+    fotos: [
+      "/images/pariwisata/TanjungBloam_2.jpg",
+      "/images/pariwisata/PantaiGrupuk_1.jpg",
+      "/images/pariwisata/PantaiGrupuk_2.jpg",
+      "/images/pariwisata/PantaiGrupuk_3.jpg",
+    ],
+  },
+  {
+    id: 3,
+    nama: "Pantai Tanjung Aan",
+    kategori: "Wisata Pantai",
+    rating: "4.5",
+    tipe: "Pantai",
+    jam: "Buka 24 Jam",
+    deskripsi:
+      "Pantai legendaris dengan garis pantai melengkung, pasir unik seperti butiran merica, dan perairan pirus yang jernih. Cocok untuk berenang santai atau menyewa perahu kayu.",
+    mapsUrl: "https://maps.app.goo.gl/aDEqivLHR42KKYEv6",
+    warna: "from-cyan-600 to-teal-400",
+    fotos: [
+      "/images/pariwisata/TanjungAan_1.jpg",
+      "/images/pariwisata/TanjungAan_2.jpg",
+      "/images/pariwisata/TanjungAan_3.jpg",
+    ],
+  },
+  {
+    id: 4,
+    nama: "Bukit Merese",
+    kategori: "Wisata Alam",
+    rating: "4.7",
+    tipe: "Tujuan Wisata",
+    jam: "Buka 24 Jam",
+    deskripsi:
+      "Spot ikonik yang menghadirkan kontras indah antara padang rumput hijau dan birunya Samudra Hindia. Favorit wisatawan untuk menikmati momen sunset dari ketinggian.",
+    mapsUrl: "https://maps.app.goo.gl/HnLdxQDQqreXHMzS8",
+    warna: "from-green-700 to-emerald-400",
+    fotos: [
+      "/images/pariwisata/Merese_1.jpg",
+      "/images/pariwisata/Merese_2.JPG",
+      "/images/pariwisata/Merese_3.jpg",
+    ],
+  },
+  {
+    id: 5,
+    nama: "Masjid Kuno Gunung Pujut",
+    kategori: "Wisata Sejarah & Religi",
+    rating: "4.5",
+    tipe: "Museum",
+    jam: "Buka · Tutup 06.00 (Minggu)",
+    deskripsi:
+      "Situs cagar budaya peninggalan Kerajaan Pujut sejak abad ke-16. Berdiri di perbukitan 500 mdpl dengan panorama lanskap hijau Lombok Tengah yang memukau.",
+    mapsUrl: "https://maps.app.goo.gl/fRZkB88kkXmfgBss5",
+    warna: "from-green-900 to-green-600",
+    fotos: ["/images/pariwisata/Masjid_Kuno_1.jpg"],
+  },
+  {
+    id: 6,
+    nama: "Goa Kotak Lombok",
+    kategori: "Wisata Petualangan",
+    rating: "4.6",
+    tipe: "Tujuan Wisata",
+    jam: "Buka 07.00 – 18.00 WITA",
+    deskripsi:
+      "Lorong berbentuk kotak unik di perbukitan Jalan Pantai Mawi. Dari mulut goa terlihat panorama Pantai Batu Payung, Tanjung Aan, dan Bukit Merese. Populer untuk trekking ringan.",
+    mapsUrl: "https://maps.app.goo.gl/e3ZknoMukiWaRtzK7",
+    warna: "from-stone-700 to-amber-700",
+    fotos: ["/images/pariwisata/Goa_Kotak_1.jpg"],
+  },
 ];
 
 function mapWisata(row) {
-  return { id: row.id, nama: row.nama, kategori: row.kategori, rating: row.rating, tipe: row.tipe, jam: row.jam, deskripsi: row.deskripsi, mapsUrl: row.maps_url, warna: row.warna, foto_url: row.foto_url };
+  const fallback = wisataFallback.find((w) => w.id === row.id);
+  return {
+    id: row.id,
+    nama: row.nama,
+    kategori: row.kategori,
+    rating: row.rating,
+    tipe: row.tipe,
+    jam: row.jam,
+    deskripsi: row.deskripsi,
+    mapsUrl: row.maps_url,
+    warna: row.warna || fallback?.warna,
+    foto_url: row.foto_url,
+    fotos: row.fotos?.length
+      ? row.fotos
+      : fallback?.fotos || (row.foto_url ? [row.foto_url] : []),
+  };
+}
+
+// ─── Photo Fader (auto-rotate with fade) ──────────────────────
+function PhotoFader({ photos, alt }) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!photos || photos.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrent((i) => (i + 1) % photos.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, [photos]);
+
+  if (!photos || photos.length === 0) return null;
+  return (
+    <>
+      {photos.map((src, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={src}
+          src={src}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: i === current ? 1 : 0,
+            transition: "opacity 0.6s ease-in-out",
+          }}
+        />
+      ))}
+    </>
+  );
 }
 
 // ─── Wisata Card ──────────────────────────────────────────────
 function WisataCardItem({ item }) {
+  const photos = item.fotos || (item.foto_url ? [item.foto_url] : []);
   return (
     <div className="rounded-3xl overflow-hidden shadow-xl bg-white flex flex-col">
-      <div className={`h-44 bg-gradient-to-br ${item.warna} relative flex items-end p-4`}>
-        {item.foto_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.foto_url} alt={item.nama} className="absolute inset-0 w-full h-full object-cover" />
-        ) : null}
+      <div
+        className={`h-44 bg-gradient-to-br ${item.warna} relative flex items-end p-4`}
+      >
+        <PhotoFader photos={photos} alt={item.nama} />
+        {photos.length > 1 && (
+          <span className="absolute top-3 right-3 z-10 bg-black/40 backdrop-blur-sm text-white text-xs px-2 py-0.5 rounded-full">
+            📸 {photos.length} foto
+          </span>
+        )}
         <span className="relative z-10 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
           {item.kategori}
         </span>
@@ -73,12 +218,16 @@ function WisataCardItem({ item }) {
           <span className="text-gray-300 text-xs">·</span>
           <span className="text-xs text-gray-500">{item.tipe}</span>
         </div>
-        <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight">{item.nama}</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight">
+          {item.nama}
+        </h3>
         <div className="flex items-center gap-1 mb-2">
           <RiTimeLine className="text-cyan-500 text-xs" />
           <span className="text-xs text-cyan-600 font-medium">{item.jam}</span>
         </div>
-        <p className="text-gray-500 text-sm leading-relaxed mb-4">{item.deskripsi}</p>
+        <p className="text-gray-500 text-sm leading-relaxed mb-4">
+          {item.deskripsi}
+        </p>
         <a
           href={item.mapsUrl}
           target="_blank"
@@ -120,16 +269,65 @@ function WisataCarousel({ data }) {
     const diff = getDiff(index);
     const abs = Math.abs(diff);
     if (isMobile) {
-      if (diff === 0) return { x: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
-      if (abs === 1) return { x: diff * 260, scale: 0.82, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
-      return { x: diff * 500, scale: 0.65, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+      if (diff === 0)
+        return { x: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+      if (abs === 1)
+        return {
+          x: diff * 260,
+          scale: 0.82,
+          opacity: 0.45,
+          filter: "blur(4px)",
+          zIndex: 10,
+        };
+      return {
+        x: diff * 500,
+        scale: 0.65,
+        opacity: 0,
+        filter: "blur(8px)",
+        zIndex: 0,
+      };
     } else {
-      const CARD = 420, GAP = 24;
-      if (diff === 0) return { x: -(CARD / 2 + GAP / 2), scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
-      if (diff === 1) return { x: CARD / 2 + GAP / 2, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
-      if (diff === -1) return { x: -(CARD + CARD / 2 + GAP * 2), scale: 0.85, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
-      if (diff === 2) return { x: CARD + CARD / 2 + GAP * 2, scale: 0.85, opacity: 0.45, filter: "blur(4px)", zIndex: 10 };
-      return { x: diff * CARD * 2, scale: 0.6, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+      const CARD = 420,
+        GAP = 24;
+      if (diff === 0)
+        return {
+          x: -(CARD / 2 + GAP / 2),
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 20,
+        };
+      if (diff === 1)
+        return {
+          x: CARD / 2 + GAP / 2,
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 20,
+        };
+      if (diff === -1)
+        return {
+          x: -(CARD + CARD / 2 + GAP * 2),
+          scale: 0.85,
+          opacity: 0.45,
+          filter: "blur(4px)",
+          zIndex: 10,
+        };
+      if (diff === 2)
+        return {
+          x: CARD + CARD / 2 + GAP * 2,
+          scale: 0.85,
+          opacity: 0.45,
+          filter: "blur(4px)",
+          zIndex: 10,
+        };
+      return {
+        x: diff * CARD * 2,
+        scale: 0.6,
+        opacity: 0,
+        filter: "blur(8px)",
+        zIndex: 0,
+      };
     }
   };
 
@@ -143,13 +341,17 @@ function WisataCarousel({ data }) {
     backdropFilter: "blur(24px) saturate(200%)",
     WebkitBackdropFilter: "blur(24px) saturate(200%)",
     border: "1.5px solid rgba(255,255,255,0.6)",
-    boxShadow: "0 8px 32px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.8)",
+    boxShadow:
+      "0 8px 32px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.8)",
   };
 
   return (
     <div className="relative select-none">
       <div style={{ overflowX: "clip" }}>
-        <div className="relative flex items-start justify-center" style={{ height: containerH }}>
+        <div
+          className="relative flex items-start justify-center"
+          style={{ height: containerH }}
+        >
           {data.map((item, i) => {
             const anim = getAnimate(i);
             return (
@@ -157,7 +359,12 @@ function WisataCarousel({ data }) {
                 key={item.id}
                 className="absolute top-4"
                 style={{ width: cardWidth, zIndex: anim.zIndex }}
-                animate={{ x: anim.x, scale: anim.scale, opacity: anim.opacity, filter: anim.filter }}
+                animate={{
+                  x: anim.x,
+                  scale: anim.scale,
+                  opacity: anim.opacity,
+                  filter: anim.filter,
+                }}
                 transition={{ type: "spring", stiffness: 280, damping: 28 }}
               >
                 <WisataCardItem item={item} />
@@ -166,15 +373,25 @@ function WisataCarousel({ data }) {
           })}
         </div>
       </div>
-      <button onClick={prev} className="absolute left-3 top-[130px] z-30 w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95" style={glassStyle}>
+      <button
+        onClick={prev}
+        className="absolute left-3 top-[130px] z-30 w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
+        style={glassStyle}
+      >
         <RiArrowLeftLine className="text-gray-700 text-lg" />
       </button>
-      <button onClick={next} className="absolute right-3 top-[130px] z-30 w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95" style={glassStyle}>
+      <button
+        onClick={next}
+        className="absolute right-3 top-[130px] z-30 w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95"
+        style={glassStyle}
+      >
         <RiArrowRightLine className="text-gray-700 text-lg" />
       </button>
       <div className="flex justify-center gap-2 pt-2 relative z-20">
         {Array.from({ length: totalPages }).map((_, i) => (
-          <button key={i} onClick={() => setCurrent(isMobile ? i : i * 2)}
+          <button
+            key={i}
+            onClick={() => setCurrent(isMobile ? i : i * 2)}
             className={`h-2 rounded-full transition-all duration-300 ${i === currentPage ? "w-6 bg-cyan-600" : "w-2 bg-gray-300"}`}
           />
         ))}
@@ -185,22 +402,71 @@ function WisataCarousel({ data }) {
 
 // ─── Konten layanan & keunikan ────────────────────────────────
 const layananData = [
-  { num: "01", judul: "Cek Kesehatan Anak", deskripsi: "Pantau tumbuh kembang anak dengan tools cek gizi berbasis standar WHO secara mudah dan cepat.", href: "/cek-kesehatan" },
-  { num: "02", judul: "Edukasi Pohon & Lingkungan", deskripsi: "Kenali jenis-jenis pohon dan ekosistem hutan yang ada di sekitar Desa Sengkol melalui modul interaktif.", href: "/greenedu" },
-  { num: "03", judul: "UMKM Desa Sengkol", deskripsi: "Temukan produk unggulan UMKM lokal — tenun ikat, olahan kelor, kuliner khas Lombok — langsung dari pengusaha desa.", href: "/umkm" },
+  {
+    num: "01",
+    judul: "Cek Kesehatan Anak",
+    deskripsi:
+      "Pantau tumbuh kembang anak dengan tools cek gizi berbasis standar WHO secara mudah dan cepat.",
+    href: "/cek-kesehatan",
+    icon: RiHeartPulseLine,
+    foto: "/images/KesehatanAnak.jpg",
+  },
+  {
+    num: "02",
+    judul: "Edukasi Pohon & Lingkungan",
+    deskripsi:
+      "Kenali jenis-jenis pohon dan ekosistem hutan yang ada di sekitar Desa Sengkol melalui modul interaktif.",
+    href: "/greenedu",
+    icon: RiTreeLine,
+    foto: "/images/Pohon.jpg",
+  },
+  {
+    num: "03",
+    judul: "UMKM Desa Sengkol",
+    deskripsi:
+      "Temukan produk unggulan UMKM lokal — tenun ikat, olahan kelor, kuliner khas Lombok — langsung dari pengusaha desa.",
+    href: "/umkm",
+    icon: RiStoreLine,
+    foto: "/images/UMKM.jpg",
+  },
 ];
 
 const keunikanData = [
-  { judul: "Budaya Sasak Autentik", deskripsi: "Tradisi dan kearifan lokal Suku Sasak yang masih terjaga kelestariannya hingga kini." },
-  { judul: "Pertanian yang Kuat", deskripsi: "Mayoritas warga hidup dari sektor agraris. Lanskap persawahan hijau menjadi daya tarik tersendiri." },
-  { judul: "Produk Lokal Berkualitas", deskripsi: "Menawarkan produk kerajinan tenun dan makanan berbahan alami yang bernilai tinggi." },
-  { judul: "Komunitas Sehat", deskripsi: "Fokus pada kesehatan masyarakat, terutama pemantauan gizi anak dan pencegahan stunting." },
+  {
+    judul: "Budaya Sasak Autentik",
+    deskripsi:
+      "Tradisi dan kearifan lokal Suku Sasak yang masih terjaga kelestariannya hingga kini.",
+  },
+  {
+    judul: "Pertanian yang Kuat",
+    deskripsi:
+      "Mayoritas warga hidup dari sektor agraris. Lanskap persawahan hijau menjadi daya tarik tersendiri.",
+  },
+  {
+    judul: "Produk Lokal Berkualitas",
+    deskripsi:
+      "Menawarkan produk kerajinan tenun dan makanan berbahan alami yang bernilai tinggi.",
+  },
+  {
+    judul: "Komunitas Sehat",
+    deskripsi:
+      "Fokus pada kesehatan masyarakat, terutama pemantauan gizi anak dan pencegahan stunting.",
+  },
 ];
 
 const testimonialData = [
-  { isi: "Desa Sengkol menawarkan pengalaman yang tak terlupakan dengan budaya dan keindahan alamnya. Kami sangat terkesan dengan keramahan penduduknya.", nama: "Rudi Santoso" },
-  { isi: "Kami menemukan kain tenun yang indah dan makanan lezat di Desa Sengkol. Sangat direkomendasikan bagi siapa saja yang mencintai budaya.", nama: "Andi Prasetyo" },
-  { isi: "Kunjungan ke Desa Sengkol adalah pengalaman yang mengubah hidup. Budaya dan tradisi yang kaya membuat saya ingin kembali lagi.", nama: "Dina Sari" },
+  {
+    isi: "Desa Sengkol menawarkan pengalaman yang tak terlupakan dengan budaya dan keindahan alamnya. Kami sangat terkesan dengan keramahan penduduknya.",
+    nama: "Rudi Santoso",
+  },
+  {
+    isi: "Kami menemukan kain tenun yang indah dan makanan lezat di Desa Sengkol. Sangat direkomendasikan bagi siapa saja yang mencintai budaya.",
+    nama: "Andi Prasetyo",
+  },
+  {
+    isi: "Kunjungan ke Desa Sengkol adalah pengalaman yang mengubah hidup. Budaya dan tradisi yang kaya membuat saya ingin kembali lagi.",
+    nama: "Dina Sari",
+  },
 ];
 
 // ─── Main Page ────────────────────────────────────────────────
@@ -213,17 +479,20 @@ export default function Home() {
       .select("*")
       .order("urutan", { ascending: true })
       .then(({ data, error }) => {
-        if (!error && data && data.length > 0) setWisataData(data.map(mapWisata));
+        if (!error && data && data.length > 0)
+          setWisataData(data.map(mapWisata));
       });
   }, []);
 
   return (
     <main className="bg-white text-gray-900">
-
       {/* ══════════════════════════════════════════════
           HERO — bg foto + split layout
       ══════════════════════════════════════════════ */}
-      <section id="hero" className="relative min-h-screen flex items-center overflow-hidden">
+      <section
+        id="hero"
+        className="relative min-h-screen flex items-center overflow-hidden"
+      >
         {/* Background */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -260,7 +529,8 @@ export default function Home() {
               transition={{ delay: 0.6 }}
               className="text-gray-300 text-base md:text-lg max-w-md leading-relaxed mb-10"
             >
-              Jelajahi keindahan alam dan budaya Lombok yang kaya, dari tenun ikat Sasak hingga pantai eksotis di ujung selatan pulau.
+              Jelajahi keindahan alam dan budaya Lombok yang kaya, dari tenun
+              ikat Sasak hingga pantai eksotis di ujung selatan pulau.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -291,7 +561,11 @@ export default function Home() {
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
-                  e.currentTarget.parentElement.classList.add("bg-gradient-to-br", "from-cyan-700", "to-teal-500");
+                  e.currentTarget.parentElement.classList.add(
+                    "bg-gradient-to-br",
+                    "from-cyan-700",
+                    "to-teal-500",
+                  );
                 }}
               />
             </div>
@@ -324,17 +598,35 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {layananData.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 flex flex-col h-full">
-                  <p className="text-cyan-600 font-bold text-lg mb-4">{item.num}.</p>
-                  <h3 className="font-playfair text-xl font-bold text-gray-900 mb-3">{item.judul}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed flex-1">{item.deskripsi}</p>
-                  <Link
-                    href={item.href}
-                    className="mt-6 text-cyan-600 font-bold text-sm hover:text-cyan-700 transition-colors inline-flex items-center gap-1"
-                  >
-                    Baca Selengkapnya <RiArrowRightLine />
-                  </Link>
-                </div>
+                <Link href={item.href} className="block h-full group">
+                  <div className="relative rounded-3xl overflow-hidden shadow-md flex flex-col h-full min-h-72 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300">
+                    {/* Background foto */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.foto}
+                      alt={item.judul}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    {/* Overlay gelap */}
+                    <div className="absolute inset-0 bg-black/70" />
+                    {/* Konten */}
+                    <div className="relative z-10 p-8 flex flex-col h-full">
+                      <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center mb-6">
+                        <item.icon className="text-white text-3xl" />
+                      </div>
+                      <h3 className="font-playfair text-2xl font-bold text-white mb-3">
+                        {item.judul}
+                      </h3>
+                      <p className="text-white/75 text-sm leading-relaxed flex-1">
+                        {item.deskripsi}
+                      </p>
+                      <div className="mt-6 flex items-center gap-2 text-white font-bold text-sm">
+                        Kunjungi
+                        <RiArrowRightLine className="group-hover:translate-x-1 transition-transform duration-200" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </FadeIn>
             ))}
           </div>
@@ -354,12 +646,19 @@ export default function Home() {
                 Kisah Di Balik Budaya Dan Kerajinan Desa Sengkol
               </h2>
             </FadeIn>
-            <FadeIn delay={0.15} className="flex flex-col justify-center gap-5 pt-2 md:pt-12">
+            <FadeIn
+              delay={0.15}
+              className="flex flex-col justify-center gap-5 pt-2 md:pt-12"
+            >
               <p className="text-gray-600 leading-relaxed">
-                Desa Sengkol adalah tempat yang kaya akan budaya Sasak, serta kerajinan tenun yang unik. Kami berkomitmen untuk mempromosikan warisan lokal dan mendukung pengembangan ekonomi masyarakat.
+                Desa Sengkol adalah tempat yang kaya akan budaya Sasak, serta
+                kerajinan tenun yang unik. Kami berkomitmen untuk mempromosikan
+                warisan lokal dan mendukung pengembangan ekonomi masyarakat.
               </p>
               <p className="text-gray-600 leading-relaxed">
-                Kami adalah desa yang berfokus pada tradisi, keberlanjutan, dan kesejahteraan warga — menjadi penyangga utama KEK Mandalika di Lombok Tengah.
+                Kami adalah desa yang berfokus pada tradisi, keberlanjutan, dan
+                kesejahteraan warga — menjadi penyangga utama KEK Mandalika di
+                Lombok Tengah.
               </p>
               <div>
                 <a
@@ -379,7 +678,7 @@ export default function Home() {
             <div className="rounded-3xl overflow-hidden h-72 md:h-96 w-full">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/ProfileSengkol.JPG"
+                src="images/TentangKami.jpg"
                 alt="Desa Sengkol"
                 className="w-full h-full object-cover"
                 style={{ objectPosition: "50% 60%" }}
@@ -399,7 +698,9 @@ export default function Home() {
             <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-900">
               Wisata Desa Sengkol
             </h2>
-            <p className="text-gray-400 mt-3 text-sm">Geser untuk melihat semua destinasi</p>
+            <p className="text-gray-400 mt-3 text-sm">
+              Geser untuk melihat semua destinasi
+            </p>
           </FadeIn>
         </div>
         <div className="max-w-6xl mx-auto">
@@ -425,8 +726,12 @@ export default function Home() {
                 {keunikanData.map((item, i) => (
                   <div key={i}>
                     <RiCheckLine className="text-cyan-600 text-xl mb-3" />
-                    <h3 className="font-playfair text-lg font-bold text-gray-900 mb-2">{item.judul}</h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">{item.deskripsi}</p>
+                    <h3 className="font-playfair text-lg font-bold text-gray-900 mb-2">
+                      {item.judul}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      {item.deskripsi}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -451,8 +756,12 @@ export default function Home() {
             {testimonialData.map((t, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm h-full flex flex-col">
-                  <p className="text-cyan-600 text-4xl font-bold leading-none mb-4">"</p>
-                  <p className="text-gray-600 text-sm leading-relaxed flex-1">{t.isi}</p>
+                  <p className="text-cyan-600 text-4xl font-bold leading-none mb-4">
+                    "
+                  </p>
+                  <p className="text-gray-600 text-sm leading-relaxed flex-1">
+                    {t.isi}
+                  </p>
                   <p className="text-gray-400 text-sm mt-6">{t.nama}</p>
                 </div>
               </FadeIn>
@@ -475,8 +784,12 @@ export default function Home() {
         <div className="absolute inset-0 bg-slate-900/75" />
         <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="text-white">
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-2">Ayo Bergabung Bersama Kami</h2>
-            <p className="text-gray-300 text-sm">Rasakan pengalaman unik dan dukung komunitas lokal Desa Sengkol.</p>
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-2">
+              Ayo Bergabung Bersama Kami
+            </h2>
+            <p className="text-gray-300 text-sm">
+              Rasakan pengalaman unik dan dukung komunitas lokal Desa Sengkol.
+            </p>
           </div>
           <a
             href="https://maps.app.goo.gl/JFU19roZUsfQWjwW9"
@@ -488,7 +801,6 @@ export default function Home() {
           </a>
         </div>
       </section>
-
     </main>
   );
 }
