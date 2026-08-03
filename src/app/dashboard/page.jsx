@@ -724,24 +724,23 @@ function KesehatanSection() {
 // MAIN DASHBOARD
 // ─────────────────────────────────────────────────────────────
 const TABS = [
-  { key: "pohon",     label: "Pohon",     icon: RiTreeLine,       color: "text-green-600" },
-  { key: "umkm",     label: "UMKM",      icon: RiStoreLine,      color: "text-orange-500" },
-  { key: "wisata",   label: "Wisata",    icon: RiMapPin2Line,    color: "text-blue-600" },
-  { key: "kesehatan",label: "Kesehatan", icon: RiHeartPulseLine, color: "text-rose-500" },
+  { key: "pohon",     label: "Pohon",     icon: RiTreeLine,       color: "text-emerald-400", bg: "bg-emerald-500/15" },
+  { key: "umkm",     label: "UMKM",      icon: RiStoreLine,      color: "text-orange-400",  bg: "bg-orange-500/15"  },
+  { key: "wisata",   label: "Wisata",    icon: RiMapPin2Line,    color: "text-cyan-400",    bg: "bg-cyan-500/15"    },
+  { key: "kesehatan",label: "Kesehatan", icon: RiHeartPulseLine, color: "text-rose-400",    bg: "bg-rose-500/15"    },
 ];
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("pohon");
-  const [toast, setToast] = useState(null); // {msg, type}
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
       setLoading(false);
     });
-    // Listen to auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
@@ -757,8 +756,8 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-gray-950">
+        <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -767,29 +766,37 @@ export default function Dashboard() {
     return <LoginScreen onLogin={() => supabase.auth.getUser().then(({ data }) => setUser(data.user))} />;
   }
 
+  const activeTabData = TABS.find(t => t.key === activeTab);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-40">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-black text-gray-900">Dashboard Admin</h1>
-            <p className="text-xs text-gray-400">{user.email}</p>
+    <div className="min-h-screen bg-gray-950">
+
+      {/* ── Header dark ── */}
+      <header className="sticky top-0 z-40 bg-gray-900/95 backdrop-blur border-b border-white/5 shadow-lg">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
+              <RiDashboardLine className="text-cyan-400 text-lg" />
+            </div>
+            <div>
+              <h1 className="text-sm font-black text-white tracking-wide">Admin Dashboard</h1>
+              <p className="text-[11px] text-gray-500">{user.email}</p>
+            </div>
           </div>
           <button onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 transition-colors">
+            className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-400 transition-colors border border-gray-700 hover:border-red-500/40 px-3 py-1.5 rounded-full">
             <RiLogoutBoxLine /> Keluar
           </button>
         </div>
 
-        {/* Tab Bar */}
-        <div className="max-w-4xl mx-auto px-6 flex gap-1 overflow-x-auto pb-px">
-          {TABS.map(({ key, label, icon: Icon, color }) => (
+        {/* Tab bar — pill style */}
+        <div className="max-w-5xl mx-auto px-6 pb-4 flex gap-2 overflow-x-auto">
+          {TABS.map(({ key, label, icon: Icon, color, bg }) => (
             <button key={key} onClick={() => setActiveTab(key)}
-              className={`flex items-center gap-1.5 px-4 py-3 text-sm font-bold border-b-2 transition-all whitespace-nowrap ${
+              className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all whitespace-nowrap ${
                 activeTab === key
-                  ? `${color} border-current`
-                  : "text-gray-400 border-transparent hover:text-gray-600"
+                  ? `${bg} ${color} ring-1 ring-white/10`
+                  : "text-gray-500 hover:text-gray-300 hover:bg-white/5"
               }`}>
               <Icon /> {label}
             </button>
@@ -797,12 +804,27 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Content */}
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        {activeTab === "pohon" && <PohonSection toast={showToast} />}
-        {activeTab === "umkm" && <UmkmSection toast={showToast} />}
-        {activeTab === "wisata" && <WisataSection toast={showToast} />}
-        {activeTab === "kesehatan" && <KesehatanSection />}
+      {/* ── Content ── */}
+      <main className="max-w-5xl mx-auto px-6 py-8">
+
+        {/* Section title */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className={`w-10 h-10 rounded-2xl ${activeTabData.bg} border border-white/5 flex items-center justify-center`}>
+            <activeTabData.icon className={`text-xl ${activeTabData.color}`} />
+          </div>
+          <div>
+            <p className="text-[10px] text-gray-600 uppercase tracking-widest font-bold">Kelola</p>
+            <h2 className="text-lg font-black text-white">{activeTabData.label}</h2>
+          </div>
+        </div>
+
+        {/* Content card */}
+        <div className="bg-white rounded-3xl p-6 shadow-xl border border-white/5">
+          {activeTab === "pohon"     && <PohonSection     toast={showToast} />}
+          {activeTab === "umkm"      && <UmkmSection      toast={showToast} />}
+          {activeTab === "wisata"    && <WisataSection     toast={showToast} />}
+          {activeTab === "kesehatan" && <KesehatanSection />}
+        </div>
       </main>
 
       {/* Toast */}
