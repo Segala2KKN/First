@@ -14,6 +14,10 @@ import {
   RiHeartPulseLine,
   RiTreeLine,
   RiStoreLine,
+  RiQrCodeLine,
+  RiLinksLine,
+  RiSmartphoneLine,
+  RiChat3Line,
 } from "react-icons/ri";
 
 // ─── Fade-in helper ───────────────────────────────────────────
@@ -454,20 +458,62 @@ const keunikanData = [
   },
 ];
 
-const testimonialData = [
-  {
-    isi: "Desa Sengkol menawarkan pengalaman yang tak terlupakan dengan budaya dan keindahan alamnya. Kami sangat terkesan dengan keramahan penduduknya.",
-    nama: "Rudi Santoso",
-  },
-  {
-    isi: "Kami menemukan kain tenun yang indah dan makanan lezat di Desa Sengkol. Sangat direkomendasikan bagi siapa saja yang mencintai budaya.",
-    nama: "Andi Prasetyo",
-  },
-  {
-    isi: "Kunjungan ke Desa Sengkol adalah pengalaman yang mengubah hidup. Budaya dan tradisi yang kaya membuat saya ingin kembali lagi.",
-    nama: "Dina Sari",
-  },
-];
+const FORM_URL = "https://bit.ly/FormAduanDesaSengkol";
+
+function QRCard() {
+  const [copied, setCopied] = useState(false);
+  const copyLink = () => {
+    navigator.clipboard.writeText(FORM_URL).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+  return (
+    <div className="relative flex justify-center">
+      {/* Outer pulse ring */}
+      <span className="absolute inset-0 rounded-[2rem] bg-cyan-400/15 animate-ping"
+        style={{ animationDuration: "2.8s" }} />
+      {/* Card */}
+      <div className="relative bg-white rounded-[2rem] shadow-2xl p-6 w-72">
+        {/* Top badge */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-7 h-7 rounded-lg bg-cyan-100 flex items-center justify-center">
+            <RiQrCodeLine className="text-cyan-600 text-sm" />
+          </div>
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Scan QR Code</span>
+        </div>
+        {/* QR Image */}
+        <div className="bg-gray-50 rounded-2xl p-3 mb-4 border border-gray-100">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/QRKritikSaran.jpeg"
+            alt="QR Kritik dan Saran Desa Sengkol"
+            className="w-full aspect-square object-contain rounded-xl"
+          />
+        </div>
+        {/* Link text */}
+        <p className="text-[11px] text-gray-400 text-center mb-3 font-mono tracking-tight truncate">
+          bit.ly/FormAduanDesaSengkol
+        </p>
+        {/* Copy button */}
+        <button
+          onClick={copyLink}
+          className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold border-2 transition-all duration-200 ${
+            copied
+              ? "border-green-300 bg-green-50 text-green-600"
+              : "border-gray-200 hover:border-cyan-300 hover:bg-cyan-50 text-gray-600 hover:text-cyan-600"
+          }`}
+        >
+          {copied ? <RiCheckLine /> : <RiLinksLine />}
+          {copied ? "Link Tersalin!" : "Salin Link"}
+        </button>
+        {/* Hint */}
+        <p className="text-[11px] text-gray-400 text-center mt-3 flex items-center justify-center gap-1">
+          <RiSmartphoneLine /> Arahkan kamera HP ke QR di atas
+        </p>
+      </div>
+    </div>
+  );
+}
 
 // ─── Main Page ────────────────────────────────────────────────
 export default function Home() {
@@ -741,31 +787,69 @@ export default function Home() {
       </section>
 
       {/* ══════════════════════════════════════════════
-          TESTIMONIAL
+          KRITIK & SARAN — QR Section
       ══════════════════════════════════════════════ */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <FadeIn className="text-center mb-12">
-            <Label>Kata Mereka</Label>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-gray-900">
-              Apa Kata Pengunjung Tentang Desa Sengkol
-            </h2>
-          </FadeIn>
+      <section className="py-24 px-6 bg-gradient-to-br from-gray-900 to-slate-800 relative overflow-hidden">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonialData.map((t, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm h-full flex flex-col">
-                  <p className="text-cyan-600 text-4xl font-bold leading-none mb-4">
-                    "
-                  </p>
-                  <p className="text-gray-600 text-sm leading-relaxed flex-1">
-                    {t.isi}
-                  </p>
-                  <p className="text-gray-400 text-sm mt-6">{t.nama}</p>
-                </div>
-              </FadeIn>
-            ))}
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+
+            {/* Kiri — teks */}
+            <FadeIn>
+              <Label>Kritik &amp; Saran</Label>
+              <h2 className="font-playfair text-4xl md:text-5xl font-bold text-white leading-tight mb-5">
+                Suara Kamu Penting Untuk Kami
+              </h2>
+              <p className="text-gray-400 leading-relaxed mb-8 max-w-md">
+                Bantu Desa Sengkol terus berkembang dengan memberikan masukan, kritik, atau saran yang membangun. Setiap aspirasi akan kami dengar dan tindak lanjuti.
+              </p>
+
+              {/* Daftar topik */}
+              <div className="flex flex-col gap-3 mb-10">
+                {[
+                  "Keluhan layanan desa",
+                  "Saran program & kegiatan",
+                  "Laporan masalah lingkungan",
+                  "Masukan fasilitas umum",
+                  "Apresiasi & ide inovatif",
+                ].map((item) => (
+                  <div key={item} className="flex items-center gap-3">
+                    <div className="w-5 h-5 rounded-full bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+                      <RiCheckLine className="text-cyan-400 text-[10px]" />
+                    </div>
+                    <p className="text-gray-300 text-sm">{item}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* CTA untuk pengguna mobile */}
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-7 py-3.5 rounded-full transition-colors text-sm"
+                >
+                  <RiChat3Line /> Buka Form Langsung
+                </a>
+                <a
+                  href={FORM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white/70 hover:text-white font-semibold px-7 py-3.5 rounded-full transition-colors text-sm"
+                >
+                  <RiExternalLinkLine /> bit.ly/FormAduan...
+                </a>
+              </div>
+            </FadeIn>
+
+            {/* Kanan — QR Card */}
+            <FadeIn delay={0.25}>
+              <QRCard />
+            </FadeIn>
           </div>
         </div>
       </section>
