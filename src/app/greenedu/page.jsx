@@ -27,7 +27,8 @@ const pohonFallback = [
     warna: "from-emerald-600 to-green-400",
     badge: "bg-emerald-100 text-emerald-800",
     fotos: [], // Contoh: ["/images/pohon/cemara-kipas-1.jpg", "/images/pohon/cemara-kipas-2.jpg"]
-    deskripsiSingkat: "Pagar hidup & tanaman hias dengan daun seperti kipas yang rapat",
+    deskripsiSingkat:
+      "Pagar hidup & tanaman hias dengan daun seperti kipas yang rapat",
     ciri: [
       "Daunnya kecil-kecil seperti sisik, tersusun rapat membentuk bidang pipih menyerupai kipas",
       "Tumbuh subur di dataran rendah dan tinggi, menyukai cahaya matahari yang cukup",
@@ -43,7 +44,8 @@ const pohonFallback = [
     warna: "from-teal-600 to-cyan-400",
     badge: "bg-teal-100 text-teal-800",
     fotos: [], // Contoh: ["/images/pohon/glodokan-tiang-1.jpg", "/images/pohon/glodokan-tiang-2.jpg"]
-    deskripsiSingkat: "Pohon tinggi ramping seperti tiang, peneduh jalan yang rapi",
+    deskripsiSingkat:
+      "Pohon tinggi ramping seperti tiang, peneduh jalan yang rapi",
     ciri: [
       "Pohonnya tinggi dan ramping, bentuknya seperti tiang atau pilar",
       "Daunnya panjang, tepinya bergelombang, dan menjuntai lemas apabila tertiup angin",
@@ -60,7 +62,8 @@ const pohonFallback = [
     warna: "from-green-800 to-green-500",
     badge: "bg-green-100 text-green-900",
     fotos: [], // Contoh: ["/images/pohon/beringin-1.jpg", "/images/pohon/beringin-2.jpg"]
-    deskripsiSingkat: "Pohon besar rimbun dengan akar gantung yang turun dari dahannya",
+    deskripsiSingkat:
+      "Pohon besar rimbun dengan akar gantung yang turun dari dahannya",
     ciri: [
       "Pohonnya besar dengan daun yang sangat rimbun",
       "Punya akar yang menggantung turun dari dahan-dahannya (akar gantung)",
@@ -81,7 +84,8 @@ const pohonFallback = [
       "Bunganya kecil, berwarna kuning kemerahan",
       "Buahnya berbentuk polong panjang berwarna coklat, berisi daging buah rasa asam",
     ],
-    manfaat: "Buahnya sering dipakai untuk bumbu masakan dan bahan minuman segar.",
+    manfaat:
+      "Buahnya sering dipakai untuk bumbu masakan dan bahan minuman segar.",
   },
   {
     id: 5,
@@ -96,7 +100,8 @@ const pohonFallback = [
       "Daunnya kaku dan tumbuh melingkar di pucuk batang",
       "Batangnya kasar dan bersisik",
     ],
-    manfaat: "Jadi tanaman hias unik yang bernilai tinggi dan sering dikoleksi.",
+    manfaat:
+      "Jadi tanaman hias unik yang bernilai tinggi dan sering dikoleksi.",
   },
   {
     id: 6,
@@ -106,7 +111,8 @@ const pohonFallback = [
     warna: "from-yellow-500 to-lime-400",
     badge: "bg-yellow-100 text-yellow-800",
     fotos: [], // Contoh: ["/images/pohon/mangga-1.jpg", "/images/pohon/mangga-2.jpg"]
-    deskripsiSingkat: "Pohon buah lezat dengan tajuk lebar dan daun hijau mengkilap",
+    deskripsiSingkat:
+      "Pohon buah lezat dengan tajuk lebar dan daun hijau mengkilap",
     ciri: [
       "Pohonnya besar dengan tajuk yang lebar dan rimbun",
       "Daunnya memanjang, hijau tua mengkilap, dan daun mudanya berwarna kemerahan",
@@ -123,7 +129,8 @@ const pohonFallback = [
     warna: "from-lime-600 to-green-400",
     badge: "bg-lime-100 text-lime-800",
     fotos: [], // Contoh: ["/images/pohon/kelor-1.jpg", "/images/pohon/kelor-2.jpg"]
-    deskripsiSingkat: "Tanaman super bergizi dengan daun kecil tersusun rapi menyirip",
+    deskripsiSingkat:
+      "Tanaman super bergizi dengan daun kecil tersusun rapi menyirip",
     ciri: [
       "Pohonnya kecil sampai sedang, tumbuh cepat dan mudah bercabang",
       "Daunnya kecil-kecil dan tersusun rapi menyirip",
@@ -140,7 +147,8 @@ const pohonFallback = [
     warna: "from-purple-600 to-pink-400",
     badge: "bg-purple-100 text-purple-800",
     fotos: [], // Contoh: ["/images/pohon/turi-1.jpg", "/images/pohon/turi-2.jpg"]
-    deskripsiSingkat: "Pohon cepat tumbuh dengan bunga cantik seperti kupu-kupu",
+    deskripsiSingkat:
+      "Pohon cepat tumbuh dengan bunga cantik seperti kupu-kupu",
     ciri: [
       "Pohonnya kecil dan tumbuh sangat cepat",
       "Bunganya besar, berbentuk seperti kupu-kupu, warnanya putih atau merah",
@@ -169,19 +177,63 @@ function mapPohon(row) {
 
 // ===== DATA BAGIAN POHON =====
 const bagianPohon = [
-  { num: 1, nama: "Akar",   fungsi: "Menyerap air dan makanan dari tanah, serta menahan pohon supaya tidak roboh.", fallback: "from-amber-400 to-yellow-300",  img: "/images/bagian-pohon/akar.jpg" },
-  { num: 2, nama: "Batang", fungsi: "Mengalirkan air dan makanan dari akar ke daun, sekaligus menopang pohon.",     fallback: "from-orange-500 to-amber-400", img: "/images/bagian-pohon/batang.jpg" },
-  { num: 3, nama: "Daun",   fungsi: "Membuat makanan melalui proses fotosintesis dengan bantuan sinar matahari.",   fallback: "from-green-500 to-emerald-400", img: "/images/bagian-pohon/daun.jpg" },
-  { num: 4, nama: "Bunga",  fungsi: "Tempat terjadinya penyerbukan, awal mula terbentuknya buah.",                  fallback: "from-pink-500 to-rose-400",   img: "/images/bagian-pohon/bunga.jpg" },
-  { num: 5, nama: "Buah",   fungsi: "Melindungi biji di dalamnya.",                                                 fallback: "from-red-500 to-orange-400",  img: "/images/bagian-pohon/buah.jpg" },
-  { num: 6, nama: "Biji",   fungsi: "Calon tumbuhan baru.",                                                         fallback: "from-yellow-500 to-lime-400", img: "/images/bagian-pohon/biji.jpg" },
+  {
+    num: 1,
+    nama: "Akar",
+    fungsi:
+      "Menyerap air dan makanan dari tanah, serta menahan pohon supaya tidak roboh.",
+    fallback: "from-amber-400 to-yellow-300",
+    img: "/images/bagian-pohon/akar.jpg",
+  },
+  {
+    num: 2,
+    nama: "Batang",
+    fungsi:
+      "Mengalirkan air dan makanan dari akar ke daun, sekaligus menopang pohon.",
+    fallback: "from-orange-500 to-amber-400",
+    img: "/images/bagian-pohon/batang.jpg",
+  },
+  {
+    num: 3,
+    nama: "Daun",
+    fungsi:
+      "Membuat makanan melalui proses fotosintesis dengan bantuan sinar matahari.",
+    fallback: "from-green-500 to-emerald-400",
+    img: "/images/bagian-pohon/daun.jpg",
+  },
+  {
+    num: 4,
+    nama: "Bunga",
+    fungsi: "Tempat terjadinya penyerbukan, awal mula terbentuknya buah.",
+    fallback: "from-pink-500 to-rose-400",
+    img: "/images/bagian-pohon/bunga.jpg",
+  },
+  {
+    num: 5,
+    nama: "Buah",
+    fungsi: "Melindungi biji di dalamnya.",
+    fallback: "from-red-500 to-orange-400",
+    img: "/images/bagian-pohon/buah.jpg",
+  },
+  {
+    num: 6,
+    nama: "Biji",
+    fungsi: "Calon tumbuhan baru.",
+    fallback: "from-yellow-500 to-lime-400",
+    img: "/images/bagian-pohon/biji.jpg",
+  },
 ];
 
 // ===== DATA KUIS =====
 const quizData = [
   {
     soal: "Apa nama ilmiah dari Cemara Kipas?",
-    pilihan: ["Thuja orientalis", "Ficus benjamina", "Cycas rumphii", "Morinda citrifolia"],
+    pilihan: [
+      "Thuja orientalis",
+      "Ficus benjamina",
+      "Cycas rumphii",
+      "Morinda citrifolia",
+    ],
     jawaban: 0,
   },
   {
@@ -235,15 +287,25 @@ function Lightbox({ fotos, startIdx, nama, onClose }) {
 
   // Tutup dengan Escape
   useEffect(() => {
-    const handler = (e) => { if (e.key === "Escape") onClose(); };
+    const handler = (e) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  const prev = (e) => { e?.stopPropagation(); setIdx((i) => (i - 1 + fotos.length) % fotos.length); };
-  const next = (e) => { e?.stopPropagation(); setIdx((i) => (i + 1) % fotos.length); };
+  const prev = (e) => {
+    e?.stopPropagation();
+    setIdx((i) => (i - 1 + fotos.length) % fotos.length);
+  };
+  const next = (e) => {
+    e?.stopPropagation();
+    setIdx((i) => (i + 1) % fotos.length);
+  };
 
-  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const delta = touchStartX.current - e.changedTouches[0].clientX;
@@ -319,7 +381,10 @@ function Lightbox({ fotos, startIdx, nama, onClose }) {
             {fotos.map((_, i) => (
               <button
                 key={i}
-                onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIdx(i);
+                }}
                 className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-6 bg-white" : "w-1.5 bg-white/40"}`}
               />
             ))}
@@ -339,16 +404,26 @@ function PhotoCarousel({ fotos, warna, nama }) {
 
   if (!hasFoto) {
     return (
-      <div className={`h-52 bg-gradient-to-br ${warna} flex items-center justify-center`}>
+      <div
+        className={`h-52 bg-gradient-to-br ${warna} flex items-center justify-center`}
+      >
         <RiTreeLine className="text-white/30 text-9xl" />
       </div>
     );
   }
 
-  const prev = (e) => { e.stopPropagation(); setIdx((i) => (i - 1 + fotos.length) % fotos.length); };
-  const next = (e) => { e.stopPropagation(); setIdx((i) => (i + 1) % fotos.length); };
+  const prev = (e) => {
+    e.stopPropagation();
+    setIdx((i) => (i - 1 + fotos.length) % fotos.length);
+  };
+  const next = (e) => {
+    e.stopPropagation();
+    setIdx((i) => (i + 1) % fotos.length);
+  };
 
-  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const delta = touchStartX.current - e.changedTouches[0].clientX;
@@ -375,7 +450,11 @@ function PhotoCarousel({ fotos, warna, nama }) {
             onClick={() => setLightbox(true)}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={fotos[idx]} alt={`${nama} foto ${idx + 1}`} className="absolute inset-0 w-full h-full object-cover" />
+            <img
+              src={fotos[idx]}
+              alt={`${nama} foto ${idx + 1}`}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
           </motion.div>
         </AnimatePresence>
 
@@ -386,17 +465,26 @@ function PhotoCarousel({ fotos, warna, nama }) {
 
         {fotos.length > 1 && (
           <>
-            <button onClick={prev} className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white">
+            <button
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white"
+            >
               <RiArrowLeftLine className="text-sm" />
             </button>
-            <button onClick={next} className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white">
+            <button
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/35 backdrop-blur-sm rounded-full p-1.5 text-white"
+            >
               <RiArrowRightLine className="text-sm" />
             </button>
             <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
               {fotos.map((_, i) => (
                 <button
                   key={i}
-                  onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIdx(i);
+                  }}
                   className={`h-1.5 rounded-full transition-all duration-300 ${i === idx ? "w-5 bg-white" : "w-1.5 bg-white/50"}`}
                 />
               ))}
@@ -411,7 +499,12 @@ function PhotoCarousel({ fotos, warna, nama }) {
       {/* Lightbox */}
       <AnimatePresence>
         {lightbox && (
-          <Lightbox fotos={fotos} startIdx={idx} nama={nama} onClose={() => setLightbox(false)} />
+          <Lightbox
+            fotos={fotos}
+            startIdx={idx}
+            nama={nama}
+            onClose={() => setLightbox(false)}
+          />
         )}
       </AnimatePresence>
     </>
@@ -447,16 +540,65 @@ function PohonCarousel({ data, onSelect }) {
     const diff = getDiff(index);
     const abs = Math.abs(diff);
     if (isMobile) {
-      if (diff === 0) return { x: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
-      if (abs === 1) return { x: diff * 260, scale: 0.82, opacity: 0.4, filter: "blur(3px)", zIndex: 10 };
-      return { x: diff * 500, scale: 0.65, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+      if (diff === 0)
+        return { x: 0, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
+      if (abs === 1)
+        return {
+          x: diff * 260,
+          scale: 0.82,
+          opacity: 0.4,
+          filter: "blur(3px)",
+          zIndex: 10,
+        };
+      return {
+        x: diff * 500,
+        scale: 0.65,
+        opacity: 0,
+        filter: "blur(8px)",
+        zIndex: 0,
+      };
     } else {
-      const CARD = 360, GAP = 24;
-      if (diff === 0) return { x: -(CARD / 2 + GAP / 2), scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
-      if (diff === 1) return { x: CARD / 2 + GAP / 2, scale: 1, opacity: 1, filter: "blur(0px)", zIndex: 20 };
-      if (diff === -1) return { x: -(CARD + CARD / 2 + GAP * 2), scale: 0.85, opacity: 0.4, filter: "blur(3px)", zIndex: 10 };
-      if (diff === 2) return { x: CARD + CARD / 2 + GAP * 2, scale: 0.85, opacity: 0.4, filter: "blur(3px)", zIndex: 10 };
-      return { x: diff * CARD * 2, scale: 0.6, opacity: 0, filter: "blur(8px)", zIndex: 0 };
+      const CARD = 360,
+        GAP = 24;
+      if (diff === 0)
+        return {
+          x: -(CARD / 2 + GAP / 2),
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 20,
+        };
+      if (diff === 1)
+        return {
+          x: CARD / 2 + GAP / 2,
+          scale: 1,
+          opacity: 1,
+          filter: "blur(0px)",
+          zIndex: 20,
+        };
+      if (diff === -1)
+        return {
+          x: -(CARD + CARD / 2 + GAP * 2),
+          scale: 0.85,
+          opacity: 0.4,
+          filter: "blur(3px)",
+          zIndex: 10,
+        };
+      if (diff === 2)
+        return {
+          x: CARD + CARD / 2 + GAP * 2,
+          scale: 0.85,
+          opacity: 0.4,
+          filter: "blur(3px)",
+          zIndex: 10,
+        };
+      return {
+        x: diff * CARD * 2,
+        scale: 0.6,
+        opacity: 0,
+        filter: "blur(8px)",
+        zIndex: 0,
+      };
     }
   };
 
@@ -465,7 +607,9 @@ function PohonCarousel({ data, onSelect }) {
   const totalPages = isMobile ? n : Math.ceil(n / 2);
   const currentPage = isMobile ? current : Math.floor(current / 2);
 
-  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const delta = touchStartX.current - e.changedTouches[0].clientX;
@@ -492,7 +636,12 @@ function PohonCarousel({ data, onSelect }) {
                 key={pohon.id}
                 className="absolute top-3"
                 style={{ width: cardWidth, zIndex: anim.zIndex }}
-                animate={{ x: anim.x, scale: anim.scale, opacity: anim.opacity, filter: anim.filter }}
+                animate={{
+                  x: anim.x,
+                  scale: anim.scale,
+                  opacity: anim.opacity,
+                  filter: anim.filter,
+                }}
                 transition={{ type: "spring", stiffness: 280, damping: 28 }}
               >
                 <PohonCard pohon={pohon} onClick={onSelect} />
@@ -546,7 +695,11 @@ function PohonCard({ pohon, onClick }) {
       {hasFoto ? (
         <div className="h-28 relative overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={pohon.fotos[0]} alt={pohon.nama} className="absolute inset-0 w-full h-full object-cover" />
+          <img
+            src={pohon.fotos[0]}
+            alt={pohon.nama}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
           {pohon.fotos.length > 1 && (
             <div className="absolute bottom-1.5 right-1.5 bg-black/40 backdrop-blur-sm text-white text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1">
               <RiArrowRightLine className="text-xs" /> {pohon.fotos.length} foto
@@ -554,7 +707,9 @@ function PohonCard({ pohon, onClick }) {
           )}
         </div>
       ) : (
-        <div className={`h-28 bg-gradient-to-br ${pohon.warna} flex items-center justify-center relative`}>
+        <div
+          className={`h-28 bg-gradient-to-br ${pohon.warna} flex items-center justify-center relative`}
+        >
           <RiTreeLine className="text-white/40 text-6xl" />
           <div className="absolute top-2.5 left-2.5 w-6 h-6 rounded-full bg-white/25 flex items-center justify-center">
             <span className="text-white text-xs font-bold">{pohon.id}</span>
@@ -562,12 +717,18 @@ function PohonCard({ pohon, onClick }) {
         </div>
       )}
       <div className="p-3 flex flex-col flex-1">
-        <h3 className="font-bold text-gray-900 text-sm leading-tight">{pohon.nama}</h3>
+        <h3 className="font-bold text-gray-900 text-sm leading-tight">
+          {pohon.nama}
+        </h3>
         <p className="text-xs text-gray-400 italic mb-2">{pohon.namaIlmiah}</p>
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full self-start mb-2 ${pohon.badge}`}>
+        <span
+          className={`text-xs font-semibold px-2 py-0.5 rounded-full self-start mb-2 ${pohon.badge}`}
+        >
           {pohon.famili}
         </span>
-        <p className="text-gray-500 text-xs leading-relaxed flex-1">{pohon.deskripsiSingkat}</p>
+        <p className="text-gray-500 text-xs leading-relaxed flex-1">
+          {pohon.deskripsiSingkat}
+        </p>
         <div className="mt-2 flex items-center gap-1 text-green-600 text-xs font-semibold">
           Lihat Detail <RiArrowRightLine className="text-sm" />
         </div>
@@ -597,7 +758,11 @@ function PohonModal({ pohon, onClose }) {
       >
         {/* Header: Foto carousel atau gradient */}
         <div className="relative rounded-t-3xl overflow-hidden">
-          <PhotoCarousel fotos={pohon.fotos} warna={pohon.warna} nama={pohon.nama} />
+          <PhotoCarousel
+            fotos={pohon.fotos}
+            warna={pohon.warna}
+            nama={pohon.nama}
+          />
           {/* Gradient overlay bawah agar teks terbaca */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent pointer-events-none" />
           {/* Close button */}
@@ -609,15 +774,21 @@ function PohonModal({ pohon, onClose }) {
           </button>
           {/* Info pohon */}
           <div className="absolute bottom-4 left-5 text-white z-10">
-            <p className="text-white/60 text-xs font-mono mb-0.5">Pohon #{pohon.id}</p>
+            <p className="text-white/60 text-xs font-mono mb-0.5">
+              Pohon #{pohon.id}
+            </p>
             <h2 className="text-2xl font-black drop-shadow">{pohon.nama}</h2>
-            <p className="text-white/80 text-sm italic drop-shadow">{pohon.namaIlmiah}</p>
+            <p className="text-white/80 text-sm italic drop-shadow">
+              {pohon.namaIlmiah}
+            </p>
           </div>
         </div>
 
         {/* Body */}
         <div className="p-6">
-          <span className={`text-xs font-bold px-3 py-1 rounded-full ${pohon.badge} mb-5 inline-block`}>
+          <span
+            className={`text-xs font-bold px-3 py-1 rounded-full ${pohon.badge} mb-5 inline-block`}
+          >
             Famili: {pohon.famili}
           </span>
 
@@ -626,7 +797,10 @@ function PohonModal({ pohon, onClose }) {
           </h3>
           <ul className="space-y-2 mb-5">
             {pohon.ciri.map((c, i) => (
-              <li key={i} className="flex items-start gap-3 text-gray-600 text-sm">
+              <li
+                key={i}
+                className="flex items-start gap-3 text-gray-600 text-sm"
+              >
                 <span className="mt-0.5 shrink-0 w-5 h-5 rounded-full bg-green-100 text-green-700 text-xs flex items-center justify-center font-bold">
                   {i + 1}
                 </span>
@@ -656,17 +830,22 @@ function PohonModal({ pohon, onClose }) {
 
 // ===== KUIS INTERAKTIF =====
 const BADGE_COLORS = [
-  "bg-emerald-500", "bg-blue-500", "bg-violet-500", "bg-orange-500",
-  "bg-teal-500", "bg-rose-500", "bg-amber-500",
+  "bg-emerald-500",
+  "bg-blue-500",
+  "bg-violet-500",
+  "bg-orange-500",
+  "bg-teal-500",
+  "bg-rose-500",
+  "bg-amber-500",
 ];
 
 function QuizSection() {
-  const [currentQ, setCurrentQ]     = useState(0);
-  const [wrongSet, setWrongSet]     = useState(new Set()); // indeks yg sudah dicoba & salah
-  const [correct, setCorrect]       = useState(false);     // sudah jawab benar
-  const [score, setScore]           = useState(0);
-  const [finished, setFinished]     = useState(false);
-  const [popup, setPopup]           = useState(null);      // "wrong" | "correct" | null
+  const [currentQ, setCurrentQ] = useState(0);
+  const [wrongSet, setWrongSet] = useState(new Set()); // indeks yg sudah dicoba & salah
+  const [correct, setCorrect] = useState(false); // sudah jawab benar
+  const [score, setScore] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const [popup, setPopup] = useState(null); // "wrong" | "correct" | null
 
   const q = quizData[currentQ];
   const badgeColor = BADGE_COLORS[currentQ % BADGE_COLORS.length];
@@ -710,8 +889,16 @@ function QuizSection() {
     const pct = score / quizData.length;
     const result =
       pct >= 0.7
-        ? { img: "/images/quiz/Final.png", pesan: "Sempurna! Kamu Ahli Pohon!", alt: "Joy dan Sadness" }
-        : { img: "/images/quiz/sadness.png", pesan: "Jangan menyerah, coba lagi!", alt: "Sedih" };
+        ? {
+            img: "/images/quiz/Final.png",
+            pesan: "Sempurna! Kamu Ahli Pohon!",
+            alt: "Joy dan Sadness",
+          }
+        : {
+            img: "/images/quiz/sadness.png",
+            pesan: "Jangan menyerah, coba lagi!",
+            alt: "Sedih",
+          };
 
     return (
       <motion.div
@@ -720,11 +907,19 @@ function QuizSection() {
         className="text-center py-4"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={result.img} alt={result.alt} className="w-36 h-36 object-contain mx-auto mb-3" />
-        <h3 className="text-2xl font-black text-gray-900 mb-1">Kuis Selesai!</h3>
+        <img
+          src={result.img}
+          alt={result.alt}
+          className="w-36 h-36 object-contain mx-auto mb-3"
+        />
+        <h3 className="text-2xl font-black text-gray-900 mb-1">
+          Kuis Selesai!
+        </h3>
         <div className="text-6xl font-black text-gray-900 mb-1">
           {score}
-          <span className="text-3xl text-gray-300 font-bold">/{quizData.length}</span>
+          <span className="text-3xl text-gray-300 font-bold">
+            /{quizData.length}
+          </span>
         </div>
         <p className="font-bold text-base text-gray-600 mb-5">{result.pesan}</p>
 
@@ -778,12 +973,16 @@ function QuizSection() {
             transition={{ duration: 0.5 }}
           />
         </div>
-        <span className="text-xs font-black text-gray-400 shrink-0">{currentQ + 1}/{quizData.length}</span>
+        <span className="text-xs font-black text-gray-400 shrink-0">
+          {currentQ + 1}/{quizData.length}
+        </span>
       </div>
 
       {/* Skor */}
       <div className="flex items-center justify-between mb-4">
-        <div className={`inline-flex items-center gap-1.5 ${badgeColor} text-white text-xs font-black px-3 py-1.5 rounded-full`}>
+        <div
+          className={`inline-flex items-center gap-1.5 ${badgeColor} text-white text-xs font-black px-3 py-1.5 rounded-full`}
+        >
           <RiLeafLine /> Soal {currentQ + 1}
         </div>
         <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black px-3 py-1.5 rounded-full">
@@ -801,7 +1000,9 @@ function QuizSection() {
         >
           {/* Pertanyaan */}
           <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-2xl p-4 mb-4 shadow-sm">
-            <p className="text-gray-900 font-black text-base leading-snug">{q.soal}</p>
+            <p className="text-gray-900 font-black text-base leading-snug">
+              {q.soal}
+            </p>
           </div>
 
           {/* Pilihan */}
@@ -813,12 +1014,18 @@ function QuizSection() {
                 whileTap={!correct && !wrongSet.has(i) ? { scale: 0.97 } : {}}
                 className={`w-full text-left px-4 py-3 rounded-xl font-semibold text-sm transition-all flex items-center gap-3 ${getBtnStyle(i)}`}
               >
-                <span className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-colors ${getLetterBg(i)}`}>
+                <span
+                  className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-black transition-colors ${getLetterBg(i)}`}
+                >
                   {LETTERS[i]}
                 </span>
                 <span className="flex-1 leading-snug">{p}</span>
                 {correct && i === q.jawaban && (
-                  <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring" }}
+                  >
                     <RiCheckLine className="text-green-600 text-xl shrink-0" />
                   </motion.span>
                 )}
@@ -836,9 +1043,13 @@ function QuizSection() {
                 className="mt-4 w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-black py-3.5 rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-green-200"
               >
                 {currentQ + 1 >= quizData.length ? (
-                  <><RiTrophyLine className="text-lg" /> Lihat Hasil!</>
+                  <>
+                    <RiTrophyLine className="text-lg" /> Lihat Hasil!
+                  </>
                 ) : (
-                  <>Soal Berikutnya <RiArrowRightLine className="text-lg" /></>
+                  <>
+                    Soal Berikutnya <RiArrowRightLine className="text-lg" />
+                  </>
                 )}
               </motion.button>
             )}
@@ -858,8 +1069,14 @@ function QuizSection() {
           >
             <div className="bg-white border-2 border-red-200 rounded-3xl px-6 py-5 shadow-2xl text-center max-w-[220px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/quiz/sadness.png" alt="Sadness" className="w-24 h-24 object-contain mx-auto mb-2" />
-              <p className="font-black text-red-600 text-base leading-tight">Yah, kurang tepat!</p>
+              <img
+                src="/images/quiz/sadness.png"
+                alt="Sadness"
+                className="w-24 h-24 object-contain mx-auto mb-2"
+              />
+              <p className="font-black text-red-600 text-base leading-tight">
+                Yah, kurang tepat!
+              </p>
               <p className="text-gray-400 text-xs mt-1">Silahkan coba lagi~</p>
             </div>
           </motion.div>
@@ -884,25 +1101,47 @@ function QuizSection() {
             >
               {/* Confetti dots */}
               <div className="flex justify-center gap-1.5 mb-2">
-                {["bg-yellow-400","bg-green-400","bg-blue-400","bg-pink-400","bg-purple-400"].map((c,i)=>(
+                {[
+                  "bg-yellow-400",
+                  "bg-green-400",
+                  "bg-blue-400",
+                  "bg-pink-400",
+                  "bg-purple-400",
+                ].map((c, i) => (
                   <motion.div
                     key={i}
                     initial={{ y: 0, opacity: 0 }}
-                    animate={{ y: -12, opacity: [0,1,0] }}
-                    transition={{ delay: i*0.07, duration: 0.6 }}
+                    animate={{ y: -12, opacity: [0, 1, 0] }}
+                    transition={{ delay: i * 0.07, duration: 0.6 }}
                     className={`w-2 h-2 rounded-full ${c}`}
                   />
                 ))}
               </div>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/quiz/joy.png" alt="Joy" className="w-28 h-28 object-contain mx-auto mb-2" />
-              <p className="font-black text-green-600 text-lg leading-tight">Selamat!</p>
-              <p className="text-gray-500 text-xs mt-1 mb-4">Jawaban kamu benar!</p>
+              <img
+                src="/images/quiz/joy.png"
+                alt="Joy"
+                className="w-28 h-28 object-contain mx-auto mb-2"
+              />
+              <p className="font-black text-green-600 text-lg leading-tight">
+                Selamat!
+              </p>
+              <p className="text-gray-500 text-xs mt-1 mb-4">
+                Jawaban kamu benar!
+              </p>
               <button
                 onClick={handleNext}
                 className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-black py-2.5 rounded-xl text-sm flex items-center justify-center gap-1.5"
               >
-                {currentQ + 1 >= quizData.length ? <><RiTrophyLine /> Lihat Hasil!</> : <>Lanjut <RiArrowRightLine /></>}
+                {currentQ + 1 >= quizData.length ? (
+                  <>
+                    <RiTrophyLine /> Lihat Hasil!
+                  </>
+                ) : (
+                  <>
+                    Lanjut <RiArrowRightLine />
+                  </>
+                )}
               </button>
             </motion.div>
           </motion.div>
@@ -960,7 +1199,11 @@ export default function GreenEdu() {
             <RiArrowLeftLine /> Kembali ke Beranda
           </Link>
 
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <div className="flex items-center gap-3 mb-5">
               <div className="bg-white/15 rounded-2xl p-3">
                 <RiLeafLine className="text-2xl" />
@@ -975,7 +1218,9 @@ export default function GreenEdu() {
               <span className="text-green-300">Pohon di Desa Sengkol</span>
             </h1>
             <p className="text-green-200 text-base md:text-lg max-w-xl leading-relaxed">
-              Yuk belajar mengenal pohon-pohon yang ada di sekitar kita! Ketuk kartu pohon untuk tahu lebih banyak, lalu coba kuis seru di bagian bawah.
+              Yuk belajar mengenal pohon-pohon yang ada di sekitar kita! Ketuk
+              kartu pohon untuk tahu lebih banyak, lalu coba kuis seru di bagian
+              bawah.
             </p>
           </motion.div>
         </div>
@@ -990,19 +1235,43 @@ export default function GreenEdu() {
             viewport={{ once: true }}
             className="text-center mb-10"
           >
-            <h2 className="text-3xl font-black text-gray-900 mb-2">Apa Itu Pohon?</h2>
+            <h2 className="text-3xl font-black text-gray-900 mb-2">
+              Apa Itu Pohon?
+            </h2>
             <p className="text-gray-500 max-w-lg mx-auto text-sm leading-relaxed">
-              Pohon adalah tumbuhan yang punya batang berkayu dan tumbuh tinggi ke atas. Pohon sangat penting di Bumi karena memberikan banyak manfaat!
+              Pohon adalah tumbuhan yang punya batang berkayu dan tumbuh tinggi
+              ke atas. Pohon sangat penting di Bumi karena memberikan banyak
+              manfaat!
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             {[
-              { icon: <RiLeafLine />, teks: "Menghasilkan oksigen yang kita hirup setiap hari", bg: "bg-green-100 text-green-700" },
-              { icon: <RiTreeLine />, teks: "Menyerap air hujan supaya tidak banjir", bg: "bg-blue-100 text-blue-700" },
-              { icon: <RiLeafLine />, teks: "Membuat udara di sekitar kita jadi sejuk", bg: "bg-cyan-100 text-cyan-700" },
-              { icon: <RiTreeLine />, teks: "Jadi rumah buat burung dan hewan kecil lainnya", bg: "bg-amber-100 text-amber-700" },
-              { icon: <RiLeafLine />, teks: "Menjaga tanah supaya tidak longsor", bg: "bg-orange-100 text-orange-700" },
+              {
+                icon: <RiLeafLine />,
+                teks: "Menghasilkan oksigen yang kita hirup setiap hari",
+                bg: "bg-green-100 text-green-700",
+              },
+              {
+                icon: <RiTreeLine />,
+                teks: "Menyerap air hujan supaya tidak banjir",
+                bg: "bg-blue-100 text-blue-700",
+              },
+              {
+                icon: <RiLeafLine />,
+                teks: "Membuat udara di sekitar kita jadi sejuk",
+                bg: "bg-cyan-100 text-cyan-700",
+              },
+              {
+                icon: <RiTreeLine />,
+                teks: "Jadi rumah buat burung dan hewan kecil lainnya",
+                bg: "bg-amber-100 text-amber-700",
+              },
+              {
+                icon: <RiLeafLine />,
+                teks: "Menjaga tanah supaya tidak longsor",
+                bg: "bg-orange-100 text-orange-700",
+              },
             ].map((item, i) => (
               <motion.div
                 key={i}
@@ -1012,8 +1281,12 @@ export default function GreenEdu() {
                 transition={{ delay: i * 0.08 }}
                 className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-start gap-3"
               >
-                <div className={`rounded-xl p-2 shrink-0 text-xl ${item.bg}`}>{item.icon}</div>
-                <p className="text-gray-700 text-sm font-medium leading-snug">{item.teks}</p>
+                <div className={`rounded-xl p-2 shrink-0 text-xl ${item.bg}`}>
+                  {item.icon}
+                </div>
+                <p className="text-gray-700 text-sm font-medium leading-snug">
+                  {item.teks}
+                </p>
               </motion.div>
             ))}
           </div>
@@ -1024,8 +1297,12 @@ export default function GreenEdu() {
       <section className="py-16 px-6 bg-white">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-black text-gray-900 mb-2">Bagian-Bagian Pohon</h2>
-            <p className="text-gray-400 text-sm">Setiap bagian pohon punya fungsi yang berbeda-beda</p>
+            <h2 className="text-3xl font-black text-gray-900 mb-2">
+              Bagian-Bagian Pohon
+            </h2>
+            <p className="text-gray-400 text-sm">
+              Setiap bagian pohon punya fungsi yang berbeda-beda
+            </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -1048,16 +1325,24 @@ export default function GreenEdu() {
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 ) : (
-                  <div className={`absolute inset-0 bg-gradient-to-br ${b.fallback}`} />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${b.fallback}`}
+                  />
                 )}
                 {/* Overlay gelap supaya teks terbaca */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10" />
 
                 {/* Konten */}
                 <div className="relative z-10 p-4 text-white">
-                  <div className="text-3xl font-black mb-1 opacity-30">{b.num}</div>
-                  <h3 className="font-black text-base mb-1 drop-shadow">{b.nama}</h3>
-                  <p className="text-xs leading-relaxed text-white/80">{b.fungsi}</p>
+                  <div className="text-3xl font-black mb-1 opacity-30">
+                    {b.num}
+                  </div>
+                  <h3 className="font-black text-base mb-1 drop-shadow">
+                    {b.nama}
+                  </h3>
+                  <p className="text-xs leading-relaxed text-white/80">
+                    {b.fungsi}
+                  </p>
                 </div>
               </motion.div>
             ))}
@@ -1069,15 +1354,24 @@ export default function GreenEdu() {
       <section className="py-16 px-6 bg-stone-50">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-green-600 font-bold uppercase tracking-widest text-xs mb-3">Jenis Pohon</p>
-            <h2 className="text-3xl font-black text-gray-900 mb-2">Pohon di Sekitar Kita</h2>
-            <p className="text-gray-400 text-sm">Ketuk kartu untuk melihat info lengkapnya!</p>
+            <p className="text-green-600 font-bold uppercase tracking-widest text-xs mb-3">
+              Jenis Pohon
+            </p>
+            <h2 className="text-3xl font-black text-gray-900 mb-2">
+              Pohon di Sekitar Kita
+            </h2>
+            <p className="text-gray-400 text-sm">
+              Ketuk kartu untuk melihat info lengkapnya!
+            </p>
           </div>
 
           {loadingPohon ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="rounded-2xl bg-gray-100 animate-pulse h-48" />
+                <div
+                  key={i}
+                  className="rounded-2xl bg-gray-100 animate-pulse h-48"
+                />
               ))}
             </div>
           ) : (
@@ -1093,8 +1387,12 @@ export default function GreenEdu() {
             <div className="inline-flex items-center gap-2 bg-white/10 text-green-200 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest mb-4">
               <RiQuestionLine /> Kuis Seru
             </div>
-            <h2 className="text-3xl font-black text-white mb-2">Yuk Bermain Kuis!</h2>
-            <p className="text-green-200 text-sm">Seberapa jauh kamu mengenal pohon-pohon di sekitar kita?</p>
+            <h2 className="text-3xl font-black text-white mb-2">
+              Yuk Bermain Kuis!
+            </h2>
+            <p className="text-green-200 text-sm">
+              Seberapa jauh kamu mengenal pohon-pohon di sekitar kita?
+            </p>
           </div>
 
           <div className="bg-white rounded-3xl p-6 shadow-2xl">
@@ -1106,7 +1404,10 @@ export default function GreenEdu() {
       {/* ===== MODAL ===== */}
       <AnimatePresence>
         {selectedPohon && (
-          <PohonModal pohon={selectedPohon} onClose={() => setSelectedPohon(null)} />
+          <PohonModal
+            pohon={selectedPohon}
+            onClose={() => setSelectedPohon(null)}
+          />
         )}
       </AnimatePresence>
     </main>

@@ -11,10 +11,12 @@ import {
   RiStoreLine,
   RiHeartPulseLine,
   RiMapPin2Line,
+  RiNewspaperLine,
 } from "react-icons/ri";
 
 const navLinks = [
   { label: "Beranda",       href: "/",               icon: <RiHome4Line /> },
+  { label: "Berita",        href: "/berita",          icon: <RiNewspaperLine /> },
   { label: "Green Edu",     href: "/greenedu",        icon: <RiTreeLine /> },
   { label: "UMKM",          href: "/umkm",            icon: <RiStoreLine /> },
   { label: "Cek Kesehatan", href: "/cek-kesehatan",   icon: <RiHeartPulseLine /> },

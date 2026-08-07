@@ -23,6 +23,9 @@ import {
   RiLockLine,
   RiEyeLine,
   RiEyeOffLine,
+  RiNewspaperLine,
+  RiArticleLine,
+  RiFilePdfLine,
 } from "react-icons/ri";
 
 // ─────────────────────────────────────────────────────────────
@@ -721,6 +724,369 @@ function KesehatanSection() {
 }
 
 // ─────────────────────────────────────────────────────────────
+// BERITA SECTION
+// ─────────────────────────────────────────────────────────────
+const BERITA_KATEGORI = ["Kesehatan", "Lingkungan", "Ekonomi", "Budaya", "Pendidikan", "Pariwisata", "Umum"];
+const JURNAL_KATEGORI = ["Laporan", "Kesehatan", "Lingkungan", "Ekonomi", "Budaya", "Pendidikan"];
+
+function ArtikelSubSection({ toast }) {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editItem, setEditItem] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef();
+
+  const load = async () => {
+    const { data } = await supabase.from("artikel").select("*").order("tanggal", { ascending: false });
+    setList(data || []);
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  const today = new Date().toISOString().split("T")[0];
+  const blank = () => ({ judul: "", ringkasan: "", konten: "", kategori: "Umum", tanggal: today, penulis: "Tim KKN Desa Sengkol", foto_url: "" });
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      if (editItem.id) {
+        const { id, created_at, ...rest } = editItem;
+        await supabase.from("artikel").update(rest).eq("id", id);
+      } else {
+        await supabase.from("artikel").insert(editItem);
+      }
+      toast("Artikel disimpan!");
+      setEditItem(null);
+      load();
+    } catch (e) { toast(e.message, "error"); }
+    setSaving(false);
+  };
+
+  const del = async (id) => {
+    if (!confirm("Hapus artikel ini?")) return;
+    await supabase.from("artikel").delete().eq("id", id);
+    toast("Dihapus.");
+    load();
+  };
+
+  const uploadFotoArtikel = async (file) => {
+    setUploading(true);
+    try {
+      const url = await uploadFoto(file, "berita");
+      setEditItem((prev) => ({ ...prev, foto_url: url }));
+    } catch (e) { toast(e.message, "error"); }
+    setUploading(false);
+  };
+
+  if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Memuat...</div>;
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-sm text-gray-500">{list.length} artikel terdaftar</p>
+        <button onClick={() => setEditItem(blank())}
+          className="flex items-center gap-1.5 bg-indigo-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-indigo-700 transition-colors">
+          <RiAddLine /> Tambah Artikel
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {list.map((a) => (
+          <div key={a.id} className="flex items-start gap-3 bg-gray-50 border border-gray-100 rounded-2xl p-4">
+            {a.foto_url && (
+              <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={a.foto_url} alt="" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-gray-900 text-sm truncate">{a.judul}</p>
+              <p className="text-gray-400 text-xs mt-0.5">{a.kategori} · {a.tanggal}</p>
+              <p className="text-gray-500 text-xs mt-1 line-clamp-2">{a.ringkasan}</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <button onClick={() => setEditItem(a)} className="bg-white hover:bg-gray-100 text-gray-600 rounded-xl p-2 border border-gray-200 transition-colors"><RiEditLine /></button>
+              <button onClick={() => del(a.id)} className="bg-white hover:bg-red-50 text-gray-600 hover:text-red-600 rounded-xl p-2 border border-gray-200 transition-colors"><RiDeleteBinLine /></button>
+            </div>
+          </div>
+        ))}
+        {list.length === 0 && (
+          <div className="text-center py-10 text-gray-400 text-sm">Belum ada artikel. Tambah sekarang!</div>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {editItem && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center p-0 md:p-4"
+            onClick={() => setEditItem(null)}>
+            <motion.div initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 60 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto p-6 flex flex-col gap-4">
+              <div className="flex justify-between items-center">
+                <h3 className="font-black text-lg">{editItem.id ? "Edit Artikel" : "Tambah Artikel"}</h3>
+                <button onClick={() => setEditItem(null)}><RiCloseLine className="text-xl text-gray-400" /></button>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Judul</label>
+                <input value={editItem.judul || ""} onChange={(e) => setEditItem({ ...editItem, judul: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Kategori</label>
+                  <select value={editItem.kategori || "Umum"} onChange={(e) => setEditItem({ ...editItem, kategori: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300">
+                    {BERITA_KATEGORI.map((k) => <option key={k}>{k}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Tanggal</label>
+                  <input type="date" value={editItem.tanggal || ""} onChange={(e) => setEditItem({ ...editItem, tanggal: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Penulis</label>
+                <input value={editItem.penulis || ""} onChange={(e) => setEditItem({ ...editItem, penulis: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Ringkasan</label>
+                <textarea rows={2} value={editItem.ringkasan || ""} onChange={(e) => setEditItem({ ...editItem, ringkasan: e.target.value })}
+                  placeholder="1-2 kalimat ringkasan artikel..."
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none" />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">
+                  Isi Artikel <span className="font-normal normal-case text-gray-400">(paragraf dipisah dengan baris kosong)</span>
+                </label>
+                <textarea rows={10} value={editItem.konten || ""} onChange={(e) => setEditItem({ ...editItem, konten: e.target.value })}
+                  placeholder="Tulis isi artikel di sini..."
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 resize-none" />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Foto Artikel</label>
+                {editItem.foto_url && (
+                  <div className="relative w-full h-36 rounded-xl overflow-hidden mb-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={editItem.foto_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                    <button onClick={() => setEditItem({ ...editItem, foto_url: "" })}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5"><RiCloseLine /></button>
+                  </div>
+                )}
+                <button onClick={() => fileRef.current?.click()} disabled={uploading}
+                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-indigo-400 text-gray-500 hover:text-indigo-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors disabled:opacity-60">
+                  <RiUploadCloud2Line /> {uploading ? "Mengupload..." : "Upload Foto"}
+                </button>
+                <input ref={fileRef} type="file" accept="image/*" className="hidden"
+                  onChange={(e) => e.target.files[0] && uploadFotoArtikel(e.target.files[0])} />
+              </div>
+
+              <button onClick={save} disabled={saving || uploading}
+                className="w-full py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-colors disabled:opacity-60">
+                {saving ? "Menyimpan..." : "Simpan Artikel"}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function JurnalSubSection({ toast }) {
+  const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editItem, setEditItem] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const pdfRef = useRef();
+
+  const load = async () => {
+    const { data } = await supabase.from("jurnal").select("*").order("tanggal", { ascending: false });
+    setList(data || []);
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  const today = new Date().toISOString().split("T")[0];
+  const blank = () => ({ judul: "", deskripsi: "", kategori: "Laporan", tanggal: today, file_url: "", halaman: 0 });
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      if (editItem.id) {
+        const { id, created_at, ...rest } = editItem;
+        await supabase.from("jurnal").update(rest).eq("id", id);
+      } else {
+        await supabase.from("jurnal").insert(editItem);
+      }
+      toast("Jurnal disimpan!");
+      setEditItem(null);
+      load();
+    } catch (e) { toast(e.message, "error"); }
+    setSaving(false);
+  };
+
+  const del = async (id) => {
+    if (!confirm("Hapus jurnal ini?")) return;
+    await supabase.from("jurnal").delete().eq("id", id);
+    toast("Dihapus.");
+    load();
+  };
+
+  const uploadPdf = async (file) => {
+    setUploading(true);
+    try {
+      const url = await uploadFoto(file, "jurnal");
+      setEditItem((prev) => ({ ...prev, file_url: url }));
+    } catch (e) { toast(e.message, "error"); }
+    setUploading(false);
+  };
+
+  if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Memuat...</div>;
+
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-sm text-gray-500">{list.length} jurnal terdaftar</p>
+        <button onClick={() => setEditItem(blank())}
+          className="flex items-center gap-1.5 bg-rose-600 text-white text-sm font-bold px-4 py-2 rounded-xl hover:bg-rose-700 transition-colors">
+          <RiAddLine /> Tambah Jurnal
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {list.map((j) => (
+          <div key={j.id} className="flex items-start gap-3 bg-gray-50 border border-gray-100 rounded-2xl p-4">
+            <div className="w-12 h-12 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center shrink-0">
+              <RiFilePdfLine className="text-rose-500 text-xl" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-gray-900 text-sm truncate">{j.judul}</p>
+              <p className="text-gray-400 text-xs mt-0.5">{j.kategori} · {j.tanggal} · {j.halaman} hal</p>
+              <p className="text-gray-500 text-xs mt-1 line-clamp-2">{j.deskripsi}</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <button onClick={() => setEditItem(j)} className="bg-white hover:bg-gray-100 text-gray-600 rounded-xl p-2 border border-gray-200 transition-colors"><RiEditLine /></button>
+              <button onClick={() => del(j.id)} className="bg-white hover:bg-red-50 text-gray-600 hover:text-red-600 rounded-xl p-2 border border-gray-200 transition-colors"><RiDeleteBinLine /></button>
+            </div>
+          </div>
+        ))}
+        {list.length === 0 && (
+          <div className="text-center py-10 text-gray-400 text-sm">Belum ada jurnal. Tambah sekarang!</div>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {editItem && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/60 flex items-end md:items-center justify-center p-0 md:p-4"
+            onClick={() => setEditItem(null)}>
+            <motion.div initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 60 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white rounded-t-3xl md:rounded-3xl w-full md:max-w-lg max-h-[90vh] overflow-y-auto p-6 flex flex-col gap-4">
+              <div className="flex justify-between items-center">
+                <h3 className="font-black text-lg">{editItem.id ? "Edit Jurnal" : "Tambah Jurnal"}</h3>
+                <button onClick={() => setEditItem(null)}><RiCloseLine className="text-xl text-gray-400" /></button>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Judul</label>
+                <input value={editItem.judul || ""} onChange={(e) => setEditItem({ ...editItem, judul: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Kategori</label>
+                  <select value={editItem.kategori || "Laporan"} onChange={(e) => setEditItem({ ...editItem, kategori: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300">
+                    {JURNAL_KATEGORI.map((k) => <option key={k}>{k}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Tanggal</label>
+                  <input type="date" value={editItem.tanggal || ""} onChange={(e) => setEditItem({ ...editItem, tanggal: e.target.value })}
+                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Jumlah Halaman</label>
+                <input type="number" min={0} value={editItem.halaman || 0} onChange={(e) => setEditItem({ ...editItem, halaman: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Deskripsi</label>
+                <textarea rows={3} value={editItem.deskripsi || ""} onChange={(e) => setEditItem({ ...editItem, deskripsi: e.target.value })}
+                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 resize-none" />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">File PDF</label>
+                {editItem.file_url && (
+                  <div className="flex items-center gap-2 bg-rose-50 border border-rose-100 rounded-xl px-3 py-2 mb-2">
+                    <RiFilePdfLine className="text-rose-500 shrink-0" />
+                    <span className="text-xs text-rose-700 truncate flex-1">PDF tersimpan</span>
+                    <a href={editItem.file_url} target="_blank" rel="noopener noreferrer"
+                      className="text-xs text-rose-600 font-bold hover:underline shrink-0">Lihat</a>
+                    <button onClick={() => setEditItem({ ...editItem, file_url: "" })} className="text-rose-400 hover:text-red-600 shrink-0"><RiCloseLine /></button>
+                  </div>
+                )}
+                <button onClick={() => pdfRef.current?.click()} disabled={uploading}
+                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-rose-400 text-gray-500 hover:text-rose-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors disabled:opacity-60">
+                  <RiUploadCloud2Line /> {uploading ? "Mengupload..." : "Upload PDF"}
+                </button>
+                <input ref={pdfRef} type="file" accept="application/pdf" className="hidden"
+                  onChange={(e) => e.target.files[0] && uploadPdf(e.target.files[0])} />
+              </div>
+
+              <button onClick={save} disabled={saving || uploading}
+                className="w-full py-3 rounded-xl bg-rose-600 text-white font-bold text-sm hover:bg-rose-700 transition-colors disabled:opacity-60">
+                {saving ? "Menyimpan..." : "Simpan Jurnal"}
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function BeritaSection({ toast }) {
+  const [subTab, setSubTab] = useState("artikel");
+  return (
+    <div>
+      <div className="flex gap-2 mb-5 border-b border-gray-100 pb-4">
+        {[
+          { key: "artikel", label: "Artikel Tulisan", icon: RiArticleLine,  active: "bg-indigo-100 text-indigo-700" },
+          { key: "jurnal",  label: "Jurnal PDF",      icon: RiFilePdfLine,  active: "bg-rose-100 text-rose-700"    },
+        ].map(({ key, label, icon: Icon, active }) => (
+          <button key={key} onClick={() => setSubTab(key)}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-full transition-all ${
+              subTab === key ? active : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+            }`}>
+            <Icon /> {label}
+          </button>
+        ))}
+      </div>
+      {subTab === "artikel" && <ArtikelSubSection toast={toast} />}
+      {subTab === "jurnal"  && <JurnalSubSection  toast={toast} />}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
 // MAIN DASHBOARD
 // ─────────────────────────────────────────────────────────────
 const TABS = [
@@ -728,6 +1094,7 @@ const TABS = [
   { key: "umkm",     label: "UMKM",      icon: RiStoreLine,      color: "text-orange-400",  bg: "bg-orange-500/15"  },
   { key: "wisata",   label: "Wisata",    icon: RiMapPin2Line,    color: "text-cyan-400",    bg: "bg-cyan-500/15"    },
   { key: "kesehatan",label: "Kesehatan", icon: RiHeartPulseLine, color: "text-rose-400",    bg: "bg-rose-500/15"    },
+  { key: "berita",   label: "Berita",    icon: RiNewspaperLine,  color: "text-indigo-400",  bg: "bg-indigo-500/15"  },
 ];
 
 export default function Dashboard() {
@@ -824,6 +1191,7 @@ export default function Dashboard() {
           {activeTab === "umkm"      && <UmkmSection      toast={showToast} />}
           {activeTab === "wisata"    && <WisataSection     toast={showToast} />}
           {activeTab === "kesehatan" && <KesehatanSection />}
+          {activeTab === "berita"    && <BeritaSection     toast={showToast} />}
         </div>
       </main>
 
