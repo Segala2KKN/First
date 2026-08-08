@@ -418,10 +418,11 @@ export default function BeritaPage() {
     <main className="bg-white text-gray-900">
 
       {/* ── Hero ── */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden bg-gradient-to-br from-gray-900 to-slate-800">
-        {/* Decorative blur */}
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/BGBerita.JPG" alt="Berita Desa Sengkol"
+          className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/65" />
 
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <motion.div

@@ -21,6 +21,35 @@ import {
   RiBankCardLine,
 } from "react-icons/ri";
 
+// ===== PHOTO FADER (auto-slideshow) =====
+function PhotoFader({ photos, alt }) {
+  const [current, setCurrent] = useState(0);
+  useEffect(() => {
+    if (!photos || photos.length <= 1) return;
+    const t = setInterval(() => setCurrent((i) => (i + 1) % photos.length), 2000);
+    return () => clearInterval(t);
+  }, [photos]);
+  if (!photos || photos.length === 0) return null;
+  return (
+    <>
+      {photos.map((src, i) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img key={i} src={src} alt={alt}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ opacity: i === current ? 1 : 0, transition: "opacity 0.7s ease-in-out" }}
+        />
+      ))}
+    </>
+  );
+}
+
+function getPhotos(umkm) {
+  const arr = Array.isArray(umkm.fotos) ? umkm.fotos : [];
+  if (arr.length > 0) return arr;
+  if (umkm.foto_url) return [umkm.foto_url];
+  return [];
+}
+
 // ===== FALLBACK DATA (kalau Supabase belum diisi) =====
 const umkmFallback = [
   {
@@ -123,12 +152,10 @@ function UmkmModal({ umkm, onClose }) {
         >
           {/* Foto / Gradient header */}
           <div className={`relative h-48 bg-gradient-to-br ${gradientKelas(umkm.kategori)} flex items-end p-5`}>
-            {umkm.foto_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={umkm.foto_url} alt={umkm.nama_usaha} className="absolute inset-0 w-full h-full object-cover" />
-            ) : (
-              <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-9xl" />
-            )}
+            {(() => { const photos = getPhotos(umkm); return photos.length > 0
+              ? <PhotoFader photos={photos} alt={umkm.nama_usaha} />
+              : <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-9xl" />;
+            })()}
             <button
               onClick={onClose}
               className="absolute top-4 right-4 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 transition-colors"
@@ -136,7 +163,7 @@ function UmkmModal({ umkm, onClose }) {
               <RiCloseLine className="text-xl" />
             </button>
             <div className="relative z-10 flex flex-wrap gap-1.5">
-              {toArr(umkm.kategori).map((k) => (
+              {toArr(umkm.kategori).map((k, i) => (
                 <span key={k} className={`text-xs font-bold px-3 py-1.5 rounded-full ${badgeKelas(k)}`}>{k}</span>
               ))}
             </div>
@@ -259,16 +286,19 @@ function UmkmCard({ umkm, onClick }) {
     >
       {/* Foto / Gradient */}
       <div className={`relative h-40 bg-gradient-to-br ${gradientKelas(umkm.kategori)}`}>
-        {umkm.foto_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={umkm.foto_url} alt={umkm.nama_usaha} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-        ) : (
-          <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-7xl" />
+        {(() => { const photos = getPhotos(umkm); return photos.length > 0
+          ? <PhotoFader photos={photos} alt={umkm.nama_usaha} />
+          : <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-7xl" />;
+        })()}
+        {getPhotos(umkm).length > 1 && (
+          <span className="absolute top-3 right-3 z-10 bg-black/40 text-white text-xs px-2 py-0.5 rounded-full">
+            📸 {getPhotos(umkm).length}
+          </span>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
-          {toArr(umkm.kategori).map((k) => (
-            <span key={k} className={`text-xs font-bold px-2.5 py-1 rounded-full ${badgeKelas(k)}`}>{k}</span>
+        <div className="absolute bottom-3 left-3 flex flex-wrap gap-1">
+          {toArr(umkm.kategori).map((k, i) => (
+            <span key={`${k}-${i}`} className={`text-xs font-bold px-2.5 py-1 rounded-full ${badgeKelas(k)}`}>{k}</span>
           ))}
         </div>
       </div>
@@ -324,10 +354,11 @@ export default function UmkmPage() {
   return (
     <main className="bg-gray-50 min-h-screen">
       {/* ===== HERO ===== */}
-      <section className="bg-gradient-to-br from-amber-700 via-orange-600 to-amber-500 text-white pt-16 pb-16 px-6 relative overflow-hidden">
-        <div className="absolute -top-12 -right-12 w-64 h-64 bg-white/5 rounded-full pointer-events-none" />
-        <div className="absolute bottom-0 -left-12 w-48 h-48 bg-white/5 rounded-full pointer-events-none" />
-        <RiStoreLine className="absolute right-8 top-1/2 -translate-y-1/2 text-white/10 text-[160px] pointer-events-none" />
+      <section className="relative text-white pt-16 pb-16 px-6 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/Image UMKM.JPG" alt="UMKM Desa Sengkol"
+          className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/55" />
 
         <div className="max-w-4xl mx-auto relative z-10">
           <Link

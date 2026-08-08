@@ -131,6 +131,38 @@ function Toast({ message, type = "success", onClose }) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// DRAG & DROP ZONE (reusable)
+// ─────────────────────────────────────────────────────────────
+function DropZone({ onFiles, accept = "image/*", multiple = true, uploading = false, label = "Upload Foto", hoverColor = "hover:border-gray-400 hover:text-gray-700" }) {
+  const [dragging, setDragging] = useState(false);
+  const ref = useRef();
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragging(false);
+    if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files);
+  };
+  return (
+    <div
+      onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+      onDragLeave={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDragging(false); }}
+      onDrop={handleDrop}
+      onClick={() => !uploading && ref.current?.click()}
+      className={`cursor-pointer border-2 border-dashed rounded-xl px-4 py-4 flex flex-col items-center gap-1 text-sm transition-all select-none ${
+        dragging
+          ? "border-cyan-400 bg-cyan-50 text-cyan-600 scale-[1.01]"
+          : `border-gray-300 text-gray-500 ${hoverColor}`
+      } ${uploading ? "opacity-60 pointer-events-none" : ""}`}
+    >
+      <RiUploadCloud2Line className="text-2xl" />
+      <span className="font-medium">{uploading ? "Mengupload..." : label}</span>
+      <span className="text-xs text-gray-400">atau drag file ke sini</span>
+      <input ref={ref} type="file" accept={accept} multiple={multiple} className="hidden"
+        onChange={(e) => e.target.files.length && onFiles(e.target.files)} />
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
 // UPLOAD FOTO HELPER
 // ─────────────────────────────────────────────────────────────
 async function uploadFoto(file, folder) {
@@ -318,12 +350,11 @@ function PohonSection({ toast }) {
                     </div>
                   ))}
                 </div>
-                <button onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-green-400 text-gray-500 hover:text-green-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors">
-                  <RiUploadCloud2Line /> Upload Foto
-                </button>
-                <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
-                  onChange={(e) => uploadFotos(e.target.files)} />
+                <DropZone
+                  onFiles={uploadFotos}
+                  label="Upload Foto"
+                  hoverColor="hover:border-green-400 hover:text-green-600"
+                />
               </div>
 
               <button onClick={save} disabled={saving}
@@ -346,7 +377,7 @@ function UmkmSection({ toast }) {
   const [loading, setLoading] = useState(true);
   const [editItem, setEditItem] = useState(null);
   const [saving, setSaving] = useState(false);
-  const fileRef = useRef();
+  const [uploading, setUploading] = useState(false);
 
   const load = async () => {
     const { data } = await supabase.from("umkm").select("*").order("urutan");
@@ -355,16 +386,17 @@ function UmkmSection({ toast }) {
   };
   useEffect(() => { load(); }, []);
 
-  const blank = () => ({ nama_usaha: "", pemilik: "", kategori: [], produk: "", deskripsi: "", alamat: "", maps_url: "", instagram: "", website: "", whatsapp: "", telepon: "", foto_url: "", pembayaran: [], urutan: list.length + 1 });
+  const blank = () => ({ nama_usaha: "", pemilik: "", kategori: [], produk: "", deskripsi: "", alamat: "", maps_url: "", instagram: "", website: "", whatsapp: "", telepon: "", fotos: [], pembayaran: [], urutan: list.length + 1 });
 
   const save = async () => {
     setSaving(true);
     try {
-      if (editItem.id) {
-        const { id, created_at, ...rest } = editItem;
+      const payload = { ...editItem, fotos: editItem.fotos || [] };
+      if (payload.id) {
+        const { id, created_at, ...rest } = payload;
         await supabase.from("umkm").update(rest).eq("id", id);
       } else {
-        await supabase.from("umkm").insert(editItem);
+        await supabase.from("umkm").insert(payload);
       }
       toast("UMKM disimpan!");
       setEditItem(null);
@@ -380,9 +412,22 @@ function UmkmSection({ toast }) {
     load();
   };
 
-  const uploadFotoUmkm = async (file) => {
-    const url = await uploadFoto(file, "umkm");
-    setEditItem((prev) => ({ ...prev, foto_url: url }));
+  const uploadFotos = async (files) => {
+    setUploading(true);
+    try {
+      const urls = [];
+      for (const f of Array.from(files)) {
+        const url = await uploadFoto(f, "umkm");
+        urls.push(url);
+      }
+      setEditItem((prev) => ({ ...prev, fotos: [...(prev.fotos || []), ...urls] }));
+      toast(`${urls.length} foto diupload!`);
+    } catch (e) { toast(e.message, "error"); }
+    setUploading(false);
+  };
+
+  const removeFoto = (url) => {
+    setEditItem((prev) => ({ ...prev, fotos: prev.fotos.filter((f) => f !== url) }));
   };
 
   if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Memuat...</div>;
@@ -403,14 +448,14 @@ function UmkmSection({ toast }) {
         {list.map((u) => (
           <div key={u.id} className="flex items-center gap-3 bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center shrink-0 overflow-hidden">
-              {u.foto_url ? <Image src={u.foto_url} alt="" width={48} height={48} className="object-cover w-full h-full" /> : <RiStoreLine className="text-orange-400 text-xl" />}
+              {(u.fotos?.[0] || u.foto_url) ? <Image src={u.fotos?.[0] || u.foto_url} alt="" width={48} height={48} className="object-cover w-full h-full" /> : <RiStoreLine className="text-orange-400 text-xl" />}
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-gray-900 text-sm truncate">{u.nama_usaha}</p>
               <p className="text-gray-400 text-xs">{u.pemilik} · {Array.isArray(u.kategori) ? u.kategori.join(", ") : u.kategori}</p>
             </div>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => setEditItem(u)} className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl p-2 transition-colors"><RiEditLine /></button>
+              <button onClick={() => setEditItem({ ...u, fotos: u.fotos || (u.foto_url ? [u.foto_url] : []) })} className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl p-2 transition-colors"><RiEditLine /></button>
               <button onClick={() => del(u.id)} className="bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-xl p-2 transition-colors"><RiDeleteBinLine /></button>
             </div>
           </div>
@@ -517,24 +562,34 @@ function UmkmSection({ toast }) {
                 </div>
               </div>
 
+              {/* Multi-foto */}
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Foto</label>
-                {editItem.foto_url && (
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden mb-2">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={editItem.foto_url} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                    <button onClick={() => setEditItem({ ...editItem, foto_url: "" })} className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs"><RiCloseLine /></button>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                  Foto <span className="font-normal normal-case text-gray-400">(bisa lebih dari 1, slideshow otomatis)</span>
+                </label>
+                {(editItem.fotos || []).length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {(editItem.fotos || []).map((url, i) => (
+                      <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                        <button onClick={() => removeFoto(url)}
+                          className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs">
+                          <RiCloseLine />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
-                <button onClick={() => fileRef.current?.click()}
-                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-orange-400 text-gray-500 hover:text-orange-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors">
-                  <RiUploadCloud2Line /> Upload Foto
-                </button>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden"
-                  onChange={(e) => e.target.files[0] && uploadFotoUmkm(e.target.files[0])} />
+                <DropZone
+                  onFiles={uploadFotos}
+                  uploading={uploading}
+                  label="Upload Foto"
+                  hoverColor="hover:border-orange-400 hover:text-orange-600"
+                />
               </div>
 
-              <button onClick={save} disabled={saving}
+              <button onClick={save} disabled={saving || uploading}
                 className="w-full py-3 rounded-xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 transition-colors disabled:opacity-60">
                 {saving ? "Menyimpan..." : "Simpan"}
               </button>
@@ -694,12 +749,12 @@ function WisataSection({ toast }) {
                     </div>
                   ))}
                 </div>
-                <button onClick={() => fileRef.current?.click()} disabled={uploading}
-                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-blue-400 text-gray-500 hover:text-blue-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors disabled:opacity-60">
-                  <RiUploadCloud2Line /> {uploading ? "Mengupload..." : "Upload Foto"}
-                </button>
-                <input ref={fileRef} type="file" accept="image/*" multiple className="hidden"
-                  onChange={(e) => uploadFotos(e.target.files)} />
+                <DropZone
+                  onFiles={uploadFotos}
+                  uploading={uploading}
+                  label="Upload Foto"
+                  hoverColor="hover:border-blue-400 hover:text-blue-600"
+                />
               </div>
 
               <button onClick={save} disabled={saving || uploading}
@@ -946,12 +1001,13 @@ function ArtikelSubSection({ toast }) {
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5"><RiCloseLine /></button>
                   </div>
                 )}
-                <button onClick={() => fileRef.current?.click()} disabled={uploading}
-                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-indigo-400 text-gray-500 hover:text-indigo-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors disabled:opacity-60">
-                  <RiUploadCloud2Line /> {uploading ? "Mengupload..." : "Upload Foto"}
-                </button>
-                <input ref={fileRef} type="file" accept="image/*" className="hidden"
-                  onChange={(e) => e.target.files[0] && uploadFotoArtikel(e.target.files[0])} />
+                <DropZone
+                  onFiles={(files) => uploadFotoArtikel(files[0])}
+                  multiple={false}
+                  uploading={uploading}
+                  label="Upload Foto"
+                  hoverColor="hover:border-indigo-400 hover:text-indigo-600"
+                />
               </div>
 
               <button onClick={save} disabled={saving || uploading}
@@ -1107,12 +1163,14 @@ function JurnalSubSection({ toast }) {
                     <button onClick={() => setEditItem({ ...editItem, file_url: "" })} className="text-rose-400 hover:text-red-600 shrink-0"><RiCloseLine /></button>
                   </div>
                 )}
-                <button onClick={() => pdfRef.current?.click()} disabled={uploading}
-                  className="flex items-center gap-2 border-2 border-dashed border-gray-300 hover:border-rose-400 text-gray-500 hover:text-rose-600 text-sm px-4 py-3 rounded-xl w-full justify-center transition-colors disabled:opacity-60">
-                  <RiUploadCloud2Line /> {uploading ? "Mengupload..." : "Upload PDF"}
-                </button>
-                <input ref={pdfRef} type="file" accept="application/pdf" className="hidden"
-                  onChange={(e) => e.target.files[0] && uploadPdf(e.target.files[0])} />
+                <DropZone
+                  onFiles={(files) => uploadPdf(files[0])}
+                  accept="application/pdf"
+                  multiple={false}
+                  uploading={uploading}
+                  label="Upload PDF"
+                  hoverColor="hover:border-rose-400 hover:text-rose-600"
+                />
               </div>
 
               <button onClick={save} disabled={saving || uploading}

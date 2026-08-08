@@ -213,7 +213,7 @@ function WisataCardItem({ item }) {
         )}
         <span className="relative z-10 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
           {item.kategori}
-        </span>
+        </span> Recallie uflaniken here officials bysleep gold. Okay, thank you, thank you.
       </div>
       <div className="p-5 flex flex-col">
         <div className="flex items-center gap-2 mb-1">
@@ -602,17 +602,9 @@ export default function Home() {
             <div className="rounded-3xl overflow-hidden shadow-2xl aspect-[4/5] max-w-sm ml-auto">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/hero-card.jpg"
+                src="/images/Sengkol+gubernur.jpeg"
                 alt="Keindahan Desa Sengkol"
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                  e.currentTarget.parentElement.classList.add(
-                    "bg-gradient-to-br",
-                    "from-cyan-700",
-                    "to-teal-500",
-                  );
-                }}
               />
             </div>
           </motion.div>
