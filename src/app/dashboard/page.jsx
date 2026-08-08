@@ -355,7 +355,7 @@ function UmkmSection({ toast }) {
   };
   useEffect(() => { load(); }, []);
 
-  const blank = () => ({ nama_usaha: "", pemilik: "", kategori: "Kuliner", produk: "", deskripsi: "", alamat: "", maps_url: "", instagram: "", website: "", whatsapp: "", telepon: "", foto_url: "", urutan: list.length + 1 });
+  const blank = () => ({ nama_usaha: "", pemilik: "", kategori: [], produk: "", deskripsi: "", alamat: "", maps_url: "", instagram: "", website: "", whatsapp: "", telepon: "", foto_url: "", pembayaran: [], urutan: list.length + 1 });
 
   const save = async () => {
     setSaving(true);
@@ -387,7 +387,7 @@ function UmkmSection({ toast }) {
 
   if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Memuat...</div>;
 
-  const KATEGORI = ["Kuliner", "Kerajinan", "Jasa", "Pertanian", "Perdagangan"];
+  const KATEGORI = ["Jasa Wisata", "Kuliner", "Kerajinan", "Toko/Perdagangan"];
 
   return (
     <div>
@@ -407,7 +407,7 @@ function UmkmSection({ toast }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-bold text-gray-900 text-sm truncate">{u.nama_usaha}</p>
-              <p className="text-gray-400 text-xs">{u.pemilik} · {u.kategori}</p>
+              <p className="text-gray-400 text-xs">{u.pemilik} · {Array.isArray(u.kategori) ? u.kategori.join(", ") : u.kategori}</p>
             </div>
             <div className="flex gap-2 shrink-0">
               <button onClick={() => setEditItem(u)} className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl p-2 transition-colors"><RiEditLine /></button>
@@ -463,12 +463,58 @@ function UmkmSection({ toast }) {
                 ))}
               </div>
 
+              {/* Kategori multi-select */}
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Kategori</label>
-                <select value={editItem.kategori || "Kuliner"} onChange={(e) => setEditItem({ ...editItem, kategori: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300">
-                  {KATEGORI.map((k) => <option key={k}>{k}</option>)}
-                </select>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Kategori (bisa pilih lebih dari 1)</label>
+                <div className="flex flex-wrap gap-2">
+                  {KATEGORI.map((k) => {
+                    const selected = (editItem.kategori || []).includes(k);
+                    return (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => {
+                          const cur = editItem.kategori || [];
+                          setEditItem({ ...editItem, kategori: selected ? cur.filter((x) => x !== k) : [...cur, k] });
+                        }}
+                        className={`text-sm font-semibold px-3.5 py-2 rounded-xl border transition-colors ${
+                          selected
+                            ? "bg-orange-500 text-white border-orange-500"
+                            : "bg-white text-gray-600 border-gray-200 hover:border-orange-400"
+                        }`}
+                      >
+                        {k}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Pembayaran multi-select */}
+              <div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Pembayaran yang Tersedia</label>
+                <div className="flex flex-wrap gap-2">
+                  {["Tunai", "QRIS", "EDC"].map((p) => {
+                    const selected = (editItem.pembayaran || []).includes(p);
+                    return (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => {
+                          const cur = editItem.pembayaran || [];
+                          setEditItem({ ...editItem, pembayaran: selected ? cur.filter((x) => x !== p) : [...cur, p] });
+                        }}
+                        className={`text-sm font-semibold px-3.5 py-2 rounded-xl border transition-colors ${
+                          selected
+                            ? "bg-green-600 text-white border-green-600"
+                            : "bg-white text-gray-600 border-gray-200 hover:border-green-400"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div>

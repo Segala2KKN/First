@@ -16,6 +16,9 @@ import {
   RiInstagramLine,
   RiGlobalLine,
   RiWhatsappLine,
+  RiMoneyDollarCircleLine,
+  RiQrCodeLine,
+  RiBankCardLine,
 } from "react-icons/ri";
 
 // ===== FALLBACK DATA (kalau Supabase belum diisi) =====
@@ -24,63 +27,78 @@ const umkmFallback = [
     id: "1",
     nama_usaha: "Tenun Ikat Sengkol",
     pemilik: "Ibu Fatimah",
-    kategori: "Kerajinan",
+    kategori: ["Kerajinan"],
     produk: "Kain tenun ikat motif Sasak, sarung, selendang",
     deskripsi:
       "Usaha tenun ikat tradisional yang telah diwariskan turun-temurun. Menggunakan teknik pewarnaan alami dari tumbuhan sekitar desa.",
     foto_url: null,
-    kontak: "0812-3456-7890",
+    telepon: "0812-3456-7890",
     alamat: "Dusun Sengkol Utara",
+    pembayaran: ["Tunai", "QRIS"],
   },
   {
     id: "2",
     nama_usaha: "Olahan Kelor Sengkol",
     pemilik: "Kelompok Ibu PKK",
-    kategori: "Kuliner",
+    kategori: ["Kuliner"],
     produk: "Keripik kelor, tepung kelor, teh kelor",
     deskripsi:
       "Produk olahan daun kelor bernilai gizi tinggi untuk mendukung program penanggulangan stunting di Desa Sengkol.",
     foto_url: null,
-    kontak: "0813-5678-9012",
+    telepon: "0813-5678-9012",
     alamat: "Balai Desa Sengkol",
+    pembayaran: ["Tunai"],
   },
   {
     id: "3",
     nama_usaha: "Warung Makan Bu Sari",
     pemilik: "Ibu Sari",
-    kategori: "Kuliner",
+    kategori: ["Kuliner", "Jasa Wisata"],
     produk: "Plecing kangkung, ayam taliwang, nasi balap puyung",
     deskripsi:
       "Warung makan yang menyajikan masakan khas Lombok dengan cita rasa autentik dan bahan-bahan segar dari petani lokal desa.",
     foto_url: null,
-    kontak: "0857-1234-5678",
+    telepon: "0857-1234-5678",
     alamat: "Jl. Raya Sengkol No. 12",
+    pembayaran: ["Tunai", "QRIS", "EDC"],
   },
 ];
 
 const KATEGORI_WARNA = {
-  Kuliner: "bg-orange-100 text-orange-700",
-  Kerajinan: "bg-purple-100 text-purple-700",
-  Jasa: "bg-blue-100 text-blue-700",
-  Pertanian: "bg-green-100 text-green-700",
-  Perdagangan: "bg-amber-100 text-amber-700",
-  default: "bg-gray-100 text-gray-700",
+  "Jasa Wisata":     "bg-cyan-100 text-cyan-700",
+  Kuliner:           "bg-orange-100 text-orange-700",
+  Kerajinan:         "bg-purple-100 text-purple-700",
+  "Toko/Perdagangan":"bg-amber-100 text-amber-700",
+  default:           "bg-gray-100 text-gray-700",
 };
 
 const KATEGORI_GRADIENT = {
-  Kuliner: "from-orange-500 to-amber-400",
-  Kerajinan: "from-purple-600 to-pink-400",
-  Jasa: "from-blue-600 to-cyan-400",
-  Pertanian: "from-green-600 to-emerald-400",
-  Perdagangan: "from-amber-600 to-yellow-400",
-  default: "from-gray-500 to-gray-400",
+  "Jasa Wisata":     "from-cyan-500 to-teal-400",
+  Kuliner:           "from-orange-500 to-amber-400",
+  Kerajinan:         "from-purple-600 to-pink-400",
+  "Toko/Perdagangan":"from-amber-600 to-yellow-400",
+  default:           "from-gray-500 to-gray-400",
 };
 
-function badgeKelas(kategori) {
-  return KATEGORI_WARNA[kategori] || KATEGORI_WARNA.default;
+const PEMBAYARAN_INFO = {
+  Tunai: { icon: RiMoneyDollarCircleLine, color: "bg-green-100 text-green-700" },
+  QRIS:  { icon: RiQrCodeLine,           color: "bg-purple-100 text-purple-700" },
+  EDC:   { icon: RiBankCardLine,         color: "bg-blue-100 text-blue-700" },
+};
+
+// Normalisasi kategori → selalu array
+function toArr(val) {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  return [val];
+}
+
+function badgeKelas(k) {
+  return KATEGORI_WARNA[k] || KATEGORI_WARNA.default;
 }
 function gradientKelas(kategori) {
-  return KATEGORI_GRADIENT[kategori] || KATEGORI_GRADIENT.default;
+  const arr = toArr(kategori);
+  return KATEGORI_GRADIENT[arr[0]] || KATEGORI_GRADIENT.default;
 }
 
 // ===== MODAL DETAIL UMKM =====
@@ -117,9 +135,11 @@ function UmkmModal({ umkm, onClose }) {
             >
               <RiCloseLine className="text-xl" />
             </button>
-            <span className={`relative z-10 text-xs font-bold px-3 py-1.5 rounded-full ${badgeKelas(umkm.kategori)}`}>
-              {umkm.kategori}
-            </span>
+            <div className="relative z-10 flex flex-wrap gap-1.5">
+              {toArr(umkm.kategori).map((k) => (
+                <span key={k} className={`text-xs font-bold px-3 py-1.5 rounded-full ${badgeKelas(k)}`}>{k}</span>
+              ))}
+            </div>
           </div>
 
           {/* Konten */}
@@ -134,6 +154,25 @@ function UmkmModal({ umkm, onClose }) {
 
             {umkm.deskripsi && umkm.deskripsi !== umkm.produk && (
               <p className="text-gray-600 text-sm leading-relaxed mb-5">{umkm.deskripsi}</p>
+            )}
+
+            {/* Pembayaran */}
+            {toArr(umkm.pembayaran).length > 0 && (
+              <div className="mb-5">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Pembayaran</p>
+                <div className="flex flex-wrap gap-2">
+                  {toArr(umkm.pembayaran).map((p) => {
+                    const info = PEMBAYARAN_INFO[p];
+                    const Icon = info?.icon;
+                    return (
+                      <span key={p} className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full ${info?.color || "bg-gray-100 text-gray-700"}`}>
+                        {Icon && <Icon className="text-sm" />}
+                        {p}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
             <div className="space-y-3">
@@ -227,9 +266,11 @@ function UmkmCard({ umkm, onClick }) {
           <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-7xl" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        <span className={`absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full ${badgeKelas(umkm.kategori)}`}>
-          {umkm.kategori}
-        </span>
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+          {toArr(umkm.kategori).map((k) => (
+            <span key={k} className={`text-xs font-bold px-2.5 py-1 rounded-full ${badgeKelas(k)}`}>{k}</span>
+          ))}
+        </div>
       </div>
 
       {/* Info */}
@@ -244,7 +285,7 @@ function UmkmCard({ umkm, onClick }) {
 
 // ===== SEMUA KATEGORI =====
 function getAllKategori(data) {
-  const set = new Set(data.map((u) => u.kategori).filter(Boolean));
+  const set = new Set(data.flatMap((u) => toArr(u.kategori)).filter(Boolean));
   return ["Semua", ...Array.from(set)];
 }
 
@@ -270,7 +311,7 @@ export default function UmkmPage() {
   const kategoriList = getAllKategori(umkmData);
 
   const filtered = umkmData.filter((u) => {
-    const matchKategori = filterKategori === "Semua" || u.kategori === filterKategori;
+    const matchKategori = filterKategori === "Semua" || toArr(u.kategori).includes(filterKategori);
     const q = search.toLowerCase();
     const matchSearch =
       !q ||
