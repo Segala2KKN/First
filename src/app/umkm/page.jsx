@@ -12,6 +12,10 @@ import {
   RiCloseLine,
   RiSearchLine,
   RiFilterLine,
+  RiMapPin2Line,
+  RiInstagramLine,
+  RiGlobalLine,
+  RiWhatsappLine,
 } from "react-icons/ri";
 
 // ===== FALLBACK DATA (kalau Supabase belum diisi) =====
@@ -128,23 +132,75 @@ function UmkmModal({ umkm, onClose }) {
               <p className="text-gray-800 text-sm font-medium">{umkm.produk}</p>
             </div>
 
-            <p className="text-gray-600 text-sm leading-relaxed mb-5">{umkm.deskripsi}</p>
+            {umkm.deskripsi && umkm.deskripsi !== umkm.produk && (
+              <p className="text-gray-600 text-sm leading-relaxed mb-5">{umkm.deskripsi}</p>
+            )}
 
             <div className="space-y-3">
-              {umkm.kontak && (
+              {/* Maps */}
+              {umkm.maps_url && (
                 <a
-                  href={`tel:${umkm.kontak}`}
-                  className="flex items-center gap-3 bg-green-50 hover:bg-green-100 text-green-800 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+                  href={umkm.maps_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
                 >
-                  <RiPhoneLine className="text-lg" />
-                  {umkm.kontak}
+                  <RiMapPin2Line className="text-lg shrink-0" />
+                  Lihat di Google Maps
                 </a>
               )}
+              {/* Alamat teks */}
               {umkm.alamat && (
                 <div className="flex items-start gap-3 text-gray-600 text-sm px-1">
                   <RiMapPinLine className="text-lg text-gray-400 mt-0.5 shrink-0" />
                   {umkm.alamat}
                 </div>
+              )}
+              {/* Instagram */}
+              {umkm.instagram && (
+                <a
+                  href={umkm.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 bg-pink-50 hover:bg-pink-100 text-pink-700 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+                >
+                  <RiInstagramLine className="text-lg shrink-0" />
+                  Instagram
+                </a>
+              )}
+              {/* Website */}
+              {umkm.website && (
+                <a
+                  href={umkm.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+                >
+                  <RiGlobalLine className="text-lg shrink-0" />
+                  Website
+                </a>
+              )}
+              {/* WhatsApp */}
+              {umkm.whatsapp && (
+                <a
+                  href={umkm.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 bg-green-50 hover:bg-green-100 text-green-700 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+                >
+                  <RiWhatsappLine className="text-lg shrink-0" />
+                  WhatsApp
+                </a>
+              )}
+              {/* Telepon */}
+              {umkm.telepon && (
+                <a
+                  href={`tel:${umkm.telepon}`}
+                  className="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl px-4 py-3 transition-colors text-sm font-medium"
+                >
+                  <RiPhoneLine className="text-lg shrink-0" />
+                  {umkm.telepon}
+                </a>
               )}
             </div>
           </div>
@@ -180,7 +236,7 @@ function UmkmCard({ umkm, onClick }) {
       <div className="p-4">
         <h3 className="font-bold text-gray-900 text-base leading-tight mb-0.5">{umkm.nama_usaha}</h3>
         <p className="text-xs text-gray-400 mb-2">{umkm.pemilik}</p>
-        <p className="text-xs text-gray-500 line-clamp-2">{umkm.produk}</p>
+        <p className="text-xs text-gray-500 line-clamp-3">{umkm.deskripsi || umkm.produk}</p>
       </div>
     </motion.div>
   );

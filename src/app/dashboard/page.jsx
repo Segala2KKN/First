@@ -355,7 +355,7 @@ function UmkmSection({ toast }) {
   };
   useEffect(() => { load(); }, []);
 
-  const blank = () => ({ nama_usaha: "", pemilik: "", kategori: "Kuliner", produk: "", deskripsi: "", kontak: "", alamat: "", foto_url: "", urutan: list.length + 1 });
+  const blank = () => ({ nama_usaha: "", pemilik: "", kategori: "Kuliner", produk: "", deskripsi: "", alamat: "", maps_url: "", instagram: "", website: "", whatsapp: "", telepon: "", foto_url: "", urutan: list.length + 1 });
 
   const save = async () => {
     setSaving(true);
@@ -435,7 +435,6 @@ function UmkmSection({ toast }) {
                 { label: "Pemilik", key: "pemilik" },
                 { label: "Produk / Layanan", key: "produk" },
                 { label: "Deskripsi", key: "deskripsi" },
-                { label: "Kontak (No. HP)", key: "kontak" },
                 { label: "Alamat", key: "alamat" },
               ].map(({ label, key }) => (
                 <div key={key}>
@@ -444,6 +443,25 @@ function UmkmSection({ toast }) {
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
                 </div>
               ))}
+
+              {/* Lokasi & Kontak */}
+              <div className="border-t border-gray-100 pt-3">
+                <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Lokasi & Kontak</p>
+                {[
+                  { label: "Link Google Maps", key: "maps_url", placeholder: "https://maps.google.com/..." },
+                  { label: "Instagram (URL)", key: "instagram", placeholder: "https://instagram.com/..." },
+                  { label: "Website (URL)", key: "website", placeholder: "https://..." },
+                  { label: "WhatsApp (URL)", key: "whatsapp", placeholder: "https://wa.me/628..." },
+                  { label: "Nomor Telepon", key: "telepon", placeholder: "0812-3456-7890" },
+                ].map(({ label, key, placeholder }) => (
+                  <div key={key} className="mb-3">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">{label}</label>
+                    <input value={editItem[key] || ""} onChange={(e) => setEditItem({ ...editItem, [key]: e.target.value })}
+                      placeholder={placeholder}
+                      className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
+                  </div>
+                ))}
+              </div>
 
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Kategori</label>
