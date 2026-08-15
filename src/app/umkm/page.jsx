@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import {
   RiStoreLine,
   RiArrowLeftLine,
+  RiArrowRightLine,
   RiPhoneLine,
   RiMapPinLine,
   RiCloseLine,
@@ -98,6 +99,7 @@ const KATEGORI_WARNA = {
   Kuliner:           "bg-orange-100 text-orange-700",
   Kerajinan:         "bg-purple-100 text-purple-700",
   "Toko/Perdagangan":"bg-amber-100 text-amber-700",
+  Laundry:           "bg-sky-100 text-sky-700",
   default:           "bg-gray-100 text-gray-700",
 };
 
@@ -106,6 +108,7 @@ const KATEGORI_GRADIENT = {
   Kuliner:           "from-orange-500 to-amber-400",
   Kerajinan:         "from-purple-600 to-pink-400",
   "Toko/Perdagangan":"from-amber-600 to-yellow-400",
+  Laundry:           "from-sky-500 to-blue-400",
   default:           "from-gray-500 to-gray-400",
 };
 
@@ -132,7 +135,14 @@ function gradientKelas(kategori) {
 
 // ===== MODAL DETAIL UMKM =====
 function UmkmModal({ umkm, onClose }) {
+  const [current, setCurrent] = useState(0);
+  const [lightbox, setLightbox] = useState(false);
   if (!umkm) return null;
+  const photos = getPhotos(umkm);
+
+  const prev = (e) => { e.stopPropagation(); setCurrent((i) => (i - 1 + photos.length) % photos.length); };
+  const next = (e) => { e.stopPropagation(); setCurrent((i) => (i + 1) % photos.length); };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -152,22 +162,101 @@ function UmkmModal({ umkm, onClose }) {
         >
           {/* Foto / Gradient header */}
           <div className={`relative h-48 bg-gradient-to-br ${gradientKelas(umkm.kategori)} flex items-end p-5`}>
-            {(() => { const photos = getPhotos(umkm); return photos.length > 0
-              ? <PhotoFader photos={photos} alt={umkm.nama_usaha} />
-              : <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-9xl" />;
-            })()}
+            {photos.length > 0 ? (
+              <>
+                {/* Foto — klik untuk lightbox */}
+                <div className="absolute inset-0 cursor-zoom-in" onClick={() => setLightbox(true)}>
+                  {photos.map((src, i) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={i} src={src} alt={umkm.nama_usaha}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      style={{ opacity: i === current ? 1 : 0, transition: "opacity 0.5s ease-in-out" }}
+                    />
+                  ))}
+                </div>
+                {/* Prev / Next */}
+                {photos.length > 1 && (
+                  <>
+                    <button onClick={prev}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/65 text-white rounded-full p-2 transition-colors">
+                      <RiArrowLeftLine />
+                    </button>
+                    <button onClick={next}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-black/40 hover:bg-black/65 text-white rounded-full p-2 transition-colors">
+                      <RiArrowRightLine />
+                    </button>
+                    {/* Counter */}
+                    <span className="absolute top-3 left-1/2 -translate-x-1/2 z-20 bg-black/40 text-white text-xs px-2.5 py-0.5 rounded-full">
+                      {current + 1} / {photos.length}
+                    </span>
+                  </>
+                )}
+              </>
+            ) : (
+              <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-9xl" />
+            )}
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 transition-colors"
+              className="absolute top-4 right-4 z-30 bg-black/30 hover:bg-black/50 text-white rounded-full p-2 transition-colors"
             >
               <RiCloseLine className="text-xl" />
             </button>
-            <div className="relative z-10 flex flex-wrap gap-1.5">
+            <div className="relative z-20 flex flex-wrap gap-1.5">
               {toArr(umkm.kategori).map((k, i) => (
-                <span key={k} className={`text-xs font-bold px-3 py-1.5 rounded-full ${badgeKelas(k)}`}>{k}</span>
+                <span key={`${k}-${i}`} className={`text-xs font-bold px-3 py-1.5 rounded-full ${badgeKelas(k)}`}>{k}</span>
               ))}
             </div>
           </div>
+
+          {/* Lightbox */}
+          <AnimatePresence>
+            {lightbox && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[70] bg-black/92 flex flex-col items-center justify-center p-4"
+                onClick={() => setLightbox(false)}
+              >
+                <motion.div
+                  initial={{ scale: 0.92, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.92, opacity: 0 }}
+                  transition={{ type: "spring", damping: 24 }}
+                  className="relative max-w-lg w-full"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={photos[current]} alt={umkm.nama_usaha}
+                    className="w-full rounded-2xl object-contain max-h-[65vh]" />
+                  {photos.length > 1 && (
+                    <>
+                      <button onClick={prev}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 transition-colors">
+                        <RiArrowLeftLine />
+                      </button>
+                      <button onClick={next}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2.5 transition-colors">
+                        <RiArrowRightLine />
+                      </button>
+                    </>
+                  )}
+                  <div className="text-center mt-3">
+                    <p className="text-white font-bold">{umkm.nama_usaha}</p>
+                    {photos.length > 1 && (
+                      <p className="text-white/50 text-sm">{current + 1} / {photos.length}</p>
+                    )}
+                  </div>
+                </motion.div>
+                <button
+                  onClick={() => setLightbox(false)}
+                  className="mt-5 flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-colors"
+                >
+                  <RiArrowLeftLine /> Kembali ke Detail
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Konten */}
           <div className="p-6">
@@ -284,19 +373,16 @@ function UmkmCard({ umkm, onClick }) {
       onClick={() => onClick(umkm)}
       className="bg-white rounded-2xl shadow-md overflow-hidden cursor-pointer group border border-gray-100"
     >
-      {/* Foto / Gradient */}
+      {/* Foto / Gradient — auto slideshow */}
       <div className={`relative h-40 bg-gradient-to-br ${gradientKelas(umkm.kategori)}`}>
-        {(() => { const photos = getPhotos(umkm); return photos.length > 0
-          ? <PhotoFader photos={photos} alt={umkm.nama_usaha} />
-          : <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-7xl" />;
+        {(() => {
+          const photos = getPhotos(umkm);
+          return photos.length > 0
+            ? <PhotoFader photos={photos} alt={umkm.nama_usaha} />
+            : <RiStoreLine className="absolute inset-0 m-auto text-white/20 text-7xl" />;
         })()}
-        {getPhotos(umkm).length > 1 && (
-          <span className="absolute top-3 right-3 z-10 bg-black/40 text-white text-xs px-2 py-0.5 rounded-full">
-            📸 {getPhotos(umkm).length}
-          </span>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        <div className="absolute bottom-3 left-3 flex flex-wrap gap-1">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        <div className="absolute bottom-3 left-3 flex flex-wrap gap-1 pointer-events-none">
           {toArr(umkm.kategori).map((k, i) => (
             <span key={`${k}-${i}`} className={`text-xs font-bold px-2.5 py-1 rounded-full ${badgeKelas(k)}`}>{k}</span>
           ))}

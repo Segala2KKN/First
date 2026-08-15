@@ -163,6 +163,56 @@ function DropZone({ onFiles, accept = "image/*", multiple = true, uploading = fa
 }
 
 // ─────────────────────────────────────────────────────────────
+// SORTABLE PHOTO GRID (drag-to-reorder)
+// ─────────────────────────────────────────────────────────────
+function SortablePhotoGrid({ photos, onReorder, onRemove }) {
+  const [dragIdx, setDragIdx] = useState(null);
+  const [overIdx, setOverIdx] = useState(null);
+
+  const handleDrop = (i) => {
+    if (dragIdx === null || dragIdx === i) { setDragIdx(null); setOverIdx(null); return; }
+    const arr = [...photos];
+    const [moved] = arr.splice(dragIdx, 1);
+    arr.splice(i, 0, moved);
+    onReorder(arr);
+    setDragIdx(null);
+    setOverIdx(null);
+  };
+
+  if (!photos || photos.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-2 mb-2">
+      {photos.map((url, i) => (
+        <div
+          key={i}
+          draggable
+          onDragStart={() => setDragIdx(i)}
+          onDragOver={(e) => { e.preventDefault(); setOverIdx(i); }}
+          onDrop={() => handleDrop(i)}
+          onDragEnd={() => { setDragIdx(null); setOverIdx(null); }}
+          className={`relative w-20 h-20 rounded-xl overflow-hidden cursor-grab active:cursor-grabbing select-none transition-all ${
+            dragIdx === i ? "opacity-40 scale-95" : ""
+          } ${overIdx === i && dragIdx !== i ? "ring-2 ring-blue-400 scale-105" : ""}`}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+          {i === 0 && (
+            <span className="absolute bottom-0 left-0 right-0 text-center bg-black/50 text-white text-[9px] py-0.5 pointer-events-none">
+              Utama
+            </span>
+          )}
+          <button onClick={() => onRemove(url)}
+            className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs z-10">
+            <RiCloseLine />
+          </button>
+        </div>
+      ))}
+      <p className="w-full text-[10px] text-gray-400 mt-0.5">Drag foto untuk mengubah urutan · Foto pertama = foto utama</p>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
 // UPLOAD FOTO HELPER
 // ─────────────────────────────────────────────────────────────
 async function uploadFoto(file, folder) {
@@ -337,19 +387,14 @@ function PohonSection({ toast }) {
 
               {/* Upload Foto */}
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Foto Pohon</label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {(editItem.fotos || []).map((url, i) => (
-                    <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                      <button onClick={() => removeFoto(url)}
-                        className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs">
-                        <RiCloseLine />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
+                  Foto Pohon <span className="font-normal normal-case text-gray-400">(geser untuk atur urutan)</span>
+                </label>
+                <SortablePhotoGrid
+                  photos={editItem.fotos || []}
+                  onReorder={(f) => setEditItem((p) => ({ ...p, fotos: f }))}
+                  onRemove={removeFoto}
+                />
                 <DropZone
                   onFiles={uploadFotos}
                   label="Upload Foto"
@@ -432,7 +477,7 @@ function UmkmSection({ toast }) {
 
   if (loading) return <div className="text-gray-400 text-sm py-8 text-center">Memuat...</div>;
 
-  const KATEGORI = ["Jasa Wisata", "Kuliner", "Kerajinan", "Toko/Perdagangan"];
+  const KATEGORI = ["Jasa Wisata", "Kuliner", "Kerajinan", "Toko/Perdagangan", "Laundry"];
 
   return (
     <div>
@@ -455,7 +500,12 @@ function UmkmSection({ toast }) {
               <p className="text-gray-400 text-xs">{u.pemilik} · {Array.isArray(u.kategori) ? u.kategori.join(", ") : u.kategori}</p>
             </div>
             <div className="flex gap-2 shrink-0">
-              <button onClick={() => setEditItem({ ...u, fotos: u.fotos || (u.foto_url ? [u.foto_url] : []) })} className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl p-2 transition-colors"><RiEditLine /></button>
+              <button onClick={() => setEditItem({
+                ...u,
+                fotos: Array.isArray(u.fotos) ? u.fotos : (u.foto_url ? [u.foto_url] : []),
+                kategori: Array.isArray(u.kategori) ? u.kategori : (u.kategori ? [u.kategori] : []),
+                pembayaran: Array.isArray(u.pembayaran) ? u.pembayaran : [],
+              })} className="bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl p-2 transition-colors"><RiEditLine /></button>
               <button onClick={() => del(u.id)} className="bg-gray-100 hover:bg-red-100 text-gray-600 hover:text-red-600 rounded-xl p-2 transition-colors"><RiDeleteBinLine /></button>
             </div>
           </div>
@@ -565,22 +615,13 @@ function UmkmSection({ toast }) {
               {/* Multi-foto */}
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
-                  Foto <span className="font-normal normal-case text-gray-400">(bisa lebih dari 1, slideshow otomatis)</span>
+                  Foto <span className="font-normal normal-case text-gray-400">(bisa lebih dari 1, geser untuk atur urutan)</span>
                 </label>
-                {(editItem.fotos || []).length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {(editItem.fotos || []).map((url, i) => (
-                      <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                        <button onClick={() => removeFoto(url)}
-                          className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs">
-                          <RiCloseLine />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <SortablePhotoGrid
+                  photos={editItem.fotos || []}
+                  onReorder={(f) => setEditItem((p) => ({ ...p, fotos: f }))}
+                  onRemove={removeFoto}
+                />
                 <DropZone
                   onFiles={uploadFotos}
                   uploading={uploading}
@@ -735,20 +776,13 @@ function WisataSection({ toast }) {
               {/* Upload Foto */}
               <div>
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">
-                  Foto Wisata <span className="font-normal normal-case text-gray-400">(bisa lebih dari 1)</span>
+                  Foto Wisata <span className="font-normal normal-case text-gray-400">(bisa lebih dari 1, geser untuk atur urutan)</span>
                 </label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {(editItem.fotos || []).map((url, i) => (
-                    <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={url} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                      <button onClick={() => removeFoto(url)}
-                        className="absolute top-0.5 right-0.5 bg-red-500 text-white rounded-full p-0.5 text-xs">
-                        <RiCloseLine />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <SortablePhotoGrid
+                  photos={editItem.fotos || []}
+                  onReorder={(f) => setEditItem((p) => ({ ...p, fotos: f }))}
+                  onRemove={removeFoto}
+                />
                 <DropZone
                   onFiles={uploadFotos}
                   uploading={uploading}
