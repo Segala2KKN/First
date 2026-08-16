@@ -825,15 +825,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-7 py-3.5 rounded-full transition-colors text-sm"
                 >
-                  <RiChat3Line /> Buka Form Langsung
-                </a>
-                <a
-                  href={FORM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 border border-white/20 hover:border-white/40 text-white/70 hover:text-white font-semibold px-7 py-3.5 rounded-full transition-colors text-sm"
-                >
-                  <RiExternalLinkLine /> bit.ly/FormAduan...
+                  <RiChat3Line /> Sampaikan aduanmu disini
                 </a>
               </div>
             </FadeIn>

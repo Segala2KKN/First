@@ -436,7 +436,11 @@ function UmkmSection({ toast }) {
   const save = async () => {
     setSaving(true);
     try {
-      const payload = { ...editItem, fotos: editItem.fotos || [] };
+      const payload = {
+        ...editItem,
+        fotos: editItem.fotos || [],
+        kategori: (Array.isArray(editItem.kategori) ? editItem.kategori : []).filter(k => typeof k === "string" && k.length > 1),
+      };
       if (payload.id) {
         const { id, created_at, ...rest } = payload;
         await supabase.from("umkm").update(rest).eq("id", id);

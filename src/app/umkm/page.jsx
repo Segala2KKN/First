@@ -118,11 +118,13 @@ const PEMBAYARAN_INFO = {
   EDC:   { icon: RiBankCardLine,         color: "bg-blue-100 text-blue-700" },
 };
 
-// Normalisasi kategori → selalu array
+const VALID_KATEGORI = ["Jasa Wisata", "Kuliner", "Kerajinan", "Toko/Perdagangan", "Laundry"];
+
+// Normalisasi kategori → selalu array, filter garbage (karakter tunggal / nilai tidak dikenal)
 function toArr(val) {
   if (!val) return [];
-  if (Array.isArray(val)) return val;
-  return [val];
+  const arr = Array.isArray(val) ? val : [val];
+  return arr.filter((k) => typeof k === "string" && k.length > 1);
 }
 
 function badgeKelas(k) {
