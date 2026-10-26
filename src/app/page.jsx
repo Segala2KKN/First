@@ -213,7 +213,9 @@ function WisataCardItem({ item }) {
         )}
         <span className="relative z-10 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1 rounded-full">
           {item.kategori}
-        </span> Recallie uflaniken here officials bysleep gold. Okay, thank you, thank you.
+        </span>{" "}
+        Recallie uflaniken here officials bysleep gold. Okay, thank you, thank
+        you.
       </div>
       <div className="p-5 flex flex-col">
         <div className="flex items-center gap-2 mb-1">
@@ -470,8 +472,10 @@ function QRCard() {
   return (
     <div className="relative flex justify-center">
       {/* Outer pulse ring */}
-      <span className="absolute inset-0 rounded-[2rem] bg-cyan-400/15 animate-ping"
-        style={{ animationDuration: "2.8s" }} />
+      <span
+        className="absolute inset-0 rounded-[2rem] bg-cyan-400/15 animate-ping"
+        style={{ animationDuration: "2.8s" }}
+      />
       {/* Card */}
       <div className="relative bg-white rounded-[2rem] shadow-2xl p-6 w-72">
         {/* Top badge */}
@@ -479,7 +483,9 @@ function QRCard() {
           <div className="w-7 h-7 rounded-lg bg-cyan-100 flex items-center justify-center">
             <RiQrCodeLine className="text-cyan-600 text-sm" />
           </div>
-          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Scan QR Code</span>
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+            Scan QR Code
+          </span>
         </div>
         {/* QR Image */}
         <div className="bg-gray-50 rounded-2xl p-3 mb-4 border border-gray-100">
@@ -788,7 +794,6 @@ export default function Home() {
 
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-
             {/* Kiri — teks */}
             <FadeIn>
               <Label>Kritik &amp; Saran</Label>
@@ -796,7 +801,9 @@ export default function Home() {
                 Suara Kamu Penting Untuk Kami
               </h2>
               <p className="text-gray-400 leading-relaxed mb-8 max-w-md">
-                Bantu Desa Sengkol terus berkembang dengan memberikan masukan, kritik, atau saran yang membangun. Setiap aspirasi akan kami dengar dan tindak lanjuti.
+                Bantu Desa Sengkol terus berkembang dengan memberikan masukan,
+                kritik, atau saran yang membangun. Setiap aspirasi akan kami
+                dengar dan tindak lanjuti.
               </p>
 
               {/* Daftar topik */}
